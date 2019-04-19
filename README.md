@@ -8,15 +8,13 @@ We can use package managers to install this library.
 
 **NPM**
 ```
-npm install @scalar-labs/scalardl-web-sdk
+npm install @scalar-labs/scalardl-web-client-sdk
 ```
 
 **Yarn**
 ```
-yarn add @scalar-labs/scalardl-web-sdk
+yarn add @scalar-labs/scalardl-web-client-sdk
 ```
-
-Or, download the bundle file from.
 
 ## HOWTO
 
@@ -35,14 +33,14 @@ It provides following functions to request Scalar DL netowrk.
 
 Use the code snippet below to create a ClientService instance.
 ```
-import { ClientService } from '@scalar-labs/scalardl-web-sdk';
+import { ClientService } from '@scalar-labs/scalardl-web-client-sdk';
 const clientService = new ClientService(clientProperties);
 ```
 
 Or, if you use the static release, try following
 ```
 <head>
-    <script src="scalardl-web-sdk.js"></script>
+    <script src="scalardl-web-client-sdk.bundle.js"></script>
 </head>
 
 <script>

@@ -4,10 +4,10 @@
     "grpc-web": "^1.0.4",
     "jsrsasign": "^8.0.12"
   },
-  "name": "@scalar-labs/scalardl-web-sdk",
+  "name": "@scalar-labs/scalardl-web-client-sdk",
   "version": "0.0.1",
   "description": "The web client SDK for Scalar DL",
-  "main": "scalardl-web-sdk.js",
+  "main": "scalardl-web-client-sdk.js",
   "scripts": {
     "test": "mocha"
   },
