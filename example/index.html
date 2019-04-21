@@ -5,7 +5,7 @@
 </head>
 
 <body>
-    <h3>証明書の登録</h3>
+    <h3>Register a certificate</h3>
     <div>
         <div>
 			<div class="form-check">
@@ -13,12 +13,11 @@
 					class="form-check-input"
 					type="checkbox"
 					value=""
-					id="TLSToggle"
-					checked>
+					id="TLSToggle">
 				<label class="form-check-label" for="TLSToggle">Enable/Disable TLS</label>
 			</div>
             <input id="address" type="text" placeholder="Scalar DL network address" value="127.0.0.1" />
-            <input id="port" type="text" placeholder="port" value="443" />
+            <input id="port" type="text" placeholder="port" value="50051" />
         </div>
         <div>
             <input id="holderId" type="text" placeholder="Holder ID" value="foo" />
@@ -38,7 +37,7 @@
     </div>
 
     <hr>
-    <h3>コントラクトの登録</h3>
+    <h3>Register a contract</h3>
     <div>
         <div>
             <input id="contractId" type="text" placeholder="Contract id" />
@@ -57,7 +56,7 @@
     </div>
 
     <hr>
-    <h3>登録したコントラクトの一覧</h3>
+    <h3>List registered contracts</h3>
     <div>
         <button id="listContracts">
             ListContracts
@@ -66,7 +65,7 @@
     </div>
 
     <hr>
-    <h3>コントラクトの実行</h3>
+    <h3>Execute a contract</h3>
     <div>
         <div>
             Contract ID: <input id="executeContractId" type="text" />
@@ -81,7 +80,7 @@
     </div>
 
     <hr>
-    <h3>アセットを検証</h3>
+    <h3>Validate an asset in the ledger</h3>
     <div>
         <div>
             <input id="asset" type="text" placeholder="asset id" />
@@ -155,7 +154,7 @@
         clientService = new Scalar.ClientService(clientProperties);
         clientService.registerCertificate().then(response => {
             if (response.getStatus() == Scalar.StatusCode.OK) {
-                document.querySelector("#registerCertificateResult").innerHTML = "<b>証明書登録成功</b>";
+                document.querySelector("#registerCertificateResult").innerHTML = "<b>The certificate is successfully registered</b>";
             } else {
                 document.querySelector("#registerCertificateResult").innerHTML =
                     `<b>${response.getStatus()}: ${response.getMessage()}</b>`;
@@ -179,7 +178,7 @@
         clientService.registerContract(contractId, contractName, contractBinary, contractProperties).then(
             response => {
                 if (response.getStatus() == Scalar.StatusCode.OK) {
-                    document.querySelector("#registerContractResult").innerHTML = "<b>コントラクト登録成功</b>";
+                    document.querySelector("#registerContractResult").innerHTML = "<b>The contract is successfully registered</b>";
                 } else {
                     document.querySelector("#registerContractResult").innerHTML =
                         `<b>${response.getStatus()}: ${response.getMessage()}</b>`;
@@ -201,7 +200,7 @@
         }
         clientService.executeContract(executeContractId, argument).then(response => {
             if (response.getStatus() == Scalar.StatusCode.OK) {
-                document.querySelector("#executeContractResult").innerHTML = "<b>コントラク実行成功</b><br>";
+                document.querySelector("#executeContractResult").innerHTML = "<b>The contract is successfully executed</b><br>";
                 document.querySelector("#executeContractResult").innerHTML +=
                     `${ JSON.stringify(response.getResult(), null, 2) }`;
             } else {
@@ -240,7 +239,7 @@
         clientService.validateLedger(asset).then(response => {
 
             if (response.getStatus() == Scalar.StatusCode.OK) {
-                document.querySelector("#validateLedgerResult").innerHTML = "アセットは改ざんされていない";
+                document.querySelector("#validateLedgerResult").innerHTML = "The specified asset is not tampered";
             } else {
                 document.querySelector("#validateLedgerResult").innerHTML =
                     `<b>${response.getStatus()}: ${response.getMessage()}</b>`;
