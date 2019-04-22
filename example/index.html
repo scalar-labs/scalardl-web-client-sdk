@@ -1,0 +1,251 @@
+<html>
+
+<head>
+    <script src="../dist/scalardl-web-client-sdk.bundle.js"></script>
+</head>
+
+<body>
+    <h3>Register a certificate</h3>
+    <div>
+        <div>
+			<div class="form-check">
+				<input
+					class="form-check-input"
+					type="checkbox"
+					value=""
+					id="TLSToggle">
+				<label class="form-check-label" for="TLSToggle">Enable/Disable TLS</label>
+			</div>
+            <input id="address" type="text" placeholder="Scalar DL network address" value="127.0.0.1" />
+            <input id="port" type="text" placeholder="port" value="50051" />
+        </div>
+        <div>
+            <input id="holderId" type="text" placeholder="Holder ID" value="foo" />
+        </div>
+        <div>
+            Key: <input id="key" type="file" />
+        </div>
+        <div>
+            Certificate: <input id="certificate" type="file" />
+        </div>
+        <div>
+            <button id="registerCertificate">
+                RegisterCertificate
+            </button>
+            <span id="registerCertificateResult"></span>
+        </div>
+    </div>
+
+    <hr>
+    <h3>Register a contract</h3>
+    <div>
+        <div>
+            <input id="contractId" type="text" placeholder="Contract id" />
+            <input id="contractName" type="text" placeholder="Contract name" />
+        </div>
+        <div>
+            Contract: <input id="contractBinary" type="file" />
+            <textarea id="contractProperties" placeholder="contract properties (JSON)"></textarea>
+        </div>
+        <div>
+            <button id="registerContract">
+                RegisterContract
+            </button>
+            <span id="registerContractResult"></span>
+        </div>
+    </div>
+
+    <hr>
+    <h3>List registered contracts</h3>
+    <div>
+        <button id="listContracts">
+            ListContracts
+        </button>
+        <span id="listContractsResult"></span>
+    </div>
+
+    <hr>
+    <h3>Execute a contract</h3>
+    <div>
+        <div>
+            Contract ID: <input id="executeContractId" type="text" />
+            <textarea id="argument" placeholder="argument (JSON)"></textarea>
+        </div>
+        <div>
+            <button id="executeContract">
+                ExecuteContract
+            </button>
+            <span id="executeContractResult"></span>
+        </div>
+    </div>
+
+    <hr>
+    <h3>Validate an asset in the ledger</h3>
+    <div>
+        <div>
+            <input id="asset" type="text" placeholder="asset id" />
+        </div>
+        <div>
+            <button id="validateLedger">validateLedger</button>
+            <span id="validateLedgerResult"></span>
+        </div>
+    </div>
+</body>
+
+<script>
+    let key;
+    let certificate;
+    let clientProperties = {};
+    let clientService;
+    let contractBinary;
+	
+    document.querySelector("#key").addEventListener('change', event => {
+        const f = event.target.files[0];
+        if (f) {
+            const reader = new FileReader();
+            reader.onload = event => {
+                key = event.target.result;
+            };
+            reader.readAsText(f);
+        }
+    }, false);
+
+    document.querySelector("#certificate").addEventListener('change', event => {
+        const f = event.target.files[0];
+        if (f) {
+            const reader = new FileReader();
+            reader.onload = event => {
+                certificate = event.target.result;
+            };
+            reader.readAsText(f);
+        }
+    }, false);
+
+    document.querySelector("#contractBinary").addEventListener('change', event => {
+        const f = event.target.files[0];
+        if (f) {
+            const reader = new FileReader();
+            reader.onload = event => {
+                contractBinary = new Uint8Array(event.target.result);
+            }
+            reader.readAsArrayBuffer(f);
+        }
+    });
+
+    document.querySelector("#registerCertificate").addEventListener('click', event => {
+        const address = document.querySelector("#address").value;
+        const port = document.querySelector("#port").value;
+        const holderId = document.querySelector("#holderId").value; // in case of name conflict
+		const tls = document.getElementById("TLSToggle").checked // true or false
+        if (!address || !port || !key || !certificate) {
+            window.alert("We need more information to register the certificate");
+            return;
+        }
+
+        clientProperties = {
+            'scalar.ledger.client.server_host': address,
+            'scalar.ledger.client.server_port': port,
+            'scalar.ledger.client.cert_holder_id': holderId,
+            'scalar.ledger.client.private_key_pem': key,
+            'scalar.ledger.client.cert_pem': certificate,
+            'scalar.ledger.client.cert_version': 1,
+            'scalar.ledger.client.tls.enabled': tls 
+        };
+        clientService = new Scalar.ClientService(clientProperties);
+        clientService.registerCertificate().then(response => {
+            if (response.getStatus() == Scalar.StatusCode.OK) {
+                document.querySelector("#registerCertificateResult").innerHTML = "<b>The certificate is successfully registered</b>";
+            } else {
+                document.querySelector("#registerCertificateResult").innerHTML =
+                    `<b>${response.getStatus()}: ${response.getMessage()}</b>`;
+            }
+        });
+    });
+
+    document.querySelector("#registerContract").addEventListener('click', event => {
+        const contractId = document.querySelector("#contractId").value;
+        const contractName = document.querySelector("#contractName").value.trim();
+        const contractPropertiesJSON = document.querySelector("#contractProperties").value;
+        const contractProperties = contractPropertiesJSON ? JSON.parse(contractPropertiesJSON) : {};
+        if (!contractId || !contractName || !contractBinary) {
+            window.alert("We need more information to register the contract");
+            return;
+        }
+        if (!clientService) {
+            window.alert("You need to register a certificate berfore register any contracts");
+            return;
+        }
+        clientService.registerContract(contractId, contractName, contractBinary, contractProperties).then(
+            response => {
+                if (response.getStatus() == Scalar.StatusCode.OK) {
+                    document.querySelector("#registerContractResult").innerHTML = "<b>The contract is successfully registered</b>";
+                } else {
+                    document.querySelector("#registerContractResult").innerHTML =
+                        `<b>${response.getStatus()}: ${response.getMessage()}</b>`;
+                }
+            });
+    });
+
+    document.querySelector("#executeContract").addEventListener('click', event => {
+        const executeContractId = document.querySelector("#executeContractId").value;
+        const argumentJSON = document.querySelector("#argument").value;
+        if (!executeContractId || !argumentJSON) {
+            window.alert("We need more information to execute the contract");
+            return;
+        }
+        const argument = JSON.parse(argumentJSON);
+        if (!clientService) {
+            window.alert("You need to register a certificate berfore execution");
+            return;
+        }
+        clientService.executeContract(executeContractId, argument).then(response => {
+            if (response.getStatus() == Scalar.StatusCode.OK) {
+                document.querySelector("#executeContractResult").innerHTML = "<b>The contract is successfully executed</b><br>";
+                document.querySelector("#executeContractResult").innerHTML +=
+                    `${ JSON.stringify(response.getResult(), null, 2) }`;
+            } else {
+                document.querySelector("#executeContractResult").innerHTML =
+                    `<b>${response.getStatus()}: ${response.getMessage()}</b>`;
+            }
+        });
+    });
+
+    document.querySelector("#listContracts").addEventListener('click', event => {
+        if (!clientService) {
+            window.alert("You need to register a certificate berfore execution");
+            return;
+        }
+        clientService.listContracts().then(response => {
+            if (response.getStatus() == Scalar.StatusCode.OK) {
+                document.querySelector("#listContractsResult").innerHTML =
+                    `${ JSON.stringify(response.getMessage(), null , 2) }`;
+            } else {
+                document.querySelector("#listContractsResult").innerHTML =
+                    `<b>${response.getStatus()}: ${response.getMessage()}</b>`;
+            }
+        });
+    });
+
+    document.querySelector("#validateLedger").addEventListener('click', event => {
+        const asset = document.querySelector("#asset").value;
+        if (!asset) {
+            window.alert("We need more information to validate an asset");
+            return;
+        }
+        if (!clientService) {
+            window.alert("You need to register a certificate berfore execution");
+            return;
+        }
+        clientService.validateLedger(asset).then(response => {
+
+            if (response.getStatus() == Scalar.StatusCode.OK) {
+                document.querySelector("#validateLedgerResult").innerHTML = "The specified asset is not tampered";
+            } else {
+                document.querySelector("#validateLedgerResult").innerHTML =
+                    `<b>${response.getStatus()}: ${response.getMessage()}</b>`;
+            }
+        });
+    });
+</script>
+
+</html>
