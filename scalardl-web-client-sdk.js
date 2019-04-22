@@ -92,10 +92,10 @@ class ClientService {
    */
   async registerCertificate() {
     const request = new CertificateRegistrationRequestBuilder().withCertHolderId(
-        this.certHolderId).
-        withCertVersion(this.certVersion).
-        withCertPem(this.certPem).
-        build();
+        this.certHolderId)
+        .withCertVersion(this.certVersion)
+        .withCertPem(this.certPem)
+        .build();
     return this.sendRequest('registerCert', () => {
       return this.client.registerCert(request, this.metadata);
     });
@@ -119,13 +119,13 @@ class ClientService {
 
     const propertiesJson = JSON.stringify(properties);
     const request = new ContractRegistrationRequestBuilder(
-        this.signer).withContractId(id).
-        withContractBinaryName(name).
-        withContractByteCode(contractBytes).
-        withContractProperties(propertiesJson).
-        withCertHolderId(this.certHolderId).
-        withCertVersion(this.certVersion).
-        build();
+        this.signer).withContractId(id)
+        .withContractBinaryName(name)
+        .withContractByteCode(contractBytes)
+        .withContractProperties(propertiesJson)
+        .withCertHolderId(this.certHolderId)
+        .withCertVersion(this.certVersion)
+        .build();
     return this.sendRequest('registerContract', () => {
       return this.client.registerContract(request, this.metadata);
     });
@@ -139,10 +139,10 @@ class ClientService {
    */
   async listContracts(contractId) {
     const request = new ContractsListingRequestBuilder(
-        this.signer).withCertHolderId(this.certHolderId).
-        withCertVersion(this.certVersion).
-        withContractId(contractId).
-        build();
+        this.signer).withCertHolderId(this.certHolderId)
+        .withCertVersion(this.certVersion)
+        .withContractId(contractId)
+        .build();
     return this.sendRequest('listContracts', () => {
       return this.client.listContracts(request, this.metadata);
     });
@@ -155,10 +155,10 @@ class ClientService {
    */
   async validateLedger(assetId) {
     const request = new LedgerValidationRequestBuilder(this.signer).withAssetId(
-        assetId).
-        withCertHolderId(this.certHolderId).
-        withCertVersion(this.certVersion).
-        build();
+        assetId)
+        .withCertHolderId(this.certHolderId)
+        .withCertVersion(this.certVersion)
+        .build();
 
     return this.sendRequest('validateLedger', () => {
       return this.client.validateLedger(request, this.metadata);
@@ -175,11 +175,11 @@ class ClientService {
     const argumentJson = JSON.stringify(argument);
 
     const request = new ContractExecutionRequestBuilder(
-        this.signer).withContractId(contractId).
-        withContractArgument(argumentJson).
-        withCertHolderId(this.certHolderId).
-        withCertVersion(this.certVersion).
-        build();
+        this.signer).withContractId(contractId)
+        .withContractArgument(argumentJson)
+        .withCertHolderId(this.certHolderId)
+        .withCertVersion(this.certVersion)
+        .build();
 
     return this.sendRequest('executeContract', () => {
       return this.client.executeContract(request, this.metadata);
