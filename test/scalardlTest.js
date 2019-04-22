@@ -1,12 +1,16 @@
+//Test libraries dependencies
+var expect = require('chai').expect;
+var assert = require('chai').assert;
+var sinon = require('sinon');
+
+
 let {
   ClientService,
 } = require('../scalardl-web-client-sdk');
 let {
   IllegalArgumentError,
 } = require('../illegal_argument_error');
-var expect = require('chai').expect;
-var assert = require('chai').assert;
-var sinon = require('sinon');
+const {SignatureSigner} = require('../signer');
 
 const {
   CertificateRegistrationRequest,
@@ -22,6 +26,7 @@ const clientProperties = {
   'scalar.ledger.client.private_key_pem': 'key',
   'scalar.ledger.client.cert_pem': 'cert',
   'scalar.ledger.client.cert_holder_id': 'hold',
+  'scalar.ledger.client.cert_version':3,
 };
 
 describe('The constructor', () => {
@@ -65,6 +70,25 @@ describe('The constructor', () => {
   });
 });
 
+describe('RegisterCertificate', () => {
+  describe('should register the user without a cert version', () => {
+    it('when the version is not set in the properties', async () => {
+      const request = new CertificateRegistrationRequest();
+      request.setCertHolderId(
+          clientProperties['scalar.ledger.client.cert_holder_id']);
+      request.setCertVersion(clientProperties['scalar.ledger.client.cert_version']);
+      request.setCertPem(
+          clientProperties['scalar.ledger.client.cert_pem']);
+      let service = new ClientService(clientProperties);
+
+      const clientMock = sinon.mock(service.client);
+      await clientMock.expects('registerCert').once().withExactArgs(request, {});
+      service.registerCertificate();
+      clientMock.verify();
+    });
+  });
+});
+
 describe('RegisterContract', () => {
   describe('should throw an error', () => {
     it('when contractBytes is not a Uint8Array', async () => {
@@ -76,19 +100,30 @@ describe('RegisterContract', () => {
       }
     });
   });
-  describe('should register the user without a cert version', () => {
-    it('when the version is not set in the properties', async () => {
-      const request = new CertificateRegistrationRequest();
+  describe('should work properly', () => {
+    it('when called with all the params', async () => {
+      let service = new ClientService(clientProperties);
+      const id = 'contract1';
+      const name = 'foo';
+      const contractBytes = new TextEncoder('code').encode('¢');
+
+      const requestSignature = 'fakeRequestSignature';
+      const request = new ContractRegistrationRequest();
+      request.setContractId(id);
+      request.setContractBinaryName(name);
+      request.setContractByteCode(contractBytes);
+      request.setContractProperties(JSON.stringify({}));
       request.setCertHolderId(
           clientProperties['scalar.ledger.client.cert_holder_id']);
-      request.setCertVersion();
-      request.setCertPem(
-          clientProperties['scalar.ledger.client.cert_pem']);
-      let service = new ClientService(clientProperties);
-
+      request.setCertVersion(clientProperties['scalar.ledger.client.cert_version']);
+      request.setSignature(requestSignature);
       const clientMock = sinon.mock(service.client);
-      await clientMock.expects('registerCert').once().withArgs(request, {});
-      service.registerCertificate();
+      const signStub = sinon.stub(service.signer, 'sign');
+
+      signStub.returns(requestSignature);
+
+      clientMock.expects('registerContract').once().withExactArgs(request, {});
+      service.registerContract(id, name, contractBytes, {});
       clientMock.verify();
     });
   });
