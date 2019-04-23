@@ -16,6 +16,13 @@ npm install @scalar-labs/scalardl-web-client-sdk
 yarn add @scalar-labs/scalardl-web-client-sdk
 ```
 
+## Unit tests
+Unit test are located in the [test](./test) folder.
+To run them, execute 
+```
+yarn test
+```
+
 ## HOWTO
 
 ### Create ClientService instance
