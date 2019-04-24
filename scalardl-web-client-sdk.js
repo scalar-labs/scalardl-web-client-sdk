@@ -118,8 +118,7 @@ class ClientService {
     }
 
     const propertiesJson = JSON.stringify(properties);
-    const request = new ContractRegistrationRequestBuilder(
-        this.signer)
+    const request = new ContractRegistrationRequestBuilder(this.signer)
         .withContractId(id)
         .withContractBinaryName(name)
         .withContractByteCode(contractBytes)
@@ -139,8 +138,7 @@ class ClientService {
    * @return {Promise<ClientServiceResponse>}
    */
   async listContracts(contractId) {
-    const request = new ContractsListingRequestBuilder(
-        this.signer)
+    const request = new ContractsListingRequestBuilder(this.signer)
         .withCertHolderId(this.certHolderId)
         .withCertVersion(this.certVersion)
         .withContractId(contractId)
@@ -173,7 +171,8 @@ class ClientService {
    * @return {Promise<ContractExecutionResponse|void|*>}
    */
   async executeContract(contractId, argument) {
-    argument['nonce'] = new Date().getTime().toString();
+    argument['nonce'] = new Date().getTime()
+        .toString();
     const argumentJson = JSON.stringify(argument);
 
     const request = new ContractExecutionRequestBuilder(
