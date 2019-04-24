@@ -1,18 +1,17 @@
-//Test libraries dependencies
-var assert = require('chai').assert;
-var sinon = require('sinon');
+// Test libraries dependencies
+const assert = require('chai').assert;
+const sinon = require('sinon');
 
-let {
+const {
   ClientService,
 } = require('../scalardl-web-client-sdk');
-let {
+const {
   IllegalArgumentError,
 } = require('../illegal_argument_error');
 
 const {
   CertificateRegistrationRequest,
   ContractRegistrationRequest,
-  ContractExecutionRequest,
   LedgerValidationRequest,
   ContractsListingRequest,
 } = require('../scalar_pb.js');
@@ -28,7 +27,7 @@ const clientProperties = {
 
 describe('The constructor', () => {
   describe('should throw an error', () => {
-    //arrange
+    // arrange
     it('when the private key is missing', () => {
       const clientProperties = {
         'scalar.ledger.client.server_host': 'localhost',
@@ -37,14 +36,14 @@ describe('The constructor', () => {
         'scalar.ledger.client.cert_pem': 'cert',
         'scalar.ledger.client.cert_holder_id': 'hold',
       };
-      //act
-      //assert
+      // act
+      // assert
       assert.throws(() => {
         new ClientService(clientProperties);
       }, IllegalArgumentError, 'private_key_pem');
     });
     it('when the certificate is missing', () => {
-      //arrange
+      // arrange
       const clientProperties = {
         'scalar.ledger.client.server_host': 'localhost',
         'scalar.ledger.client.server_port': '80',
@@ -52,14 +51,14 @@ describe('The constructor', () => {
         // 'scalar.ledger.client.cert_pem': 'cert',
         'scalar.ledger.client.cert_holder_id': 'hold',
       };
-      //act
-      //assert
+      // act
+      // assert
       assert.throws(() => {
         new ClientService(clientProperties);
       }, IllegalArgumentError, 'cert_pem');
     });
     it('when holder id is missing', () => {
-      //arrange
+      // arrange
       const clientProperties = {
         'scalar.ledger.client.server_host': 'localhost',
         'scalar.ledger.client.server_port': '80',
@@ -67,10 +66,10 @@ describe('The constructor', () => {
         'scalar.ledger.client.cert_pem': 'cert',
         // 'scalar.ledger.client.cert_holder_id': 'hold',
       };
-      //act
-      //assert
+      // act
+      // assert
       assert.throws(() => {
-        let service = new ClientService(clientProperties);
+        new ClientService(clientProperties);
       }, IllegalArgumentError, 'cert_holder_id');
     });
   });
@@ -79,7 +78,7 @@ describe('The constructor', () => {
 describe('RegisterCertificate', () => {
   describe('should work properly', () => {
     it('when called with all the parameters', async () => {
-      //arrange
+      // arrange
       const request = new CertificateRegistrationRequest();
       request.setCertHolderId(
           clientProperties['scalar.ledger.client.cert_holder_id']);
@@ -87,15 +86,15 @@ describe('RegisterCertificate', () => {
           clientProperties['scalar.ledger.client.cert_version']);
       request.setCertPem(
           clientProperties['scalar.ledger.client.cert_pem']);
-      let service = new ClientService(clientProperties);
+      const service = new ClientService(clientProperties);
 
       const clientMock = sinon.mock(service.client);
       await clientMock.expects('registerCert')
           .once()
           .withExactArgs(request, {});
-      //act
+      // act
       service.registerCertificate();
-      //assert
+      // assert
       clientMock.verify();
     });
   });
@@ -104,20 +103,20 @@ describe('RegisterCertificate', () => {
 describe('RegisterContract', () => {
   describe('should throw an error', () => {
     it('when contractBytes is not a Uint8Array', async () => {
-      //arrange
-      let service = new ClientService(clientProperties);
+      // arrange
+      const service = new ClientService(clientProperties);
       try {
-        //act
+        // act
         await service.registerContract('contract1', 'foo', 'wrongType');
       } catch (e) {
-        //assert
+        // assert
         assert.instanceOf(e, IllegalArgumentError);
       }
     });
   });
   describe('should work properly', () => {
     it('when called with all the parameters', async () => {
-      let service = new ClientService(clientProperties);
+      const service = new ClientService(clientProperties);
       const id = 'contract1';
       const name = 'foo';
       const contractBytes = new TextEncoder('code').encode('¢');
@@ -148,8 +147,8 @@ describe('RegisterContract', () => {
 describe('ListContract', () => {
   describe('should work properly', () => {
     it('when called with a contract id', async () => {
-      //arrange
-      let service = new ClientService(clientProperties);
+      // arrange
+      const service = new ClientService(clientProperties);
       const contractId = 'contract1';
       const requestSignature = 'fakeRequestSignature';
 
@@ -162,14 +161,14 @@ describe('ListContract', () => {
       request.setSignature(requestSignature);
 
       const clientMock = sinon.mock(service.client);
-      //stub the 'sign' method of the signer to return a dummy signature when
-      //executed
+      // stub the 'sign' method of the signer to return a dummy signature when
+      // executed
       const signStub = sinon.stub(service.signer, 'sign');
       signStub.returns(requestSignature);
       clientMock.expects('listContracts').once().withExactArgs(request, {});
-      //act
+      // act
       service.listContracts(contractId);
-      //assert
+      // assert
       clientMock.verify();
     });
   });
@@ -178,8 +177,8 @@ describe('ListContract', () => {
 describe('ValidateLedger', () => {
   describe('should work properly', () => {
     it('when called with an asset id', async () => {
-      //arrange
-      let service = new ClientService(clientProperties);
+      // arrange
+      const service = new ClientService(clientProperties);
       const assetId = 'asset1';
       const requestSignature = 'fakeRequestSignature';
 
@@ -196,9 +195,9 @@ describe('ValidateLedger', () => {
 
       signStub.returns(requestSignature);
       clientMock.expects('validateLedger').once().withExactArgs(request, {});
-      //act
+      // act
       service.validateLedger(assetId);
-      //assert
+      // assert
       clientMock.verify();
     });
   });
@@ -207,17 +206,17 @@ describe('ValidateLedger', () => {
 describe('ExecuteContract', () => {
   describe('should work properly', () => {
     it('when called with all the parameters', async () => {
-      //arrange
-      let service = new ClientService(clientProperties);
+      // arrange
+      const service = new ClientService(clientProperties);
       const contractId = 'contract1';
       const argument = {arg1: true, arg2: 'foo'};
       const requestSignature = 'fakeRequestSignature';
       const signStub = sinon.stub(service.signer, 'sign');
       signStub.returns(requestSignature);
       sinon.spy(service.client, 'executeContract');
-      //act
+      // act
       service.executeContract(contractId, argument);
-      //assert
+      // assert
       assert.isTrue(service.client.executeContract.calledOnce);
       const requestParam = service.client.executeContract.getCall(0).args[0];
 
@@ -230,7 +229,7 @@ describe('ExecuteContract', () => {
       const requestArg = JSON.parse(requestParam.getContractArgument());
       assert.strictEqual(requestArg.arg1, argument.arg1);
       assert.strictEqual(requestArg.arg2, argument.arg2);
-      //cannot verify the nonce as it a timestamp generated at runtime
+      // cannot verify the nonce as it a timestamp generated at runtime
       assert.exists(requestArg.nonce);
 
       assert.deepEqual(service.client.executeContract.getCall(0).args[1], {});
