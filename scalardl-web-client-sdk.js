@@ -91,8 +91,8 @@ class ClientService {
    * @return {Promise<ClientServiceResponse>}
    */
   async registerCertificate() {
-    const request = new CertificateRegistrationRequestBuilder().withCertHolderId(
-        this.certHolderId)
+    const request = new CertificateRegistrationRequestBuilder()
+        .withCertHolderId(this.certHolderId)
         .withCertVersion(this.certVersion)
         .withCertPem(this.certPem)
         .build();
@@ -119,7 +119,8 @@ class ClientService {
 
     const propertiesJson = JSON.stringify(properties);
     const request = new ContractRegistrationRequestBuilder(
-        this.signer).withContractId(id)
+        this.signer)
+        .withContractId(id)
         .withContractBinaryName(name)
         .withContractByteCode(contractBytes)
         .withContractProperties(propertiesJson)
@@ -139,7 +140,8 @@ class ClientService {
    */
   async listContracts(contractId) {
     const request = new ContractsListingRequestBuilder(
-        this.signer).withCertHolderId(this.certHolderId)
+        this.signer)
+        .withCertHolderId(this.certHolderId)
         .withCertVersion(this.certVersion)
         .withContractId(contractId)
         .build();
@@ -154,8 +156,8 @@ class ClientService {
    * @return {Promise<ClientServiceResponse>}
    */
   async validateLedger(assetId) {
-    const request = new LedgerValidationRequestBuilder(this.signer).withAssetId(
-        assetId)
+    const request = new LedgerValidationRequestBuilder(this.signer)
+        .withAssetId(assetId)
         .withCertHolderId(this.certHolderId)
         .withCertVersion(this.certVersion)
         .build();
@@ -175,7 +177,8 @@ class ClientService {
     const argumentJson = JSON.stringify(argument);
 
     const request = new ContractExecutionRequestBuilder(
-        this.signer).withContractId(contractId)
+        this.signer)
+        .withContractId(contractId)
         .withContractArgument(argumentJson)
         .withCertHolderId(this.certHolderId)
         .withCertVersion(this.certVersion)
