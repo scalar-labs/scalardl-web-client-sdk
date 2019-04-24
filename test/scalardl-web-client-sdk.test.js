@@ -87,7 +87,6 @@ describe('RegisterCertificate', () => {
       request.setCertPem(
           clientProperties['scalar.ledger.client.cert_pem']);
       const service = new ClientService(clientProperties);
-
       const clientMock = sinon.mock(service.client);
       await clientMock.expects('registerCert')
           .once()
@@ -116,11 +115,11 @@ describe('RegisterContract', () => {
   });
   describe('should call the grpc client correctly', () => {
     it('when called with all the parameters', async () => {
+      // arrange
       const service = new ClientService(clientProperties);
       const id = 'contract1';
       const name = 'foo';
       const contractBytes = new TextEncoder('code').encode('¢');
-
       const requestSignature = 'fakeRequestSignature';
       const request = new ContractRegistrationRequest();
       request.setContractId(id);
@@ -134,11 +133,13 @@ describe('RegisterContract', () => {
       request.setSignature(requestSignature);
       const clientMock = sinon.mock(service.client);
       const signStub = sinon.stub(service.signer, 'sign');
-
       signStub.returns(requestSignature);
-
-      clientMock.expects('registerContract').once().withExactArgs(request, {});
+      clientMock.expects('registerContract')
+          .once()
+          .withExactArgs(request, {});
+      // act
       service.registerContract(id, name, contractBytes, {});
+      // assert
       clientMock.verify();
     });
   });
@@ -151,7 +152,6 @@ describe('ListContract', () => {
       const service = new ClientService(clientProperties);
       const contractId = 'contract1';
       const requestSignature = 'fakeRequestSignature';
-
       const request = new ContractsListingRequest();
       request.setCertHolderId(
           clientProperties['scalar.ledger.client.cert_holder_id']);
@@ -159,13 +159,14 @@ describe('ListContract', () => {
           clientProperties['scalar.ledger.client.cert_version']);
       request.setContractId(contractId);
       request.setSignature(requestSignature);
-
       const clientMock = sinon.mock(service.client);
       // stub the 'sign' method of the signer to return a dummy signature when
       // executed
       const signStub = sinon.stub(service.signer, 'sign');
       signStub.returns(requestSignature);
-      clientMock.expects('listContracts').once().withExactArgs(request, {});
+      clientMock.expects('listContracts')
+          .once()
+          .withExactArgs(request, {});
       // act
       service.listContracts(contractId);
       // assert
@@ -181,7 +182,6 @@ describe('ValidateLedger', () => {
       const service = new ClientService(clientProperties);
       const assetId = 'asset1';
       const requestSignature = 'fakeRequestSignature';
-
       const request = new LedgerValidationRequest();
       request.setCertHolderId(
           clientProperties['scalar.ledger.client.cert_holder_id']);
@@ -189,12 +189,13 @@ describe('ValidateLedger', () => {
           clientProperties['scalar.ledger.client.cert_version']);
       request.setAssetId(assetId);
       request.setSignature(requestSignature);
-
       const clientMock = sinon.mock(service.client);
       const signStub = sinon.stub(service.signer, 'sign');
 
       signStub.returns(requestSignature);
-      clientMock.expects('validateLedger').once().withExactArgs(request, {});
+      clientMock.expects('validateLedger')
+          .once()
+          .withExactArgs(request, {});
       // act
       service.validateLedger(assetId);
       // assert
@@ -219,7 +220,6 @@ describe('ExecuteContract', () => {
       // assert
       assert.isTrue(service.client.executeContract.calledOnce);
       const requestParam = service.client.executeContract.getCall(0).args[0];
-
       assert.strictEqual(requestParam.getContractId(), contractId);
       assert.strictEqual(requestParam.getCertHolderId(),
           clientProperties['scalar.ledger.client.cert_holder_id']);
@@ -231,7 +231,6 @@ describe('ExecuteContract', () => {
       assert.strictEqual(requestArg.arg2, argument.arg2);
       // cannot verify the nonce as it a timestamp generated at runtime
       assert.exists(requestArg.nonce);
-
       assert.deepEqual(service.client.executeContract.getCall(0).args[1], {});
     });
   });
