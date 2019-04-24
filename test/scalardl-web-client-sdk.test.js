@@ -76,7 +76,7 @@ describe('The constructor', () => {
 });
 
 describe('RegisterCertificate', () => {
-  describe('should work properly', () => {
+  describe('should call the grpc client correctly', () => {
     it('when called with all the parameters', async () => {
       // arrange
       const request = new CertificateRegistrationRequest();
@@ -114,7 +114,7 @@ describe('RegisterContract', () => {
       }
     });
   });
-  describe('should work properly', () => {
+  describe('should call the grpc client correctly', () => {
     it('when called with all the parameters', async () => {
       const service = new ClientService(clientProperties);
       const id = 'contract1';
@@ -145,8 +145,8 @@ describe('RegisterContract', () => {
 });
 
 describe('ListContract', () => {
-  describe('should work properly', () => {
-    it('when called with a contract id', async () => {
+  describe('should call the grpc client correctly', () => {
+    it('when called with all the parameters', async () => {
       // arrange
       const service = new ClientService(clientProperties);
       const contractId = 'contract1';
@@ -175,8 +175,8 @@ describe('ListContract', () => {
 });
 
 describe('ValidateLedger', () => {
-  describe('should work properly', () => {
-    it('when called with an asset id', async () => {
+  describe('should call the grpc client correctly', () => {
+    it('when called with all the parameters', async () => {
       // arrange
       const service = new ClientService(clientProperties);
       const assetId = 'asset1';
@@ -204,7 +204,7 @@ describe('ValidateLedger', () => {
 });
 
 describe('ExecuteContract', () => {
-  describe('should work properly', () => {
+  describe('should call the grpc client correctly', () => {
     it('when called with all the parameters', async () => {
       // arrange
       const service = new ClientService(clientProperties);
