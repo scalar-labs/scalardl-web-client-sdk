@@ -21,7 +21,7 @@ yarn add @scalar-labs/scalardl-web-client-sdk
 ### Create ClientService instance
 
 `ClientService` class is the main class of this package.
-It provides following functions to request Scalar DL netowrk.
+It provides following functions to request Scalar DL network.
 
 |Name|use|
 |----|---|
@@ -29,7 +29,7 @@ It provides following functions to request Scalar DL netowrk.
 |registerContract|To register the contracts to the registered client of the Scalar DL network|
 |listContracts|To list all registered contracts of the client|
 |executeContract|To execute a registered contract of the client|
-|validateLedger|To validate an asset of the Scalar DL netowrk to determine if it is tampered|
+|validateLedger|To validate an asset of the Scalar DL network to determine if it is tampered|
 
 Use the code snippet below to create a ClientService instance.
 ```
@@ -64,7 +64,7 @@ It is an example in which a user `foo@example.com` tries to connect to the serve
 
 ### Register the certificate
 When you have a clientService instance.
-Use the registerCertificate function to register your certificate to the Scalar DL netowrk.
+Use the registerCertificate function to register your certificate on the Scalar DL network.
 ```
 const response = await clientService.registerCertificate();
 const status = response.getStatus();
