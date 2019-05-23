@@ -22,7 +22,7 @@ class ClientService extends ClientServiceBase {
         'http'}://${properties['scalar.ledger.client.server_host']}:${properties['scalar.ledger.client.server_port']}`;
     /** @const */
     const ledgerClient = new LedgerClient(url);
-    super(ledgerClient, protobuf, properties)
+    super(ledgerClient, protobuf, properties);
   }
 }
 
