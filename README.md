@@ -1,19 +1,14 @@
 ## Scalar DL Web Client SDK
 
-This is a client-side library for web applications to interact with [Scalar DL](https://github.com/scalar-labs/scalardl) network.
+This is a library for web applications by which the applications can interact with a [Scalar DL](https://github.com/scalar-labs/scalardl) network.
 
 ## Install
 
-We can use package managers to install this library.
+We can use package manager to install this library. For example, to install with NPM:
 
 **NPM**
 ```
 npm install @scalar-labs/scalardl-web-client-sdk
-```
-
-**Yarn**
-```
-yarn add @scalar-labs/scalardl-web-client-sdk
 ```
 
 ## HOWTO
@@ -48,8 +43,8 @@ Or, if you use the static release, try following
 </script>
 ```
 
-The argument `clientProperties` object is mandatory for the constructor.
-It is an example in which a user `foo@example.com` tries to connect to the server `scalardl.example.com:50051` of the Scalar DL network.
+The `clientProperties` argument is mandatory for the constructor.
+This is a properties example that a user `foo@example.com` would use to try to connect to the server `scalardl.example.com:50051` of the Scalar DL network.
 ```
 {
     'scalar.ledger.client.server_host': 'scalardl.example.com',
@@ -58,13 +53,14 @@ It is an example in which a user `foo@example.com` tries to connect to the serve
     'scalar.ledger.client.private_key_pem': "-----BEGIN EC PRIVATE KEY-----\nMHc...",
     'scalar.ledger.client.cert_pem': "-----BEGIN CERTIFICATE-----\nMIICjTCCAj...n",
     'scalar.ledger.client.cert_version': 1,
-    'scalar.ledger.client.tls.enabled': false
+    'scalar.ledger.client.tls.enabled': false,
 }
 ```
 
+In what follows assume that we have a clientService instance.
+
 ### Register the certificate
-When you have a clientService instance.
-Use the registerCertificate function to register your certificate on the Scalar DL network.
+Use the `registerCertificate` function to register a certificate on the Scalar DL network.
 ```
 const response = await clientService.registerCertificate();
 const status = response.getStatus();
@@ -73,7 +69,7 @@ const message = response.getMessage();
 Please refer to the [Status code](#status-code) section below for the details of status.
 
 ### Register contracts
-You can use registerContract function to register contracts.
+Use the `registerContract` function to register a contract.
 ```
 const response = await clientService.registerContract('contractId', 'com.example.contract.contractName', contractUint8Array, propertiesObject);
 const status = response.getStatus();
@@ -97,7 +93,7 @@ const result = JSON.parse(response.getResult());
 ```
 
 ### Validate an asset
-Use validateLedger function to validate an asset in the Scalar DL network.
+Use the `validateLedger` function to validate an asset in the Scalar DL network.
 ```
 const response = await clientService.validateLedger('assetId');
 const status = response.getStatus();
@@ -105,7 +101,7 @@ const message = response.getMessage();
 ```
 
 ### Status code
-Enumeration `StatusCode` enumerate all possible status in a Scalar DL response.
+Enumeration `StatusCode` enumerates all the possible status of a Scalar DL response.
 ```
 StatusCode = {
   OK: 200,
