@@ -32,9 +32,11 @@ class ClientService {
     /** @const */
     this.properties = properties;
     /** @const */
-    this.serverHost = properties['scalar.ledger.client.server_host'];
+    this.serverHost = this.getRequiredProperty_(properties,
+        'scalar.ledger.client.server_host');
     /** @const */
-    this.serverPort = properties['scalar.ledger.client.server_port'];
+    this.serverPort = this.getRequiredProperty_(properties,
+        'scalar.ledger.client.server_port');
     /** @const */
     this.tlsEnabled = properties['scalar.ledger.client.tls.enabled'];
     if (this.tlsEnabled !== undefined && typeof this.tlsEnabled !== 'boolean') {
@@ -52,7 +54,7 @@ class ClientService {
         'scalar.ledger.client.cert_holder_id');
     /** @const */
     this.credential =
-      properties['scalar.ledger.client.authorization.credential'];
+        properties['scalar.ledger.client.authorization.credential'];
     /** @const */
     this.certVersion = properties['scalar.ledger.client.cert_version'];
 
@@ -111,7 +113,7 @@ class ClientService {
   async registerContract(id, name, contractBytes, properties) {
     if (!(contractBytes instanceof Uint8Array)) {
       throw new IllegalArgumentError(
-          'parameter contractBytes is not a \'Uint8Array\''
+          'parameter contractBytes is not a \'Uint8Array\'',
       );
     }
 
@@ -169,10 +171,12 @@ class ClientService {
    * @return {Promise<ContractExecutionResponse|void|*>}
    */
   async executeContract(contractId, argument) {
-    argument['nonce'] = new Date().getTime().toString();
+    argument['nonce'] = new Date().getTime()
+        .toString();
     const argumentJson = JSON.stringify(argument);
 
-    const request = new ContractExecutionRequestBuilder(this.signer)
+    const request = new ContractExecutionRequestBuilder(
+        this.signer)
         .withContractId(contractId)
         .withContractArgument(argumentJson)
         .withCertHolderId(this.certHolderId)
