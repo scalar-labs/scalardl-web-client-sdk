@@ -13,6 +13,10 @@
   },
   "author": "Scalar, Inc.",
   "license": "AGPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:scalar-labs/scalardl-web-client-sdk.git"
+  },
   "devDependencies": {
     "eslint": "^5.16.0",
     "eslint-config-google": "^0.12.0"
