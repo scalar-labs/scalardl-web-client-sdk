@@ -8,9 +8,6 @@
   "version": "0.0.2",
   "description": "The web client SDK for Scalar DL",
   "main": "scalardl-web-client-sdk.js",
-  "scripts": {
-    "test": "mocha"
-  },
   "author": "Scalar, Inc.",
   "license": "AGPL-3.0-or-later",
   "repository": {
