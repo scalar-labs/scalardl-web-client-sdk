@@ -1,22 +1,21 @@
 {
   "dependencies": {
+    "@scalar-labs/scalardl-javascript-sdk-base": "^1.0.0",
     "google-protobuf": "^3.6.1",
-    "grpc-web": "^1.0.4",
-    "jsrsasign": "^8.0.12"
+    "grpc-web": "^1.0.4"
   },
   "name": "@scalar-labs/scalardl-web-client-sdk",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "description": "The web client SDK for Scalar DL",
   "main": "scalardl-web-client-sdk.js",
-  "scripts": {
-    "test": "mocha"
-  },
   "author": "Scalar, Inc.",
   "license": "AGPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:scalar-labs/scalardl-web-client-sdk.git"
+  },
   "devDependencies": {
-    "chai": "^4.2.0",
     "eslint": "^5.16.0",
-    "eslint-config-google": "^0.12.0",
-    "mocha": "^6.1.1"
+    "eslint-config-google": "^0.12.0"
   }
 }
