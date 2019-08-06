@@ -1,2 +1,3 @@
 example/
 Makefile
+.eslintrc.json
