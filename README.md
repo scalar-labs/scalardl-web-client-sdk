@@ -11,6 +11,8 @@ We can use package manager to install this library. For example, to install with
 npm install @scalar-labs/scalardl-web-client-sdk
 ```
 
+You can also find a bundle `scalardl-web-client-sdk.bundle.js` which can be imported statically in @scalar-labs/scalardl-web-client-sdk/dist.
+
 ## HOWTO
 
 ### Create ClientService instance

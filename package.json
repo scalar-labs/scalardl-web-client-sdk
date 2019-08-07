@@ -5,7 +5,7 @@
     "grpc-web": "^1.0.4"
   },
   "name": "@scalar-labs/scalardl-web-client-sdk",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "The web client SDK for Scalar DL",
   "main": "scalardl-web-client-sdk.js",
   "author": "Scalar, Inc.",
@@ -16,6 +16,8 @@
   },
   "devDependencies": {
     "eslint": "^5.16.0",
-    "eslint-config-google": "^0.12.0"
+    "eslint-config-google": "^0.12.0",
+    "webpack": "^4.39.1",
+    "webpack-cli": "^3.3.6"
   }
 }
