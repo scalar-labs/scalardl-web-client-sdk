@@ -18,10 +18,10 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
-"@scalar-labs/scalardl-javascript-sdk-base@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@scalar-labs/scalardl-javascript-sdk-base/-/scalardl-javascript-sdk-base-1.1.0.tgz#84e8d5b32af68ecb23b37e78b448897250fd3467"
-  integrity sha512-tOSoBJkJeM+nQMBsmAxbgjUdgYEpthfXCQE6d44tlIWgDh6sGNDaPBJ94kv4y8u84+6aXEe/BZf2FBW4Lp0IOA==
+"@scalar-labs/scalardl-javascript-sdk-base@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@scalar-labs/scalardl-javascript-sdk-base/-/scalardl-javascript-sdk-base-1.3.0.tgz#b0f0db16d4db403806923f08f7c8e00d8fe1c3af"
+  integrity sha512-wnNvUD90ViDpkeMsR+EQLnduaV36zG3MnvvpPSEbK3eVo1IqqXea2n5Z8QYm2GTg44gi5iLR27dQLmLDiW+J5g==
   dependencies:
     jsrsasign "^8.0.12"
 
