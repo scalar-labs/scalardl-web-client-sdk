@@ -3,11 +3,15 @@ module.exports = function(config) {
     frameworks: ['mocha', 'chai'],
     files: [
       'dist/scalardl-web-client-sdk.bundle.js',
+      'scalardl-web-client-sdk.js',
+      'scalar_pb.js',
+      'scalar_grpc_web_pb.js',
       {pattern: 'test/**/*.js', watched: false},
     ],
     reporters: ['progress'],
     preprocessors: {
       'test/**/*.js': ['webpack'],
+      '*.js': ['webpack'],
     },
     webpack: {
       node: {

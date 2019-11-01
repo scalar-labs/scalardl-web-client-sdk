@@ -4,7 +4,7 @@ const {
 } = require('@scalar-labs/scalardl-javascript-sdk-base');
 
 const protobuf = require('./scalar_pb');
-const {LedgerClient} = require('./scalar_grpc_web_pb');
+const {LedgerClient, LedgerPrivilegedClient} = require('./scalar_grpc_web_pb');
 
 /**
  * This class inherits ClientServiceBase.
@@ -23,7 +23,13 @@ class ClientService extends ClientServiceBase {
         'https' :
         'http'}://${properties['scalar.ledger.client.server_host']}:${properties['scalar.ledger.client.server_port']}`;
     const ledgerClient = new LedgerClient(url);
-    super(ledgerClient, protobuf, properties);
+    const ledgerPrivileged = new LedgerPrivilegedClient(url);
+    const services = {
+      'ledgerClient': ledgerClient,
+      'ledgerPrivileged': ledgerPrivileged,
+    };
+
+    super(services, protobuf, properties);
   }
 }
 
