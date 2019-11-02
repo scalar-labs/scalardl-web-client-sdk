@@ -1,18 +1,23 @@
 module.exports = function(config) {
   config.set({
-    frameworks: ['mocha', 'chai'],
     files: [
-      'dist/scalardl-web-client-sdk.bundle.js',
-      {pattern: 'test/**/*.js', watched: false},
+      // 'dist/scalardl-web-client-sdk.bundle.js',
+      '*.js',
+      // {pattern: 'test/**/*.js', watched: false},
+
+      {pattern: 'test/integration_test.js', watched: false},
+      // 'test/foo.js',
     ],
-    reporters: ['progress'],
+    // reporters: ['progress'],
     preprocessors: {
-      'test/**/*.js': ['webpack'],
+      'test/integration_test.js': ['webpack'],
+      // 'test/**/*.js': ['webpack'],
+      '*.js': ['webpack'],
     },
     webpack: {
-      node: {
-        fs: 'empty',
-      },
+      // node: {
+      //   fs: 'empty',
+      // },
     },
     webpackMiddleware: {
       stats: 'errors-only',
@@ -24,14 +29,14 @@ module.exports = function(config) {
     colors: true,
     logLevel: config.LOG_INFO,
     browsers: ['Chrome'],
-    autoWatch: false,
+    // autoWatch: false,
     // singleRun: false, // Karma captures browsers, runs the tests and exits
-    concurrency: Infinity,
-    // plugins: [
-    //   require('karma-webpack'),
-    //   ('karma-chai'),
-    //   ('karma-mocha'),
-    //   ('karma-chrome-launcher'),
-    // ],
+    // concurrency: Infinity,
+    plugins: [
+      require('karma-chrome-launcher'),
+      'karma-mocha',
+      'karma-chai',
+      'karma-webpack',
+    ],
   });
 };
