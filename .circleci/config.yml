@@ -1,0 +1,82 @@
+# Java Gradle CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-java/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      # set a fixed version for the image circleci/openjdk:8-jdk-node-browsers
+      - image: circleci/openjdk:8-jdk-node-browsers
+        environment:
+          MAX_HEAP_SIZE: 2048m
+          HEAP_NEWSIZE: 512m
+
+      - image: cassandra:3.11
+        environment:
+          MAX_HEAP_SIZE: 1300m
+          HEAP_NEWSIZE: 512m
+
+      - image: scalarlabs/scalar-ledger:1.3.1
+        auth:
+          username: moon004
+          password: $DOCKERHUB_PASSWORD
+        environment:
+          SCALAR_CASSANDRA_HOST: 127.0.0.1
+          SCALAR_CASSANDRA_PORT: 9042
+
+      - image: envoyproxy/envoy:v1.10.0
+
+    working_directory: ~/scalardl-web-client-sdk
+
+    steps:
+      - checkout
+      # Download and cache dependencies.
+      #      - restore_cache:
+      #          keys:
+      #            - dependency-cache-{{ checksum "package-lock.json" }}
+
+      - run:
+          name: Install cqlsh
+          # We need to edit DEFAULT_CQLVER defined in the cqlsh script
+          # to connect to the server without --cqlversion command line option
+          command: |
+            curl -O https://bootstrap.pypa.io/get-pip.py
+            sudo python get-pip.py
+            sudo pip install cqlsh
+            sudo sed -i "s/^DEFAULT_CQLVER = .*/DEFAULT_CQLVER = '3.4.4'/" /usr/local/bin/cqlsh
+
+      - run:
+          name: Wait for Cassandra
+          # dockerize command is included in circleci/openjdk:8-jdk image
+          command: dockerize -wait tcp://127.0.0.1:9042 -timeout 1m
+
+      - run:
+          name: Run cqlsh
+          command: cqlsh -f ./.circleci/create_schema.cql 127.0.0.1 9042
+
+      - run:
+          name: Wait for Scalardl
+          command: dockerize -wait tcp://127.0.0.1:50051 -timeout 1m
+
+      - run:
+          name: Install Dependencies
+          command: npm install
+
+      - save_cache:
+          key: v1-dependencies-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+
+      # run tests!
+      - run:
+          command: npm test
+          environment:
+            MOCHA_FILE: "~/scalardl-web-client-sdk/mochawesome-report/mochawesome.html"
+          when: always
+
+      - store_test_results:
+          path: ~/scalardl-web-client-sdk/mochawesome-report
+
+      - store_artifacts:
+          path: ~/scalardl-web-client-sdk/mochawesome-report
