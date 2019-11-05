@@ -18,6 +18,7 @@
 			</div>
             <input id="address" type="text" placeholder="Scalar DL network address" value="127.0.0.1" />
             <input id="port" type="text" placeholder="port" value="50051" />
+            <input id="port2" type="text" placeholder="port (priviledged)" value="50052" />
         </div>
         <div>
             <input id="holderId" type="text" placeholder="Holder ID" value="foo" />
@@ -98,7 +99,7 @@
     let clientProperties = {};
     let clientService;
     let contractBinary;
-	
+
     document.querySelector("#key").addEventListener('change', event => {
         const f = event.target.files[0];
         if (f) {
@@ -135,6 +136,7 @@
     document.querySelector("#registerCertificate").addEventListener('click', event => {
         const address = document.querySelector("#address").value;
         const port = document.querySelector("#port").value;
+        const port2 = document.querySelector("#port2").value;
         const holderId = document.querySelector("#holderId").value; // in case of name conflict
 		const tls = document.getElementById("TLSToggle").checked // true or false
         if (!address || !port || !key || !certificate) {
@@ -145,11 +147,12 @@
         clientProperties = {
             'scalar.ledger.client.server_host': address,
             'scalar.ledger.client.server_port': port,
+            'scalar.ledger.client.server_privileged_port': port2,
             'scalar.ledger.client.cert_holder_id': holderId,
             'scalar.ledger.client.private_key_pem': key,
             'scalar.ledger.client.cert_pem': certificate,
             'scalar.ledger.client.cert_version': 1,
-            'scalar.ledger.client.tls.enabled': tls 
+            'scalar.ledger.client.tls.enabled': tls
         };
         clientService = new Scalar.ClientService(clientProperties);
         clientService.registerCertificate().then(response => {
