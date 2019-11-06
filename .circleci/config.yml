@@ -25,16 +25,21 @@ jobs:
           SCALAR_CASSANDRA_HOST: 127.0.0.1
           SCALAR_CASSANDRA_PORT: 9042
 
-      - image: envoyproxy/envoy:v1.10.0
+    #      - image: moon004/scalardl:1.0
+    #        auth:
+    #          username: moon004
+    #          password: $DOCKERHUB_PASSWORD
 
     working_directory: ~/scalardl-web-client-sdk
 
     steps:
       - checkout
-      # Download and cache dependencies.
+      # Restore dependencies
       - restore_cache:
           keys:
             - dependency-cache-{{ checksum "package-lock.json" }}
+
+      - setup_remote_docker
 
       - run:
           name: Install cqlsh
@@ -52,12 +57,27 @@ jobs:
           command: dockerize -wait tcp://127.0.0.1:9042 -timeout 1m
 
       - run:
+          name: Create scalar-dlt network
+          command: docker network create -d bridge scalar-dlt
+
+      - run:
+          name: Pull custom image
+          command: |
+            docker login -u moon004 -p $DOCKERHUB_PASSWORD
+            docker pull moon004/scalardl:1.0
+            docker run --name envoy --network=scalar-dlt -d -p 80:80 -p 443:443 -p 8080:8080 -p 8443:8443 moon004/scalardl:1.0
+
+      - run:
           name: Run cqlsh
           command: cqlsh -f ./.circleci/create_schema.cql 127.0.0.1 9042
 
       - run:
           name: Wait for Scalardl
           command: dockerize -wait tcp://127.0.0.1:50051 -timeout 1m
+
+      - run:
+          name: Debug docker ps
+          command: docker ps
 
       - run:
           name: Install Dependencies
@@ -68,7 +88,7 @@ jobs:
           paths:
             - ./node_modules
 
-      # run tests!
+      # run tests
       - run:
           command: npm test
           environment:
