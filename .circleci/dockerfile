@@ -3,7 +3,5 @@ FROM envoyproxy/envoy:v1.10.0
 EXPOSE 80 443 8080 8443
 
 COPY ./envoy.yaml /etc/envoy/envoy.yaml
-COPY ./crt /crt
-COPY ./key /key
 
 CMD /usr/local/bin/envoy -c /etc/envoy/envoy.yaml -l trace
