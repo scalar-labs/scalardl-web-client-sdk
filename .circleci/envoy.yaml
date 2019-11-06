@@ -158,10 +158,10 @@ static_resources:
     type: logical_dns
     http2_protocol_options: {}
     lb_policy: round_robin
-    hosts: [{ socket_address: { address: scalar-ledger, port_value: 50051 }}]
+    hosts: [{ socket_address: { address: 127.0.0.1, port_value: 50051 }}]
   - name: scalar-ledger-priviledged
     connect_timeout: 0.25s
     type: logical_dns
     http2_protocol_options: {}
     lb_policy: round_robin
-    hosts: [{ socket_address: { address: scalar-ledger, port_value: 50052 }}]
+    hosts: [{ socket_address: { address: 127.0.0.1, port_value: 50052 }}]
