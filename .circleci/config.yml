@@ -12,6 +12,19 @@ jobs:
           MAX_HEAP_SIZE: 2048m
           HEAP_NEWSIZE: 512m
 
+      - image: cassandra:3.11
+        environment:
+          MAX_HEAP_SIZE: 1300m
+          HEAP_NEWSIZE: 512m
+
+      - image: scalarlabs/scalar-ledger:1.3.1
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
+        environment:
+          SCALAR_CASSANDRA_HOST: 127.0.0.1
+          SCALAR_CASSANDRA_PORT: 9042
+
     working_directory: ~/scalardl-web-client-sdk
 
     steps:
@@ -24,52 +37,35 @@ jobs:
       - setup_remote_docker
 
       - run:
-          name: Install Docker Compose
+          name: Install cqlsh
+          # We need to edit DEFAULT_CQLVER defined in the cqlsh script
+          # to connect to the server without --cqlversion command line option
           command: |
-            curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
-            chmod +x ~/docker-compose
-            sudo mv ~/docker-compose /usr/local/bin/docker-compose
-
-      - run:
-          name: Docker login
-          command: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
-
-      - run:
-          name: Spin container via docker compose
-          command: docker-compose up -d
-          working_directory: .circleci/
-
-
-      - run:
-          name: Docker Cp
-          command: docker cp ./envoy.yaml envoy:/etc/envoy/envoy.yaml
-          working_directory: .circleci/
-
-      - run:
-          name: Restart Envoy
-          command: docker restart envoy
-
-      - run:
-          name: Debug docker ps
-          command: docker ps
+            curl -O https://bootstrap.pypa.io/get-pip.py
+            sudo python get-pip.py
+            sudo pip install cqlsh
+            sudo sed -i "s/^DEFAULT_CQLVER = .*/DEFAULT_CQLVER = '3.4.4'/" /usr/local/bin/cqlsh
 
       - run:
           name: Wait for Cassandra
           # dockerize command is included in circleci/openjdk:8-jdk image
-          command: dockerize -wait tcp://cassandra:9042 -timeout 30s
+          command: dockerize -wait tcp://127.0.0.1:9042 -timeout 1m
 
       - run:
-          name: Copy cqlsh
-          command: docker cp ./create_schema.cql cassandra:/create_schema.cql
-          working_directory: .circleci/
+          name: Run cqlsh
+          command: cqlsh -f ./.circleci/create_schema.cql 127.0.0.1 9042
 
       - run:
-          name: Execute cqlsh
-          command: docker exec cassandra cqlsh -f /create_schema.cql
+          name: Wait for Scalardl
+          command: dockerize -wait tcp://127.0.0.1:50051 -timeout 1m
 
-      #      - run:
-      #          name: Wait for Scalardl
-      #          command: dockerize -wait tcp://127.0.0.1:80 -timeout 1m
+      - run:
+          name: Run Envoy
+          command: /usr/local/bin/envoy -c ./.circleci/envoy.yaml -l trace
+
+      - run:
+          name: Debug docker ps
+          command: docker ps
 
       - run:
           name: Install Dependencies
