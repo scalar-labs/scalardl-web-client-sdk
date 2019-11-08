@@ -12,23 +12,23 @@ jobs:
           MAX_HEAP_SIZE: 2048m
           HEAP_NEWSIZE: 512m
 
-      working_directory: ~/scalardl-web-client-sdk
+      - image: cassandra:3.11
+        environment:
+          MAX_HEAP_SIZE: 1300m
+          HEAP_NEWSIZE: 512m
 
-        - image: cassandra:3.11
-          environment:
-            MAX_HEAP_SIZE: 1300m
-            HEAP_NEWSIZE: 512m
+      - image: scalarlabs/scalar-ledger:1.3.1
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
+        environment:
+          SCALAR_CASSANDRA_HOST: 127.0.0.1
+          SCALAR_CASSANDRA_PORT: 9042
 
-        - image: scalarlabs/scalar-ledger:1.3.1
-          auth:
-            username: $DOCKERHUB_USERNAME
-            password: $DOCKERHUB_PASSWORD
-          environment:
-            SCALAR_CASSANDRA_HOST: 127.0.0.1
-            SCALAR_CASSANDRA_PORT: 9042
+      - image: envoyproxy/envoy:v1.10.0
+        command: [ls, -a]
 
-        - image: envoyproxy/envoy:v1.10.0
-          command: [ls, -a]
+    working_directory: ~/scalardl-web-client-sdk
 
     steps:
       - checkout
