@@ -28,7 +28,7 @@ jobs:
 
       - run:
           name: Debug docker ps
-          command: docker ps
+          command: docker ps && sudo netstat
 
       - run:
           name: Install dockerize
@@ -39,9 +39,12 @@ jobs:
           environment:
             DOCKERIZE_VERSION: v0.6.1
 
-      - run:
-          name: Wait for cassandra
-          command: dockerize -wait tcp://cassandra:9042 -timeout 1m
+      #      - run:
+      #          name: Wait for cassandra
+      #          command: dockerize -wait tcp://cassandra:9042 -timeout 1m
+      #      - run:
+      #          name: Wait for Scalardl
+      #          command: dockerize -wait tcp://127.0.0.1:50051 -timeout 1m
 
       - run:
           name: Copy cqlsh
@@ -49,12 +52,12 @@ jobs:
           working_directory: .circleci/
 
       - run:
-          name: Execute cqlsh
-          command: docker exec cassandra cqlsh -f /create_schema.cql
+          name: List all listening port
+          command: netstat -lntp
 
       - run:
-          name: Wait for Scalardl
-          command: dockerize -wait tcp://127.0.0.1:80 -timeout 1m
+          name: Execute cqlsh
+          command: sudo docker exec cassandra cqlsh -f /create_schema.cql
 
       - run:
           name: Install Dependencies
