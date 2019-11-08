@@ -26,7 +26,7 @@ jobs:
           SCALAR_CASSANDRA_PORT: 9042
 
       - image: envoyproxy/envoy:v1.10.0
-        command: /usr/local/bin/envoy -c ./.circleci/envoy.yaml -l trace
+        command: ls -a && pwd
 
     working_directory: ~/scalardl-web-client-sdk
 
