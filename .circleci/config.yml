@@ -25,6 +25,8 @@ jobs:
           SCALAR_CASSANDRA_HOST: 127.0.0.1
           SCALAR_CASSANDRA_PORT: 9042
 
+      - image: envoyproxy/envoy:v1.10.0
+        command: /usr/local/bin/envoy -c ./.circleci/envoy.yaml -l trace
 
     working_directory: ~/scalardl-web-client-sdk
 
@@ -58,15 +60,7 @@ jobs:
 
       - run:
           name: Wait for Scalardl
-          command: dockerize -wait tcp://127.0.0.1:50051 -timeout 1m
-
-      - run:
-          name: Run Envoy
-          command: /usr/local/bin/envoy -c ./.circleci/envoy.yaml -l trace
-
-      - run:
-          name: Debug docker ps
-          command: docker ps
+          command: dockerize -wait tcp://127.0.0.1:80 -timeout 1m
 
       - run:
           name: Install Dependencies
