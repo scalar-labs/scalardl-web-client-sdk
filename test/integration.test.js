@@ -1,5 +1,4 @@
 const holder = `foo@${Date.now()}`;
-const mockedContractId = `StateUpdater${Date.now()}`;
 
 describe('ClientService', () => {
   const {ClientService} = require('../scalardl-web-client-sdk.js');
@@ -38,17 +37,26 @@ Gc/v+yh4dHIDhCrimajTQAYOG9n0kajULI70Gg7TNw==
 
   describe('Integration test on ClientService', async () => {
     const mockedFunctionId = 'TestFunction';
+    const mockedContractId = `StateUpdater${Date.now()}`;
     const mockedContractName = 'com.org1.contract.StateUpdater';
     const mockedFunctionName = 'com.org1.function.TestFunction';
     const mockedAssetId = 'mockedAssetId';
     const mockedState = 2;
-    const mockedArgument = {
+    const mockedContractArgument = {
+      asset_id: mockedAssetId,
+      state: mockedState,
+    };
+    const mockedFunctionArgument = {
+      asset_id: mockedAssetId,
+      state: mockedState,
+      _function_: mockedFunctionId,
+    };
+    const functionArgument = {
       asset_id: mockedAssetId,
       state: mockedState,
     };
     const property = {
-      asset_id: mockedAssetId,
-      state: mockedState,
+      properties: 'bar',
     };
     const mockedByteContract = new Uint8Array(
         require('arraybuffer-loader!./StateUpdater.class'));
@@ -83,15 +91,28 @@ Gc/v+yh4dHIDhCrimajTQAYOG9n0kajULI70Gg7TNw==
       });
     });
     describe('executeContract', () => {
-      it('should works as expected', async () => {
-        const response = await clientService.executeContract(mockedContractId,
-            mockedArgument, property);
-        assert.equal(response.getStatus(), 200);
-      });
+      it('should works as expected when executing a registered Contract',
+          async () => {
+            const response = await clientService.executeContract(
+                mockedContractId,
+                mockedContractArgument, functionArgument);
+            const responseArgumentObj = JSON.parse(response.array[2]);
+            assert.equal(responseArgumentObj.asset_id, mockedAssetId);
+            assert.equal(responseArgumentObj.state, mockedState);
+            assert.equal(responseArgumentObj.properties, property.properties);
+            assert.equal(response.getStatus(), 200);
+          });
+      it('should works as expected when executing a registered Function',
+          async () => {
+            const response = await clientService.executeContract(
+                mockedContractId, mockedFunctionArgument, functionArgument);
+            assert.equal(response.getStatus(), 200);
+          });
     });
     describe('validateLedger', () => {
       it('should works as expected', async () => {
         const response = await clientService.validateLedger(mockedAssetId);
+        console.log(response);
         assert.equal(response.getStatus(), 200);
       });
     });

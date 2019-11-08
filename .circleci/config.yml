@@ -25,6 +25,7 @@ jobs:
           SCALAR_CASSANDRA_HOST: 127.0.0.1
           SCALAR_CASSANDRA_PORT: 9042
 
+
     working_directory: ~/scalardl-web-client-sdk
 
     steps:
