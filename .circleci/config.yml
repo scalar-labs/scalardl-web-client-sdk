@@ -5,28 +5,9 @@
 version: 2
 jobs:
   build:
-    docker:
+    machine:
       # set a fixed version for the image circleci/openjdk:8-jdk-node-browsers
-      - image: circleci/openjdk:8-jdk-node-browsers
-        environment:
-          MAX_HEAP_SIZE: 2048m
-          HEAP_NEWSIZE: 512m
-
-      - image: cassandra:3.11
-        environment:
-          MAX_HEAP_SIZE: 1300m
-          HEAP_NEWSIZE: 512m
-
-      - image: scalarlabs/scalar-ledger:1.3.1
-        auth:
-          username: $DOCKERHUB_USERNAME
-          password: $DOCKERHUB_PASSWORD
-        environment:
-          SCALAR_CASSANDRA_HOST: 127.0.0.1
-          SCALAR_CASSANDRA_PORT: 9042
-
-      - image: envoyproxy/envoy:v1.10.0
-        command: [ls, -a]
+      - image: ubuntu-1604:201903-01
 
     working_directory: ~/scalardl-web-client-sdk
 
@@ -37,30 +18,36 @@ jobs:
           keys:
             - dependency-cache-{{ checksum "package-lock.json" }}
 
-      - setup_remote_docker
+      - run:
+          name: Docker login
+          command: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
 
       - run:
-          name: Install cqlsh
-          # We need to edit DEFAULT_CQLVER defined in the cqlsh script
-          # to connect to the server without --cqlversion command line option
-          command: |
-            curl -O https://bootstrap.pypa.io/get-pip.py
-            sudo python get-pip.py
-            sudo pip install cqlsh
-            sudo sed -i "s/^DEFAULT_CQLVER = .*/DEFAULT_CQLVER = '3.4.4'/" /usr/local/bin/cqlsh
+          name: Spin container via docker compose
+          command: docker-compose up -d
+          working_directory: .circleci/
+
+      - run:
+          name: Debug docker ps
+          command: docker ps
 
       - run:
           name: Wait for Cassandra
           # dockerize command is included in circleci/openjdk:8-jdk image
-          command: dockerize -wait tcp://127.0.0.1:9042 -timeout 1m
+          command: dockerize -wait tcp://cassandra:9042 -timeout 30s
 
       - run:
-          name: Run cqlsh
-          command: cqlsh -f ./.circleci/create_schema.cql 127.0.0.1 9042
+          name: Copy cqlsh
+          command: docker cp ./create_schema.cql cassandra:/create_schema.cql
+          working_directory: .circleci/
 
       - run:
-          name: Wait for Scalardl
-          command: dockerize -wait tcp://127.0.0.1:80 -timeout 1m
+          name: Execute cqlsh
+          command: docker exec cassandra cqlsh -f /create_schema.cql
+
+      #      - run:
+      #          name: Wait for Scalardl
+      #          command: dockerize -wait tcp://127.0.0.1:80 -timeout 1m
 
       - run:
           name: Install Dependencies
