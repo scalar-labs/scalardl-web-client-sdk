@@ -41,7 +41,7 @@ jobs:
 
       - run:
           name: Wait for cassandra
-          command: dockerize -wait tcp://127.0.0.1:9042 -timeout 1m
+          command: dockerize -wait tcp://cassandra:9042 -timeout 1m
 
       - run:
           name: Copy cqlsh
