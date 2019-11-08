@@ -31,11 +31,6 @@ jobs:
           command: docker ps
 
       - run:
-          name: Wait for Cassandra
-          # dockerize command is included in circleci/openjdk:8-jdk image
-          command: dockerize -wait tcp://cassandra:9042 -timeout 30s
-
-      - run:
           name: Copy cqlsh
           command: docker cp ./create_schema.cql cassandra:/create_schema.cql
           working_directory: .circleci/
