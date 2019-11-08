@@ -6,8 +6,7 @@ version: 2
 jobs:
   build:
     machine:
-      # set a fixed version for the image circleci/openjdk:8-jdk-node-browsers
-      - image: ubuntu-1604:201903-01
+      image: ubuntu-1604:201903-01
 
     working_directory: ~/scalardl-web-client-sdk
 
