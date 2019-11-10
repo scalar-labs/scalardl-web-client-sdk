@@ -28,13 +28,13 @@ jobs:
             rm google-chrome.deb
 
       - run:
+          name: Docker login
+          command: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+
+      - run:
           name: Spin container via docker compose
           command: docker-compose up -d
           working_directory: .circleci/
-
-      - run:
-          name: Docker login
-          command: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
 
       - run:
           name: Debug docker ps
