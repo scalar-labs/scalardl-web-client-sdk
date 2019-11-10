@@ -60,6 +60,10 @@ jobs:
           command: npm install n -g
 
       - run:
+          name: Allow permission
+          command: chown -R $USER:$USER /usr/local/
+
+      - run:
           name: Update node version
           command: sudo n 10.15.3
 
