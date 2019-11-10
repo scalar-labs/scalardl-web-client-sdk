@@ -57,11 +57,11 @@ jobs:
 
       - run:
           name: Install n
-          command: sudo npm install n -g
+          command: npm install n -g
 
       - run:
           name: Update node version
-          command: sudo n 10.15.3
+          command: n 10.15.3
 
       - run:
           name: Install Dependencies
