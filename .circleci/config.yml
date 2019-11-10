@@ -56,20 +56,17 @@ jobs:
           command: netstat -lntp
 
       - run:
-          name: Install n
-          command: npm install n -g
-
-      - run:
-          name: Install sudo
-          command: apt-get install -y sudo
-
-      - run:
-          name: Update node version
-          command: sudo n 10.15.3
+          name: Install node@10.15.3
+          command: |
+            ./load-nvm.sh
+            nvm install v10.15.3
+            nvm alias default v10.15.3
 
       - run:
           name: Install Dependencies
-          command: npm install
+          command: |
+            ./load-nvm.sh
+            npm install
 
       - run:
           name: Execute cqlsh
@@ -82,7 +79,7 @@ jobs:
 
       # run tests
       - run:
-          command: node -v && npm test
+          command: ./load-nvm.sh && node -v && npm test
           environment:
             MOCHA_FILE: "~/scalardl-web-client-sdk/mochawesome-report/mochawesome.html"
           when: always
