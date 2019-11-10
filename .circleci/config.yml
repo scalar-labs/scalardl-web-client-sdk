@@ -18,33 +18,14 @@ jobs:
             - dependency-cache-{{ checksum "package-lock.json" }}
 
       - run:
-          name: Docker login
-          command: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
-
-      - run:
-          name: Spin container via docker compose
-          command: docker-compose up -d
-          working_directory: .circleci/
-
-      - run:
-          name: Debug docker ps
-          command: docker ps && sudo netstat
-
-      #      - run:
-      #          name: Wait for cassandra
-      #          command: dockerize -wait tcp://cassandra:9042 -timeout 1m
-      #      - run:
-      #          name: Wait for Scalardl
-      #          command: dockerize -wait tcp://127.0.0.1:50051 -timeout 1m
-
-      - run:
-          name: Copy cqlsh
-          command: docker cp ./create_schema.cql cassandra:/create_schema.cql
-          working_directory: .circleci/
-
-      - run:
-          name: List all listening port
-          command: netstat -lntp && pwd && ls -a ../
+          name: Install node@10.15.3
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm install v10.15.3
+            nvm alias default v10.15.3
+            echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
+            echo "[ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"" >> $BASH_ENV
 
       - run: #STABLE
           name: Install Chromedriver latest version
@@ -57,14 +38,26 @@ jobs:
             rm google-chrome.deb
 
       - run:
-          name: Install node@10.15.3
-          command: |
-            export NVM_DIR="/opt/circleci/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            nvm install v10.15.3
-            nvm alias default v10.15.3
-            echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
-            echo "[ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"" >> $BASH_ENV
+          name: Docker login
+          command: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+
+      - run:
+          name: Spin container via docker compose
+          command: docker-compose up -d
+          working_directory: .circleci/
+
+      - run:
+          name: Debug docker ps
+          command: docker ps && sudo netstat
+
+      - run:
+          name: Copy cqlsh
+          command: docker cp ./create_schema.cql cassandra:/create_schema.cql
+          working_directory: .circleci/
+
+      - run:
+          name: List all listening port
+          command: netstat -lntp && pwd && ls -a ../
 
       - run:
           name: Install Dependencies
