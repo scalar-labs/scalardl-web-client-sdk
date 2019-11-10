@@ -61,6 +61,7 @@ jobs:
             ./load-nvm.sh
             nvm install v10.15.3
             nvm alias default v10.15.3
+          working_directory: .circleci/
 
       - run:
           name: Install Dependencies
