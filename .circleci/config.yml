@@ -56,16 +56,20 @@ jobs:
           command: netstat -lntp
 
       - run:
+          name: Install n
+          command: sudo npm install n -g
+
+      - run:
+          name: Update node version
+          command: sudo n 10.15.3
+
+      - run:
           name: Install Dependencies
           command: npm install
 
       - run:
-          name: Install karma 3.1.4
-          command: npm install karma@3.1.4
-
-      - run:
           name: Execute cqlsh
-          command: sudo docker exec cassandra cqlsh -f /create_schema.cql
+          command: docker exec cassandra cqlsh -f /create_schema.cql
 
       - save_cache:
           key: v1-dependencies-{{ checksum "package-lock.json" }}
@@ -74,7 +78,7 @@ jobs:
 
       # run tests
       - run:
-          command: npm test
+          command: node -v && npm test
           environment:
             MOCHA_FILE: "~/scalardl-web-client-sdk/mochawesome-report/mochawesome.html"
           when: always
