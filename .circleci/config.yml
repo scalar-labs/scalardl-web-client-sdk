@@ -58,11 +58,10 @@ jobs:
       - run:
           name: Install node@10.15.3
           command: |
-            .circleci/load-nvm.sh
-            echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
-            echo ' [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $BASH_ENV
-            nvm install v10.15.3
-            nvm alias default v10.15.3
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm install v6.2.2
+            nvm alias default v6.2.2
 
       - run:
           name: Install Dependencies
