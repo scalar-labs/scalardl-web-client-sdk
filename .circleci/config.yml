@@ -5,7 +5,7 @@
 version: 2
 jobs:
   build:
-    machine:
+    machine: true
       image: ubuntu-1604:201903-01
 
     working_directory: ~/scalardl-web-client-sdk
@@ -56,12 +56,12 @@ jobs:
           command: netstat -lntp
 
       - run:
-          name: Execute cqlsh
-          command: sudo docker exec cassandra cqlsh -f /create_schema.cql
-
-      - run:
           name: Install Dependencies
           command: npm install
+
+      - run:
+          name: Execute cqlsh
+          command: sudo docker exec cassandra cqlsh -f /create_schema.cql
 
       - save_cache:
           key: v1-dependencies-{{ checksum "package-lock.json" }}
