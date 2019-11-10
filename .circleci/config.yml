@@ -17,16 +17,6 @@ jobs:
           keys:
             - dependency-cache-{{ checksum "package-lock.json" }}
 
-      - run:
-          name: Install node@10.15.3
-          command: |
-            export NVM_DIR="/opt/circleci/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            nvm install v10.15.3
-            nvm alias default v10.15.3
-            echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
-            echo "[ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"" >> $BASH_ENV
-
       - run: #STABLE
           name: Install Chromedriver latest version
           command: |
@@ -38,13 +28,13 @@ jobs:
             rm google-chrome.deb
 
       - run:
-          name: Docker login
-          command: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
-
-      - run:
           name: Spin container via docker compose
           command: docker-compose up -d
           working_directory: .circleci/
+
+      - run:
+          name: Docker login
+          command: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
 
       - run:
           name: Debug docker ps
@@ -56,25 +46,22 @@ jobs:
           working_directory: .circleci/
 
       - run:
-          name: Install dockerize
-          command: |
-            wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-            && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-            && sudo rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
-          environment:
-            DOCKERIZE_VERSION: v0.6.1
-
-      - run:
-          name: Wait for cassandra
-          command: dockerize -wait tcp://127.0.0.1:9042 -timeout 1m
-
-      - run:
           name: List all listening port
           command: netstat -lntp && pwd && ls -a ../
 
       - run:
           name: Install Dependencies
           command: npm install
+
+      - run:
+          name: Install node@10.15.3
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm install v10.15.3
+            nvm alias default v10.15.3
+            echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
+            echo "[ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"" >> $BASH_ENV
 
       - run:
           name: Execute cqlsh
