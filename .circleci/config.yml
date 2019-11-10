@@ -60,6 +60,10 @@ jobs:
           command: npm install
 
       - run:
+          name: Install karma 3.1.4
+          command: npm install karma@3.1.4
+
+      - run:
           name: Execute cqlsh
           command: sudo docker exec cassandra cqlsh -f /create_schema.cql
 
