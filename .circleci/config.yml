@@ -61,7 +61,7 @@ jobs:
 
       - run:
           name: Update node version
-          command: n 10.15.3
+          command: sudo n 10.15.3
 
       - run:
           name: Install Dependencies
