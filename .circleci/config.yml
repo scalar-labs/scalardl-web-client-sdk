@@ -30,15 +30,6 @@ jobs:
           name: Debug docker ps
           command: docker ps && sudo netstat
 
-      - run:
-          name: Install dockerize
-          command: |
-            wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-            && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-            && sudo rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
-          environment:
-            DOCKERIZE_VERSION: v0.6.1
-
       #      - run:
       #          name: Wait for cassandra
       #          command: dockerize -wait tcp://cassandra:9042 -timeout 1m
@@ -65,23 +56,19 @@ jobs:
             sudo sed -i 's|HERE/chrome"|HERE/chrome" --no-sandbox|g' /opt/google/chrome/google-chrome
             rm google-chrome.deb
 
-      - run:
-          name: Install node@10.15.3
-          command: |
-            export NVM_DIR="/opt/circleci/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            nvm install v10.15.3
-            nvm alias default v10.15.3
-            echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
-            echo "[ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"" >> $BASH_ENV
+      #      - run:
+      #          name: Install node@10.15.3
+      #          command: |
+      #            export NVM_DIR="/opt/circleci/.nvm"
+      #            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+      #            nvm install v10.15.3
+      #            nvm alias default v10.15.3
+      #            echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
+      #            echo "[ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"" >> $BASH_ENV
 
       - run:
           name: Install Dependencies
-          command: |
-            export NVM_DIR="/opt/circleci/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            echo $BASH_ENV
-            npm install
+          command: npm install
 
       - run:
           name: Execute cqlsh
@@ -94,11 +81,7 @@ jobs:
 
       # run tests
       - run:
-          command: |
-            export NVM_DIR="/opt/circleci/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            node -v
-            npm test
+          command: npm test
           environment:
             MOCHA_FILE: "~/scalardl-web-client-sdk/mochawesome-report/mochawesome.html"
           when: always
