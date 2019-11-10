@@ -53,8 +53,12 @@ jobs:
 
       - run:
           name: List all listening port
-          command: netstat -lntp
+          command: netstat -lntp && pwd && ls -a ../
 
+      - run:
+          name: Get nvm
+          command: curl https://raw.githubusercontent.com/creationix/nvm/v0.30.2/install.sh | bash
+      
       - run:
           name: Install node@10.15.3
           command: |
