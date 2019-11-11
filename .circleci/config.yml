@@ -17,7 +17,7 @@ jobs:
           keys:
             - dependency-cache-{{ checksum "package-lock.json" }}
 
-      - run: #STABLE
+      - run: # Update chrome to stable version for karma
           name: Install Chromedriver latest version
           command: |
             sudo apt-get update
@@ -37,24 +37,16 @@ jobs:
           working_directory: .circleci/
 
       - run:
-          name: Debug docker ps
-          command: docker ps && sudo netstat
-
-      - run:
           name: Copy cqlsh
           command: docker cp ./create_schema.cql cassandra:/create_schema.cql
           working_directory: .circleci/
-
-      - run:
-          name: List all listening port
-          command: netstat -lntp && pwd && ls -a ../
 
       - run:
           name: Install Dependencies
           command: npm install
 
       - run:
-          name: Install node@10.15.3
+          name: Install node@10.15.3 # Update node for karma to work
           command: |
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
@@ -66,14 +58,6 @@ jobs:
       - run:
           name: Execute cqlsh
           command: docker exec cassandra cqlsh -f /create_schema.cql
-
-      - run:
-          name: Docker logs scalar dl
-          command: docker logs scalar-ledger
-
-      - run:
-          name: Docker logs envoy
-          command: docker logs envoy
 
       - save_cache:
           key: v1-dependencies-{{ checksum "package-lock.json" }}
