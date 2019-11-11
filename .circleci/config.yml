@@ -37,11 +37,6 @@ jobs:
           working_directory: .circleci/
 
       - run:
-          name: Copy schema to Cassandra container
-          command: docker cp ./create_schema.cql cassandra:/create_schema.cql
-          working_directory: .circleci/
-
-      - run:
           name: Install Dependencies
           command: npm install
 
@@ -57,7 +52,7 @@ jobs:
 
       - run:
           name: Install schema on Cassandra
-          command: docker exec cassandra cqlsh -f /create_schema.cql
+          command: docker exec cassandra cqlsh --execute "$SCHEMA_CONTENT"
 
       - save_cache:
           key: v1-dependencies-{{ checksum "package-lock.json" }}
