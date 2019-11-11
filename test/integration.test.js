@@ -73,7 +73,6 @@ Gc/v+yh4dHIDhCrimajTQAYOG9n0kajULI70Gg7TNw==
         const response = await clientService.registerFunction(mockedFunctionId,
             mockedFunctionName,
             mockedByteFunction);
-        console.log(response);
         assert.equal(response.getStatus(), 200);
       });
     });
@@ -82,14 +81,12 @@ Gc/v+yh4dHIDhCrimajTQAYOG9n0kajULI70Gg7TNw==
         const response = await clientService.registerContract(mockedContractId,
             mockedContractName,
             mockedByteContract, property);
-        console.log(response);
         assert.equal(response.getStatus(), 200);
       });
     });
     describe('listContracts', () => {
       it('should works as expected', async () => {
         const response = await clientService.listContracts(mockedContractId);
-        console.log(response);
         assert.equal(response.getStatus(), 200);
       });
     });
@@ -109,14 +106,12 @@ Gc/v+yh4dHIDhCrimajTQAYOG9n0kajULI70Gg7TNw==
           async () => {
             const response = await clientService.executeContract(
                 mockedContractId, mockedFunctionArgument, functionArgument);
-            console.log(response);
             assert.equal(response.getStatus(), 200);
           });
     });
     describe('validateLedger', () => {
       it('should works as expected', async () => {
         const response = await clientService.validateLedger(mockedAssetId);
-        console.log(response);
         assert.equal(response.getStatus(), 200);
       });
     });
