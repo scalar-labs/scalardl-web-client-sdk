@@ -37,7 +37,7 @@ jobs:
           working_directory: .circleci/
 
       - run:
-          name: Copy cqlsh
+          name: Copy schema to Cassandra container
           command: docker cp ./create_schema.cql cassandra:/create_schema.cql
           working_directory: .circleci/
 
@@ -56,7 +56,7 @@ jobs:
             echo "[ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"" >> $BASH_ENV
 
       - run:
-          name: Execute cqlsh
+          name: Install schema on Cassandra
           command: docker exec cassandra cqlsh -f /create_schema.cql
 
       - save_cache:
