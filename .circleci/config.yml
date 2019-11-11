@@ -67,6 +67,14 @@ jobs:
           name: Execute cqlsh
           command: docker exec cassandra cqlsh -f /create_schema.cql
 
+      - run:
+          name: Docker logs scalar dl
+          command: docker logs scalar-ledger
+
+      - run:
+          name: Docker logs envoy
+          command: docker logs envoy
+
       - save_cache:
           key: v1-dependencies-{{ checksum "package-lock.json" }}
           paths:
