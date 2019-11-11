@@ -12,6 +12,9 @@ module.exports = function(config) {
     webpackMiddleware: {
       stats: 'errors-only',
     },
+    htmlReporter: {
+      outputFile: 'test/test-reports/integration-test.html',
+    },
     listenAddress: '127.0.0.1',
     hostname: 'localhost',
     colors: true,

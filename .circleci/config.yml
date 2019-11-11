@@ -67,12 +67,9 @@ jobs:
       # run tests
       - run:
           command: npm test
-          environment:
-            MOCHA_FILE: "~/scalardl-web-client-sdk/mochawesome-report/mochawesome.html"
-          when: always
 
       - store_test_results:
-          path: ~/scalardl-web-client-sdk/mochawesome-report
+          path: ~/scalardl-web-client-sdk/test/test-reports
 
       - store_artifacts:
-          path: ~/scalardl-web-client-sdk/mochawesome-report
+          path: ~/scalardl-web-client-sdk/test/test-reports
