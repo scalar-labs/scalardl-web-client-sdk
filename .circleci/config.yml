@@ -68,3 +68,14 @@ jobs:
 
       - store_artifacts:
           path: ~/scalardl-web-client-sdk/test/test-reports
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build:
+          context: "Scalar DL sdk"
+          filters:
+            branches:
+              only:
+                - master
+                - /feature\/.*/
