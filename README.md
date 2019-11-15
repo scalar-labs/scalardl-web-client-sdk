@@ -51,6 +51,7 @@ This is a properties example that a user `foo@example.com` would use to try to c
 {
     'scalar.ledger.client.server_host': 'scalardl.example.com',
     'scalar.ledger.client.server_port': 50051,
+    'scalar.ledger.client.server_privileged_port': 50052,
     'scalar.ledger.client.cert_holder_id': 'foo@example.com',
     'scalar.ledger.client.private_key_pem': "-----BEGIN EC PRIVATE KEY-----\nMHc...",
     'scalar.ledger.client.cert_pem': "-----BEGIN CERTIFICATE-----\nMIICjTCCAj...n",
