@@ -4,7 +4,7 @@ const {
 } = require('@scalar-labs/scalardl-javascript-sdk-base');
 
 const protobuf = require('./scalar_pb');
-const {LedgerClient} = require('./scalar_grpc_web_pb');
+const {LedgerClient, LedgerPrivilegedClient} = require('./scalar_grpc_web_pb');
 
 /**
  * This class inherits ClientServiceBase.
@@ -19,11 +19,22 @@ class ClientService extends ClientServiceBase {
    * @param {Object} properties JSON Object used for setting client properties
    */
   constructor(properties) {
-    const url = `${properties['scalar.ledger.client.tls.enabled'] ?
-        'https' :
-        'http'}://${properties['scalar.ledger.client.server_host']}:${properties['scalar.ledger.client.server_port']}`;
-    const ledgerClient = new LedgerClient(url);
-    super(ledgerClient, protobuf, properties);
+    const host = properties['scalar.ledger.client.server_host'];
+    const tlsEnabled = properties['scalar.ledger.client.tls.enabled'];
+
+    const ledgerClientServiceURL =
+      `${tlsEnabled ? 'https' : 'http'}://${host}:${properties['scalar.ledger.client.server_port']}`;
+    const ledgerPriviledgedClientServiceURL =
+      `${tlsEnabled ? 'https' : 'http'}://${host}:${properties['scalar.ledger.client.server_privileged_port']}`;
+
+    const services = {
+      ledgerClient: new LedgerClient(ledgerClientServiceURL),
+      ledgerPrivileged: new LedgerPrivilegedClient(
+          ledgerPriviledgedClientServiceURL
+      ),
+    };
+
+    super(services, protobuf, properties);
   }
 }
 

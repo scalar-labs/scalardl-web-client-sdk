@@ -1,0 +1,81 @@
+# Java Gradle CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-java/ for more details
+#
+version: 2
+jobs:
+  build:
+    machine: true
+    image: ubuntu-1604:201903-01
+
+    working_directory: ~/scalardl-web-client-sdk
+
+    steps:
+      - checkout
+      # Restore dependencies
+      - restore_cache:
+          keys:
+            - dependency-cache-{{ checksum "package-lock.json" }}
+
+      - run: # Update chrome to stable version for karma
+          name: Install Chromedriver latest version
+          command: |
+            sudo apt-get update
+            sudo apt-get install lsb-release libappindicator3-1
+            curl -L -o google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+            sudo dpkg -i google-chrome.deb
+            sudo sed -i 's|HERE/chrome"|HERE/chrome" --no-sandbox|g' /opt/google/chrome/google-chrome
+            rm google-chrome.deb
+
+      - run:
+          name: Docker login
+          command: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+
+      - run:
+          name: Spin container via docker compose
+          command: docker-compose up -d
+          working_directory: .circleci/
+
+      - run:
+          name: Install Dependencies
+          command: npm install
+
+      - run:
+          name: Install node@10.15.3 # Update node for karma to work
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm install v10.15.3
+            nvm alias default v10.15.3
+            echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
+            echo "[ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"" >> $BASH_ENV
+
+      - run:
+          name: Install schema on Cassandra
+          command: docker exec cassandra cqlsh --execute "$SCHEMA_CONTENT"
+
+      - save_cache:
+          key: v1-dependencies-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+
+      # run tests
+      - run:
+          command: npm test
+
+      - store_test_results:
+          path: ~/scalardl-web-client-sdk/test/test-reports
+
+      - store_artifacts:
+          path: ~/scalardl-web-client-sdk/test/test-reports
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build:
+          context: "scalar"
+          filters:
+            branches:
+              only:
+                - master
+                - /feature\/.*/
