@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "@scalar-labs/scalardl-javascript-sdk-base": "^2.0.1",
-    "google-protobuf": "^3.6.1",
+    "@scalar-labs/scalardl-javascript-sdk-base": "^2.1.0",
+    "google-protobuf": "3.6.1",
     "grpc-web": "^1.0.4"
   },
   "name": "@scalar-labs/scalardl-web-client-sdk",
