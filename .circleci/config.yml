@@ -74,8 +74,3 @@ workflows:
     jobs:
       - build:
           context: "scalar"
-          filters:
-            branches:
-              only:
-                - master
-                - /feature\/.*/
