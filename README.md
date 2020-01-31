@@ -40,6 +40,7 @@ const clientService = new ClientService(clientProperties);
 Or, if you use the static release, try following
 ```html
 <head>
+    <meta charset="utf-8">
     <script src="scalardl-web-client-sdk.bundle.js"></script>
 </head>
 
