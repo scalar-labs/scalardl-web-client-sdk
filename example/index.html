@@ -18,8 +18,8 @@
       <label class="form-check-label" for="TLSToggle">Enable/Disable TLS</label>
     </div>
     <input id="address" type="text" placeholder="Scalar DL network address" value="127.0.0.1"/>
-    <input id="port" type="text" placeholder="port" value="50051"/>
-    <input id="port2" type="text" placeholder="port (priviledged)" value="50052"/>
+    <input id="port" type="text" placeholder="port" value="80"/>
+    <input id="port2" type="text" placeholder="port (priviledged)" value="8080"/>
   </div>
   <div>
     <input id="holderId" type="text" placeholder="Holder ID" value="foo"/>
@@ -150,14 +150,14 @@
       }
 
       clientProperties = {
-        'scalar.ledger.client.server_host': address,
-        'scalar.ledger.client.server_port': port,
-        'scalar.ledger.client.server_privileged_port': port2,
-        'scalar.ledger.client.cert_holder_id': holderId,
-        'scalar.ledger.client.private_key_pem': key,
-        'scalar.ledger.client.cert_pem': certificate,
-        'scalar.ledger.client.cert_version': 1,
-        'scalar.ledger.client.tls.enabled': tls,
+        'scalar.dl.client.server.host': address,
+        'scalar.dl.client.server.port': port,
+        'scalar.dl.client.server.privileged_port': port2,
+        'scalar.dl.client.cert_holder_id': holderId,
+        'scalar.dl.client.private_key_pem': key,
+        'scalar.dl.client.cert_pem': certificate,
+        'scalar.dl.client.cert_version': 1,
+        'scalar.dl.client.tls.enabled': tls,
       };
       clientService = new Scalar.ClientService(clientProperties);
       clientService.registerCertificate()
@@ -167,7 +167,7 @@
         })
         .catch(error => {
           document.querySelector('#registerCertificateResult').innerHTML =
-            `<b>${error.statusCode}: ${error.message}</b>`;
+            `<b>${error.code}: ${error.message}</b>`;
         });
     });
 
@@ -195,7 +195,7 @@
           })
         .catch(error => {
           document.querySelector('#registerContractResult').innerHTML =
-            `<b>${error.statusCode}: ${error.message}</b>`;
+            `<b>${error.code}: ${error.message}</b>`;
         });
     });
 
@@ -217,11 +217,11 @@
           document.querySelector(
             '#executeContractResult').innerHTML = '<b>The contract is successfully executed</b><br>';
           document.querySelector('#executeContractResult').innerHTML +=
-            `${JSON.stringify(response.result, null, 2)}`;
+            `${JSON.stringify(response.getResult(), null, 2)}`;
         })
         .catch(error => {
           document.querySelector('#executeContractResult').innerHTML =
-            `<b>${error.statusCode}: ${error.message}</b>`;
+            `<b>${error.code}: ${error.message}</b>`;
         });
     });
 
@@ -238,7 +238,7 @@
         })
         .catch(error => {
           document.querySelector('#listContractsResult').innerHTML =
-            `<b>${error.statusCode}: ${error.message}</b>`;
+            `<b>${error.code}: ${error.message}</b>`;
         });
     });
 
@@ -255,12 +255,16 @@
       }
       clientService.validateLedger(asset)
         .then(response => {
-          if (response.statusCode === Scalar.StatusCode.OK) {
+          if (response.getCode() === Scalar.StatusCode.OK) {
             document.querySelector('#validateLedgerResult').innerHTML = 'The specified asset is not tampered';
           } else {
             document.querySelector('#validateLedgerResult').innerHTML =
-              `<b>${response.statusCode}: ${response.message}</b>`;
+              `<b>${response.getCode()}</b>`;
           }
+        })
+        .catch(error => {
+            document.querySelector('#validateLedgerResult').innerHTML =
+              `<b>${error.code}: ${error.message}</b>`;
         });
     });
 </script>
