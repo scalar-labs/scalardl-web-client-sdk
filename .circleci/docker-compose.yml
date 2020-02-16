@@ -7,7 +7,7 @@ services:
       - cassandra:/var/lib/cassandra
 
   scalar-ledger:
-    image: scalarlabs/scalar-ledger:2.0.1
+    image: scalarlabs/scalar-ledger:2.0.2
     container_name: scalar-ledger
     depends_on:
       - cassandra
