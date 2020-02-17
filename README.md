@@ -28,14 +28,17 @@ It provides following functions to request Scalar DL network.
 |executeContract|To execute a registered contract of the client|
 |validateLedger|To validate an asset of the Scalar DL network to determine if it is tampered|
 
+If an error occurs when executing one of the above methods, a `ClientError` will be thrown. The
+`ClientError.statusCode` provides additional context. Please refer to the [Runtime error](#runtime-error) section below for the status code specification.
+
 Use the code snippet below to create a ClientService instance.
-```
+```javascript
 import { ClientService } from '@scalar-labs/scalardl-web-client-sdk';
 const clientService = new ClientService(clientProperties);
 ```
 
 Or, if you use the static release, try following
-```
+```html
 <head>
     <meta charset="utf-8">
     <script src="scalardl-web-client-sdk.bundle.js"></script>
@@ -48,16 +51,16 @@ Or, if you use the static release, try following
 
 The `clientProperties` argument is mandatory for the constructor.
 This is a properties example that a user `foo@example.com` would use to try to connect to the server `scalardl.example.com:50051` of the Scalar DL network.
-```
+```javascript
 {
-    'scalar.ledger.client.server_host': 'scalardl.example.com',
-    'scalar.ledger.client.server_port': 50051,
-    'scalar.ledger.client.server_privileged_port': 50052,
-    'scalar.ledger.client.cert_holder_id': 'foo@example.com',
-    'scalar.ledger.client.private_key_pem': "-----BEGIN EC PRIVATE KEY-----\nMHc...",
-    'scalar.ledger.client.cert_pem': "-----BEGIN CERTIFICATE-----\nMIICjTCCAj...n",
-    'scalar.ledger.client.cert_version': 1,
-    'scalar.ledger.client.tls.enabled': false,
+    'scalar.dl.client.server.host': 'scalardl.example.com',
+    'scalar.dl.client.server.port': 50051,
+    'scalar.dl.client.server.privileged_port': 50052,
+    'scalar.dl.client.cert_holder_id': 'foo@example.com',
+    'scalar.dl.client.private_key_pem': "-----BEGIN EC PRIVATE KEY-----\nMHc...",
+    'scalar.dl.client.cert_pem': "-----BEGIN CERTIFICATE-----\nMIICjTCCAj...n",
+    'scalar.dl.client.cert_version': 1,
+    'scalar.dl.client.tls.enabled': false,
 }
 ```
 
@@ -65,47 +68,62 @@ In what follows assume that we have a clientService instance.
 
 ### Register the certificate
 Use the `registerCertificate` function to register a certificate on the Scalar DL network.
-```
-const response = await clientService.registerCertificate();
-const status = response.getStatus();
-const message = response.getMessage();
+```javascript
+await clientService.registerCertificate();
 ```
 Please refer to the [Status code](#status-code) section below for the details of status.
 
 ### Register contracts
 Use the `registerContract` function to register a contract.
+```javascript
+await clientService.registerContract('contractId', 'com.example.contract.contractName', contractUint8Array, propertiesObject);
 ```
-const response = await clientService.registerContract('contractId', 'com.example.contract.contractName', contractUint8Array, propertiesObject);
-const status = response.getStatus();
-const message = response.getMessage();
+
+### Register functions
+Use the `registerFunction` function to register a function.
+```javascript
+await clientService.registerFunction('functionId, 'com.example.function.functionName', functionUint8Array);
 ```
 
 ### List registered contracts
-Use listContracts function to list all registered contracts.
-```
-const response = await clientService.listContracts();
-const message = response.getMessage();
-const contracts = JSON.parse(message);
+Use `listContracts` function to list all registered contracts.
+```javascript
+const constracts = await clientService.listContracts();
 ```
 
 ### Execute a contract
-Use executeContract function to execute a registered contract.
-```
+Use `executeContract` function to execute a registered contract. It will also execute a function if `_functions_` is given in the argument.
+```javascript
 const response = await clientService.executeContract('contractId', argumentObject);
-const status = response.getStatus();
-const result = JSON.parse(response.getResult());
+const executionResult = response.getResult();
+const proofsList = response.getProofs();
 ```
+
+```javascript
+const response = await clientService.executeContract('contractId', { 'arg1': 'a', '_functions_': [functionId] }, { 'arg2': 'b' });
+```
+`{ 'arg1': 'a', ` will be passed via [contractArgument](https://github.com/scalarindetail/scalardl-node-client-sdk/blob/3e531b4c62fb14702a873b07f44cb37212f04be4/test/TestFunction.java#L14), while `{ 'arg2': 'b' }` will be passed via [functionArgument](https://github.com/scalarindetail/scalardl-node-client-sdk/blob/3e531b4c62fb14702a873b07f44cb37212f04be4/test/TestFunction.java#L15).
+
 
 ### Validate an asset
 Use the `validateLedger` function to validate an asset in the Scalar DL network.
-```
+```javascript
 const response = await clientService.validateLedger('assetId');
-const status = response.getStatus();
-const message = response.getMessage();
+const status = response.getCode();
+const proof = response.getProof();
 ```
 
-### Status code
-Enumeration `StatusCode` enumerates all the possible status of a Scalar DL response.
+### Runtime error
+Error thrown by the client present a status code.
+```javascript
+try {
+    await clientService.registerCertificate();
+} catch (clientError) {
+    const message = clientError.message;
+    const statusCode = clientError.code;
+}
+```
+Enumeration `StatusCode` enumerates all the possible status.
 ```
 StatusCode = {
   OK: 200,
@@ -125,6 +143,9 @@ StatusCode = {
   INVALID_REQUEST: 407,
   CONTRACT_CONTEXTUAL_ERROR: 408,
   ASSET_NOT_FOUND: 409,
+  FUNCTION_NOT_FOUND: 410,
+  UNLOADABLE_FUNCTION: 411,
+  INVALID_FUNCTION: 412,
   DATABASE_ERROR: 500,
   UNKNOWN_TRANSACTION_STATUS: 501,
   RUNTIME_ERROR: 502,
@@ -133,6 +154,11 @@ StatusCode = {
   CLIENT_RUNTIME_ERROR: 602,
 };
 ```
+
+## Envoy configuration
+Scalar DLT server (grpc) uses a custom header called `rpc.status-bin` to share error metadata with the client. This means envoy needs to be
+configured to expose the header to clients.
+More specifically, `rpc.status-bin` needs to be added to the `expose-headers` field of the [cors configuration](https://www.envoyproxy.io/docs/envoy/latest/api-v2/api/v2/route/route_components.proto#envoy-api-msg-route-corspolicy).
 
 ## Contributing
 This library is mainly maintained by the Scalar Engineering Team, but of course we appreciate any help.
