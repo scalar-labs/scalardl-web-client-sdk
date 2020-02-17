@@ -158,7 +158,7 @@ StatusCode = {
 ## Envoy configuration
 Scalar DLT server (grpc) uses a custom header called `rpc.status-bin` to share error metadata with the client. This means envoy needs to be
 configured to expose the header to clients.
-Concretely, `rpc.status-bin` need to be added to the `expose-headers` field of the [cors configuration](https://www.envoyproxy.io/docs/envoy/latest/api-v2/api/v2/route/route_components.proto#envoy-api-msg-route-corspolicy).
+More specifically, `rpc.status-bin` needs to be added to the `expose-headers` field of the [cors configuration](https://www.envoyproxy.io/docs/envoy/latest/api-v2/api/v2/route/route_components.proto#envoy-api-msg-route-corspolicy).
 
 ## Contributing
 This library is mainly maintained by the Scalar Engineering Team, but of course we appreciate any help.
