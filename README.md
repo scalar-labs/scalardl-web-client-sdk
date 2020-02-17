@@ -29,7 +29,7 @@ It provides following functions to request Scalar DL network.
 |validateLedger|To validate an asset of the Scalar DL network to determine if it is tampered|
 
 If an error occurs when executing one of the above methods, a `ClientError` will be thrown. The
-`ClientError.statusCode` attributes provides additional context. Please refer to the [Runtime error](#runtime-error) section below for the status code signification.
+`ClientError.statusCode` provides additional context. Please refer to the [Runtime error](#runtime-error) section below for the status code specification.
 
 Use the code snippet below to create a ClientService instance.
 ```javascript
