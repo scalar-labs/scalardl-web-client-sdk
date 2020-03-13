@@ -166,7 +166,6 @@
             '#registerCertificateResult').innerHTML = '<b>The certificate is successfully registered</b>';
         })
         .catch(error => {
-          console.log(error);
           document.querySelector('#registerCertificateResult').innerHTML =
             `<b>${error.code}: ${error.message}</b>`;
         });
