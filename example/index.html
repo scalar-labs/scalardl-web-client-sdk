@@ -166,6 +166,7 @@
             '#registerCertificateResult').innerHTML = '<b>The certificate is successfully registered</b>';
         })
         .catch(error => {
+          console.log(error);
           document.querySelector('#registerCertificateResult').innerHTML =
             `<b>${error.code}: ${error.message}</b>`;
         });
@@ -256,10 +257,13 @@
       clientService.validateLedger(asset)
         .then(response => {
           if (response.getCode() === Scalar.StatusCode.OK) {
-            document.querySelector('#validateLedgerResult').innerHTML = 'The specified asset is not tampered';
+            document.querySelector('#validateLedgerResult').innerHTML = `<b>The specified asset is not tampered</b>`;
+          } else if (response.getCode() === Scalar.StatusCode.ASSET_NOT_FOUND) {
+            document.querySelector('#validateLedgerResult').innerHTML =
+              `<b>${response.getCode()} : The specified asset does not exist</b>`;
           } else {
             document.querySelector('#validateLedgerResult').innerHTML =
-              `<b>${response.getCode()}</b>`;
+              `<b>${response.getCode()} : Validation error</b>`;
           }
         })
         .catch(error => {
