@@ -151,8 +151,8 @@
 
       clientProperties = {
         'scalar.dl.client.server.host': address,
-        'scalar.dl.client.server.port': port,
-        'scalar.dl.client.server.privileged_port': port2,
+        'scalar.dl.client.server.port': parseInt(port),
+        'scalar.dl.client.server.privileged_port': parseInt(port2),
         'scalar.dl.client.cert_holder_id': holderId,
         'scalar.dl.client.private_key_pem': key,
         'scalar.dl.client.cert_pem': certificate,

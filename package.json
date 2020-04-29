@@ -1,11 +1,11 @@
 {
   "dependencies": {
-    "@scalar-labs/scalardl-javascript-sdk-base": "^2.2.2",
+    "@scalar-labs/scalardl-javascript-sdk-base": "^2.6.1",
     "google-protobuf": "^3.11.2",
     "grpc-web": "^1.0.4"
   },
   "name": "@scalar-labs/scalardl-web-client-sdk",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "The web client SDK for Scalar DL",
   "main": "scalardl-web-client-sdk.js",
   "author": "Scalar, Inc.",
