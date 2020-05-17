@@ -3,10 +3,11 @@ module.exports = function(config) {
     frameworks: ['mocha', 'chai'],
     files: [
       'test/integration.test.js',
+      'test/signature_validator.test.js',
     ],
     reporters: ['progress'],
     preprocessors: {
-      'test/integration.test.js': ['webpack'],
+      'test/*.test.js': ['webpack'],
     },
     webpack: {},
     webpackMiddleware: {
