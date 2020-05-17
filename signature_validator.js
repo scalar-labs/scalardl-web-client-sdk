@@ -1,6 +1,6 @@
 const jsrsasign = require('jsrsasign');
 
-/** @description The utility to validate ECDSA-SHA256 signature */
+/** @description A validator of ECDSA-SHA256 signature */
 class SignatureValidator {
   /**
    * @param {String} certificate PEM
