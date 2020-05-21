@@ -8,6 +8,8 @@ const {
 const protobuf = require('./scalar_pb');
 const {LedgerClient, LedgerPrivilegedClient} = require('./scalar_grpc_web_pb');
 
+const {SignerFactory} = require('./signer');
+
 /**
  * This class inherits ClientServiceBase.
  * It needs to be constructed with LedgerClient
@@ -42,6 +44,7 @@ class ClientService extends ClientServiceBase {
       ledgerPrivileged: new LedgerPrivilegedClient(
           ledgerPriviledgedClientServiceURL,
       ),
+      signerFactory: new SignerFactory(),
     };
 
     super(services, protobuf, properties);
