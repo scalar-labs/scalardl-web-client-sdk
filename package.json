@@ -6,7 +6,7 @@
     "jsrsasign": "^8.0.15"
   },
   "name": "@scalar-labs/scalardl-web-client-sdk",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "The web client SDK for Scalar DL",
   "main": "scalardl-web-client-sdk.js",
   "author": "Scalar, Inc.",
@@ -27,7 +27,7 @@
     "karma-mocha": "^2.0.1",
     "karma-webpack": "^4.0.2",
     "mocha": "^7.1.2",
-    "webpack": "^4.39.1",
+    "webpack": "^4.43.0",
     "webpack-cli": "^3.3.6"
   },
   "scripts": {
