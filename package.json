@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@scalar-labs/scalardl-javascript-sdk-base": "^3.0.0",
+    "dexie": "^3.0.1",
     "google-protobuf": "^3.11.2",
     "grpc-web": "^1.0.4",
     "jsrsasign": "^8.0.15"
