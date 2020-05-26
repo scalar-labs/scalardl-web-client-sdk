@@ -1,4 +1,4 @@
-const {Keystore} = require('../keystore');
+const {Keystore} = require('../lib/keystore');
 const chai = require('chai');
 chai.use(require('chai-as-promised'));
 
