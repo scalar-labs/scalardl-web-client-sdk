@@ -7,7 +7,7 @@ let generatedKeyPair;
 
 describe('Keystore', function() {
   beforeEach(async function() {
-    keystore = new Keystore();
+    keystore = new Keystore('test');
 
     generatedKeyPair = await window.crypto.subtle.generateKey(
         {name: 'ECDSA', namedCurve: 'P-256'},
