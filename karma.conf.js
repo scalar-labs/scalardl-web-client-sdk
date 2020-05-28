@@ -5,6 +5,7 @@ module.exports = function(config) {
       'test/integration.test.js',
       'test/signature_validator.test.js',
       'test/keystore.test.js',
+      'test/client_service.test.js',
     ],
     reporters: ['progress'],
     preprocessors: {

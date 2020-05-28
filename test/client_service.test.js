@@ -27,7 +27,6 @@ describe('ClientService', function() {
         'scalar.dl.client.server.port': 50051,
         'scalar.dl.client.server.privileged_port': 50052,
         'scalar.dl.client.cert_holder_id': certHolderId,
-        'scalar.dl.client.private_key_indexeddb_enabled': true,
       };
 
       const clientService = new ClientService(properties);
@@ -60,7 +59,6 @@ describe('ClientService', function() {
           'AwEHoUQDQgAEBGuhqumyh7BVNqcNKAQQipDGooUpURve2dO66pQCgjtSfu7lJV20\n' +
           'XYWdrgo0Y3eXEhvK0lsURO9N0nrPiQWT4A==\n' +
           '-----END EC PRIVATE KEY-----\n',
-        'scalar.dl.client.private_key_indexeddb_enabled': true,
       };
 
       const before = await keystore.get(certHolderId);
@@ -82,7 +80,6 @@ describe('ClientService', function() {
             'scalar.dl.client.server.privileged_port': 50052,
             'scalar.dl.client.cert_holder_id': certHolderId,
             'scalar.dl.client.private_key_cryptokey': key,
-            'scalar.dl.client.private_key_indexeddb_enabled': true,
           };
 
           const before = await keystore.get(certHolderId);
