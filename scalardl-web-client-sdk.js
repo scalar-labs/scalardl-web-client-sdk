@@ -9,6 +9,10 @@ const protobuf = require('./scalar_pb');
 const {LedgerClient, LedgerPrivilegedClient} = require('./scalar_grpc_web_pb');
 
 const {SignerFactory} = require('./signer');
+const {Keystore} = require('./lib/keystore');
+const {toCryptoKeyFrom, toPkcs8From} = require('./lib/keyutil');
+
+const KEYSTORE_DATABASE_NAME = 'scalar';
 
 /**
  * This class inherits ClientServiceBase.
@@ -48,6 +52,48 @@ class ClientService extends ClientServiceBase {
     };
 
     super(services, protobuf, properties);
+  }
+
+  /**
+   * @description initiate indexedDB if
+   *  `scalar.dl.client.private_key_indexeddb_enabled` is true
+   */
+  async initIndexedDB() {
+    const keystore = new Keystore(KEYSTORE_DATABASE_NAME);
+    const clientProperties = new ClientProperties(
+        this.properties,
+        [ClientPropertiesField.CERT_HOLDER_ID], // cert_holder_id is required
+    );
+    const cryptoKey = clientProperties.getPrivateKeyCryptoKey();
+    const pem = clientProperties.getPrivateKeyPem();
+    const certHolderId = clientProperties.getCertHolderId();
+
+    let key;
+    if (cryptoKey || pem) {
+      key = cryptoKey || await toCryptoKeyFrom(toPkcs8From(pem));
+      await keystore.put(certHolderId, key);
+    } else {
+      key = await keystore.get(certHolderId);
+      if (!key) {
+        throw new Error('Key is not found in keystore');
+      }
+    }
+
+    this.properties['scalar.dl.client.private_key_cryptokey'] = key;
+  }
+
+  /**
+   * @description
+   *  Remove the private key stored in indexedDB for `cert_holder_id`
+   */
+  async removeCachedPrivateKey() {
+    const keystore = new Keystore(KEYSTORE_DATABASE_NAME);
+    const clientProperties = new ClientProperties(
+        this.properties,
+        [ClientProperties.CERT_HOLDER_ID], // cert_holder_id is required
+    );
+
+    await keystore.delete(clientProperties.getCertHolderId());
   }
 }
 
