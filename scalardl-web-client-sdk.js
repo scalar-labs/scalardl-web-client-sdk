@@ -55,10 +55,10 @@ class ClientService extends ClientServiceBase {
   }
 
   /**
-   * @description initiate indexedDB if
-   *  `scalar.dl.client.private_key_indexeddb_enabled` is true
+   * @description initiate indexedDB
+   *  and check if it is necessary to load keys for the users
    */
-  async initIndexedDB() {
+  async enableIndexedDB() {
     const keystore = new Keystore(KEYSTORE_DATABASE_NAME);
     const clientProperties = new ClientProperties(
         this.properties,
