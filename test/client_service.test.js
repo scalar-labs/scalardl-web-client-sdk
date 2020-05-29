@@ -17,13 +17,14 @@ describe('ClientService', function() {
     );
   });
 
-  describe('#constructor', function() {
-    it('should work when indexedDB is enabled', async function() {
+  describe('#enableIndexedDB()', function() {
+    it('should work if key is stored', async function() {
       const privateKey = generatedKeyPair.privateKey;
       const certHolderId = `${new Date().getTime()}`;
       const certVersion = 1;
+      const keyId = `${certHolderId}_${certVersion}`;
 
-      await keystore.put(`${certHolderId}_${certVersion}`, privateKey);
+      await keystore.put(keyId, privateKey);
       const properties = {
         'scalar.dl.client.server.host': '127.0.0.1',
         'scalar.dl.client.server.port': 50051,
@@ -50,7 +51,7 @@ describe('ClientService', function() {
       chai.assert.equal(true, verified);
     });
 
-    it('should work with pem when indexedDB is enabled', async function() {
+    it('should work to store pem', async function() {
       const certHolderId = `${new Date().getTime()}`;
       const certVersion = 1;
       const properties = {
@@ -76,7 +77,7 @@ describe('ClientService', function() {
       chai.assert.notEqual(null, after);
     });
 
-    it('should work with CryptoKey when indexedDB is enabled',
+    it('should work to store CryptoKey',
         async function() {
           const certHolderId = `${new Date().getTime()}`;
           const certVersion = 1;
@@ -100,5 +101,31 @@ describe('ClientService', function() {
           chai.assert.notEqual(null, after);
         }
     );
+  });
+
+  describe('#deleteCachedPrivateKey', function() {
+    it('shoud work fine', async function() {
+      const privateKey = generatedKeyPair.privateKey;
+      const certHolderId = `${new Date().getTime()}`;
+      const certVersion = 1;
+      const keyId = `${certHolderId}_${certVersion}`;
+
+      await keystore.put(keyId, privateKey);
+      const properties = {
+        'scalar.dl.client.server.host': '127.0.0.1',
+        'scalar.dl.client.server.port': 50051,
+        'scalar.dl.client.server.privileged_port': 50052,
+        'scalar.dl.client.cert_holder_id': certHolderId,
+        'scalar.dl.client.cert_version': certVersion,
+      };
+      const clientService = new ClientService(properties);
+
+      const before = await keystore.get(keyId);
+      await clientService.removeCachedPrivateKey();
+      const after = await keystore.get(keyId);
+
+      chai.assert.notEqual(null, before);
+      chai.assert.equal(null, after);
+    });
   });
 });

@@ -99,11 +99,10 @@ class ClientService extends ClientServiceBase {
           ClientPropertiesField.CERT_VERSION,
         ], // cert_holder_id and cert_version are required
     );
+    const keyId = `${clientProperties.getCertHolderId()}_` +
+      `${clientProperties.getCertVersion()}`;
 
-    await keystore.delete(
-        `${clientProperties.getCertHolderId()}_` +
-        `${clientProperties.getCertVersion()}`
-    );
+    await keystore.delete(keyId);
   }
 }
 
