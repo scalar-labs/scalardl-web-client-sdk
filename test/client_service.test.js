@@ -21,12 +21,15 @@ describe('ClientService', function() {
     it('should work when indexedDB is enabled', async function() {
       const privateKey = generatedKeyPair.privateKey;
       const certHolderId = `${new Date().getTime()}`;
-      await keystore.put(certHolderId, privateKey);
+      const certVersion = 1;
+
+      await keystore.put(`${certHolderId}_${certVersion}`, privateKey);
       const properties = {
         'scalar.dl.client.server.host': '127.0.0.1',
         'scalar.dl.client.server.port': 50051,
         'scalar.dl.client.server.privileged_port': 50052,
         'scalar.dl.client.cert_holder_id': certHolderId,
+        'scalar.dl.client.cert_version': certVersion,
       };
 
       const clientService = new ClientService(properties);
@@ -49,22 +52,25 @@ describe('ClientService', function() {
 
     it('should work with pem when indexedDB is enabled', async function() {
       const certHolderId = `${new Date().getTime()}`;
+      const certVersion = 1;
       const properties = {
         'scalar.dl.client.server.host': '127.0.0.1',
         'scalar.dl.client.server.port': 50051,
         'scalar.dl.client.server.privileged_port': 50052,
         'scalar.dl.client.cert_holder_id': certHolderId,
+        'scalar.dl.client.cert_version': certVersion,
         'scalar.dl.client.private_key_pem': '-----BEGIN EC PRIVATE KEY-----\n' +
           'MHcCAQEEICcJGMEw3dyXUGFu/5a36HqY0ynZi9gLUfKgYWMYgr/IoAoGCCqGSM49\n' +
           'AwEHoUQDQgAEBGuhqumyh7BVNqcNKAQQipDGooUpURve2dO66pQCgjtSfu7lJV20\n' +
           'XYWdrgo0Y3eXEhvK0lsURO9N0nrPiQWT4A==\n' +
           '-----END EC PRIVATE KEY-----\n',
       };
+      const keyId = `${certHolderId}_${certVersion}`;
 
-      const before = await keystore.get(certHolderId);
+      const before = await keystore.get(keyId);
       const clientService = new ClientService(properties);
       await clientService.enableIndexedDB();
-      const after = await keystore.get(certHolderId);
+      const after = await keystore.get(keyId);
 
       chai.assert.equal(null, before);
       chai.assert.notEqual(null, after);
@@ -73,19 +79,22 @@ describe('ClientService', function() {
     it('should work with CryptoKey when indexedDB is enabled',
         async function() {
           const certHolderId = `${new Date().getTime()}`;
+          const certVersion = 1;
           const key = generatedKeyPair.privateKey;
           const properties = {
             'scalar.dl.client.server.host': '127.0.0.1',
             'scalar.dl.client.server.port': 50051,
             'scalar.dl.client.server.privileged_port': 50052,
             'scalar.dl.client.cert_holder_id': certHolderId,
+            'scalar.dl.client.cert_version': certVersion,
             'scalar.dl.client.private_key_cryptokey': key,
           };
+          const keyId = `${certHolderId}_${certVersion}`;
 
-          const before = await keystore.get(certHolderId);
+          const before = await keystore.get(keyId);
           const clientService = new ClientService(properties);
           await clientService.enableIndexedDB();
-          const after = await keystore.get(certHolderId);
+          const after = await keystore.get(keyId);
 
           chai.assert.equal(null, before);
           chai.assert.notEqual(null, after);

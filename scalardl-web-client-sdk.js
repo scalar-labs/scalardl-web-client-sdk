@@ -62,18 +62,22 @@ class ClientService extends ClientServiceBase {
     const keystore = new Keystore(KEYSTORE_DATABASE_NAME);
     const clientProperties = new ClientProperties(
         this.properties,
-        [ClientPropertiesField.CERT_HOLDER_ID], // cert_holder_id is required
+        [
+          ClientPropertiesField.CERT_HOLDER_ID,
+          ClientPropertiesField.CERT_VERSION,
+        ], // cert_holder_id cert_version are required
     );
     const cryptoKey = clientProperties.getPrivateKeyCryptoKey();
     const pem = clientProperties.getPrivateKeyPem();
-    const certHolderId = clientProperties.getCertHolderId();
+    const keyId = `${clientProperties.getCertHolderId()}_` +
+      `${clientProperties.getCertVersion()}`;
 
     let key;
     if (cryptoKey || pem) {
       key = cryptoKey || await toCryptoKeyFrom(toPkcs8From(pem));
-      await keystore.put(certHolderId, key);
+      await keystore.put(keyId, key);
     } else {
-      key = await keystore.get(certHolderId);
+      key = await keystore.get(keyId);
       if (!key) {
         throw new Error('Key is not found in keystore');
       }
@@ -90,10 +94,16 @@ class ClientService extends ClientServiceBase {
     const keystore = new Keystore(KEYSTORE_DATABASE_NAME);
     const clientProperties = new ClientProperties(
         this.properties,
-        [ClientProperties.CERT_HOLDER_ID], // cert_holder_id is required
+        [
+          ClientPropertiesField.CERT_HOLDER_ID,
+          ClientPropertiesField.CERT_VERSION,
+        ], // cert_holder_id and cert_version are required
     );
 
-    await keystore.delete(clientProperties.getCertHolderId());
+    await keystore.delete(
+        `${clientProperties.getCertHolderId()}_` +
+        `${clientProperties.getCertVersion()}`
+    );
   }
 }
 
