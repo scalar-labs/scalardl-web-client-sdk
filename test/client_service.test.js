@@ -17,7 +17,7 @@ describe('ClientService', function() {
     );
   });
 
-  describe('#enableIndexedDB()', function() {
+  describe('#useIndexedDB()', function() {
     it('should work if key is stored', async function() {
       const privateKey = generatedKeyPair.privateKey;
       const certHolderId = `${new Date().getTime()}`;
@@ -34,7 +34,7 @@ describe('ClientService', function() {
       };
 
       const clientService = new ClientService(properties);
-      await clientService.enableIndexedDB();
+      await clientService.useIndexedDB();
       const signature = await window.crypto.subtle.sign(
           {name: 'ECDSA', hash: 'SHA-256'},
           clientService.properties['scalar.dl.client.private_key_cryptokey'],
@@ -70,7 +70,7 @@ describe('ClientService', function() {
 
       const before = await keystore.get(keyId);
       const clientService = new ClientService(properties);
-      await clientService.enableIndexedDB();
+      await clientService.useIndexedDB();
       const after = await keystore.get(keyId);
 
       chai.assert.equal(null, before);
@@ -94,7 +94,7 @@ describe('ClientService', function() {
 
           const before = await keystore.get(keyId);
           const clientService = new ClientService(properties);
-          await clientService.enableIndexedDB();
+          await clientService.useIndexedDB();
           const after = await keystore.get(keyId);
 
           chai.assert.equal(null, before);

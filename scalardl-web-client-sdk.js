@@ -55,10 +55,10 @@ class ClientService extends ClientServiceBase {
   }
 
   /**
-   * @description initiate indexedDB
+   * @description use indexedDB
    *  and check if it is necessary to load keys for the users
    */
-  async enableIndexedDB() {
+  async useIndexedDB() {
     const keystore = new Keystore(KEYSTORE_DATABASE_NAME);
     const clientProperties = new ClientProperties(
         this.properties,
