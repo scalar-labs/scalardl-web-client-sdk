@@ -27,7 +27,6 @@ It provides following functions to request Scalar DL network.
 |listContracts|To list all registered contracts of the client|
 |executeContract|To execute a registered contract of the client|
 |validateLedger|To validate an asset of the Scalar DL network to determine if it is tampered|
-|enableIndexedDB|To store private keys into indexedDB or to load private keys from indexedDB|
 |removeCachedPrivateKey|To remove private keys store in indexedDB|
 
 If an error occurs when executing one of the above methods, a `ClientError` will be thrown. The
@@ -219,7 +218,7 @@ stores the private keys in difference index from this client properties
 ```
 
 We can use `clientService.removeCachedPrivateKey()` to remove stored private keys.
-This function only remove the private key that is stored with the index composited by the the `scalar.dl.client.cert_holder_id` and `scalar.dl.client.cert_version` in the client properties.
+This function only removes the private key that is stored with the index composited by the the `scalar.dl.client.cert_holder_id` and `scalar.dl.client.cert_version` in the client properties.
 
 ## Envoy configuration
 Scalar DLT server (grpc) uses a custom header called `rpc.status-bin` to share error metadata with the client. This means envoy needs to be
