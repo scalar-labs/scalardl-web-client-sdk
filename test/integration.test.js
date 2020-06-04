@@ -107,11 +107,14 @@ describe('ClientService', () => {
       });
     });
     describe('listContracts', () => {
-      it( 'should return contract metadata when the correct contract id is specified',
+      it(
+          'should return contract metadata ' +
+          'when the correct contract id is specified',
           async () => {
             const response = await clientService.listContracts();
             assert.ok(response.hasOwnProperty(mockedContractId));
-          });
+          },
+      );
     });
     describe('executeContract', () => {
       it('should work as expected when executing a registered contract',
@@ -125,7 +128,9 @@ describe('ClientService', () => {
             assert.equal(contractResult.properties,
                 contractProperty.properties);
           });
-      it('should work as expected when executing a registered contract and function',
+      it(
+          'should work as expected ' +
+          'when executing a registered contract and function',
           async () => {
             const functionArgument = {
               asset_id: mockedAssetId,
@@ -137,7 +142,10 @@ describe('ClientService', () => {
               _functions_: [mockedFunctionId],
             };
             const response = await clientService.executeContract(
-                mockedContractId, contractArgumentWithFunction, functionArgument);
+                mockedContractId,
+                contractArgumentWithFunction,
+                functionArgument,
+            );
             assert.equal(response.getResult().state,
                 contractArgumentWithFunction.state);
           });
