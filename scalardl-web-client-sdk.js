@@ -52,13 +52,20 @@ class ClientService extends ClientServiceBase {
     };
 
     super(services, protobuf, properties);
+
+    if (properties['scalar.dl.client.private_key_indexeddb_enabled'] === true) {
+      return (async () => {
+        await this._useIndexedDB();
+        return this;
+      })();
+    }
   }
 
   /**
    * @description use indexedDB
    *  and check if it is necessary to load keys for the users
    */
-  async useIndexedDB() {
+  async _useIndexedDB() {
     const keystore = new Keystore(KEYSTORE_DATABASE_NAME);
     const clientProperties = new ClientProperties(
         this.properties,

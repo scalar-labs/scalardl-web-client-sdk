@@ -17,39 +17,41 @@ describe('ClientService', function() {
     );
   });
 
-  describe('#useIndexedDB()', function() {
-    it('should work if key is stored', async function() {
-      const privateKey = generatedKeyPair.privateKey;
-      const certHolderId = `${new Date().getTime()}`;
-      const certVersion = 1;
-      const keyId = `${certHolderId}_${certVersion}`;
+  describe('#constructor()', function() {
+    it('should work if key is stored when indexedDB is enabled',
+        async function() {
+          const privateKey = generatedKeyPair.privateKey;
+          const certHolderId = `${new Date().getTime()}`;
+          const certVersion = 1;
+          const keyId = `${certHolderId}_${certVersion}`;
+          await keystore.put(keyId, privateKey);
+          const properties = {
+            'scalar.dl.client.server.host': '127.0.0.1',
+            'scalar.dl.client.server.port': 50051,
+            'scalar.dl.client.server.privileged_port': 50052,
+            'scalar.dl.client.cert_holder_id': certHolderId,
+            'scalar.dl.client.cert_version': certVersion,
+            'scalar.dl.client.private_key_indexeddb_enabled': true,
+          };
 
-      await keystore.put(keyId, privateKey);
-      const properties = {
-        'scalar.dl.client.server.host': '127.0.0.1',
-        'scalar.dl.client.server.port': 50051,
-        'scalar.dl.client.server.privileged_port': 50052,
-        'scalar.dl.client.cert_holder_id': certHolderId,
-        'scalar.dl.client.cert_version': certVersion,
-      };
+          const clientService = await new ClientService(properties);
+          const signature = await window.crypto.subtle.sign(
+              {name: 'ECDSA', hash: 'SHA-256'},
+              clientService.properties[
+                  'scalar.dl.client.private_key_cryptokey'
+              ],
+              new ArrayBuffer([1, 2, 3]),
+          );
+          const verified = await window.crypto.subtle.verify(
+              {name: 'ECDSA', hash: 'SHA-256'},
+              generatedKeyPair.publicKey,
+              signature,
+              new ArrayBuffer([0, 1, 2, 3]),
+          );
 
-      const clientService = new ClientService(properties);
-      await clientService.useIndexedDB();
-      const signature = await window.crypto.subtle.sign(
-          {name: 'ECDSA', hash: 'SHA-256'},
-          clientService.properties['scalar.dl.client.private_key_cryptokey'],
-          new ArrayBuffer([1, 2, 3]),
-      );
-
-      const verified = await window.crypto.subtle.verify(
-          {name: 'ECDSA', hash: 'SHA-256'},
-          generatedKeyPair.publicKey,
-          signature,
-          new ArrayBuffer([0, 1, 2, 3]),
-      );
-
-      chai.assert.equal(true, verified);
-    });
+          chai.assert.equal(true, verified);
+        }
+    );
 
     it('should work to store pem', async function() {
       const certHolderId = `${new Date().getTime()}`;
@@ -60,6 +62,7 @@ describe('ClientService', function() {
         'scalar.dl.client.server.privileged_port': 50052,
         'scalar.dl.client.cert_holder_id': certHolderId,
         'scalar.dl.client.cert_version': certVersion,
+        'scalar.dl.client.private_key_indexeddb_enabled': true,
         'scalar.dl.client.private_key_pem': '-----BEGIN EC PRIVATE KEY-----\n' +
           'MHcCAQEEICcJGMEw3dyXUGFu/5a36HqY0ynZi9gLUfKgYWMYgr/IoAoGCCqGSM49\n' +
           'AwEHoUQDQgAEBGuhqumyh7BVNqcNKAQQipDGooUpURve2dO66pQCgjtSfu7lJV20\n' +
@@ -69,8 +72,7 @@ describe('ClientService', function() {
       const keyId = `${certHolderId}_${certVersion}`;
 
       const before = await keystore.get(keyId);
-      const clientService = new ClientService(properties);
-      await clientService.useIndexedDB();
+      await new ClientService(properties);
       const after = await keystore.get(keyId);
 
       chai.assert.equal(null, before);
@@ -88,13 +90,13 @@ describe('ClientService', function() {
             'scalar.dl.client.server.privileged_port': 50052,
             'scalar.dl.client.cert_holder_id': certHolderId,
             'scalar.dl.client.cert_version': certVersion,
+            'scalar.dl.client.private_key_indexeddb_enabled': true,
             'scalar.dl.client.private_key_cryptokey': key,
           };
           const keyId = `${certHolderId}_${certVersion}`;
 
           const before = await keystore.get(keyId);
-          const clientService = new ClientService(properties);
-          await clientService.useIndexedDB();
+          await new ClientService(properties);
           const after = await keystore.get(keyId);
 
           chai.assert.equal(null, before);
@@ -103,13 +105,12 @@ describe('ClientService', function() {
     );
   });
 
-  describe('#deleteCachedPrivateKey', function() {
+  describe('#removeCachedPrivateKey', function() {
     it('shoud work fine', async function() {
       const privateKey = generatedKeyPair.privateKey;
       const certHolderId = `${new Date().getTime()}`;
       const certVersion = 1;
       const keyId = `${certHolderId}_${certVersion}`;
-
       await keystore.put(keyId, privateKey);
       const properties = {
         'scalar.dl.client.server.host': '127.0.0.1',
@@ -118,8 +119,8 @@ describe('ClientService', function() {
         'scalar.dl.client.cert_holder_id': certHolderId,
         'scalar.dl.client.cert_version': certVersion,
       };
-      const clientService = new ClientService(properties);
 
+      const clientService = await new ClientService(properties);
       const before = await keystore.get(keyId);
       await clientService.removeCachedPrivateKey();
       const after = await keystore.get(keyId);
