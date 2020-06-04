@@ -27,6 +27,8 @@ It provides following functions to request Scalar DL network.
 |listContracts|To list all registered contracts of the client|
 |executeContract|To execute a registered contract of the client|
 |validateLedger|To validate an asset of the Scalar DL network to determine if it is tampered|
+|enableIndexedDB|To store private keys into indexedDB or to load private keys from indexedDB|
+|removeCachedPrivateKey|To remove private keys store in indexedDB|
 
 If an error occurs when executing one of the above methods, a `ClientError` will be thrown. The
 `ClientError.statusCode` provides additional context. Please refer to the [Runtime error](#runtime-error) section below for the status code specification.
@@ -45,7 +47,7 @@ Or, if you use the static release, try following
 </head>
 
 <script>
-    const clientService = new Scalar.ClientService(clientProperties);
+    const clientService = await new Scalar.ClientService(clientProperties);
 </script>
 ```
 
@@ -154,6 +156,70 @@ StatusCode = {
   CLIENT_RUNTIME_ERROR: 602,
 };
 ```
+
+## Support of IndexedDB
+This library provides the support of storing private keys in the browser [indexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API).
+The function can be enabled by setting `scalar.dl.client.private_key_indexeddb_enabled` to `true` in the client properties.
+
+As indexedDB function is enabled, depending on whether a private key is specified in the properties,
+the construction stores the private key in the indexedDB or reads the private key from the indexedDB.
+
+For example, with this client properties
+```
+{
+    ...
+    'scalar.dl.client.cert_holder_id': 'foo@example.com',
+    'scalar.dl.client.cert_version': 1,
+    'scalar.dl.client.private_key_pem': '-----BEGIN EC PRIVATE KEY-----\nMHc...',
+    'scalar.dl.client.private_key_indexeddb_enabled': true,
+    ...
+}
+```
+
+The private key will be stored in the indexedDB.
+
+With this client properties
+```
+{
+    ...
+    'scalar.dl.client.cert_holder_id': 'foo@example.com',
+    'scalar.dl.client.cert_version': 1,
+    'scalar.dl.client.private_key_pem': null,
+    'scalar.dl.client.private_key_indexeddb_enabled': true,
+    ...
+}
+```
+
+the private key will be loaded from indexedDB.
+The library throws an error if the private key is not found in indexedDB.
+Notice that the private keys are stored with the index that composited by `scalar.dl.client.cert_holder_id` and `scalar.dl.client.cert_version`.
+Therefore, this client properties
+```
+{
+    ...
+    'scalar.dl.client.cert_holder_id': 'foo@example.com',
+    'scalar.dl.client.cert_version': 1,
+    'scalar.dl.client.private_key_pem': '-----BEGIN EC PRIVATE KEY-----\nMHc...',
+    'scalar.dl.client.private_key_indexeddb_enabled': true,
+    ...
+}
+```
+
+stores the private keys in difference index from this client properties
+
+```
+{
+    ...
+    'scalar.dl.client.cert_holder_id': 'foo@example.com',
+    'scalar.dl.client.cert_version': 2,
+    'scalar.dl.client.private_key_pem': '-----BEGIN EC PRIVATE KEY-----\nMHc...',
+    'scalar.dl.client.private_key_indexeddb_enabled': true,
+    ...
+}
+```
+
+We can use `clientService.removeCachedPrivateKey()` to remove stored private keys.
+This function only remove the private key that is stored with the index composited by the the `scalar.dl.client.cert_holder_id` and `scalar.dl.client.cert_version` in the client properties.
 
 ## Envoy configuration
 Scalar DLT server (grpc) uses a custom header called `rpc.status-bin` to share error metadata with the client. This means envoy needs to be
