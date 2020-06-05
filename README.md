@@ -218,7 +218,7 @@ stores the private keys in difference index from this client properties
 ```
 
 We can use `clientService.removeCachedPrivateKey()` to remove stored private keys.
-This function only removes the private key that is stored with the index composited by the the `scalar.dl.client.cert_holder_id` and `scalar.dl.client.cert_version` in the client properties.
+This function only removes the private keys that are stored with indexes comprising the `scalar.dl.client.cert_holder_id` and `scalar.dl.client.cert_version` in the client properties.
 
 ## Envoy configuration
 Scalar DLT server (grpc) uses a custom header called `rpc.status-bin` to share error metadata with the client. This means envoy needs to be
