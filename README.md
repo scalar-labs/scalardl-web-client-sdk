@@ -157,7 +157,7 @@ StatusCode = {
 ```
 
 ## Support of IndexedDB
-This library provides the support of storing private keys in the browser [indexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API).
+This library provides a support of storing private keys in the browsers' [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API).
 The feature can be enabled by setting `scalar.dl.client.private_key_indexeddb_enabled` to `true` in the client properties.
 
 As indexedDB function is enabled, depending on whether a private key is specified in the properties,
