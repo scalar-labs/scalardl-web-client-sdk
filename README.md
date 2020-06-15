@@ -20,14 +20,13 @@ You can also find a bundle `scalardl-web-client-sdk.bundle.js` which can be impo
 `ClientService` class is the main class of this package.
 It provides following functions to request Scalar DL network.
 
-|Name|use|
+|Name|Use|
 |----|---|
 |registerCertificate|To register a client's certificate to a Scalar DL network|
 |registerContract|To register the contracts to the registered client of the Scalar DL network|
 |listContracts|To list all registered contracts of the client|
 |executeContract|To execute a registered contract of the client|
 |validateLedger|To validate an asset of the Scalar DL network to determine if it is tampered|
-|removeCachedPrivateKey|To remove private keys store in indexedDB|
 
 If an error occurs when executing one of the above methods, a `ClientError` will be thrown. The
 `ClientError.statusCode` provides additional context. Please refer to the [Runtime error](#runtime-error) section below for the status code specification.
@@ -46,7 +45,7 @@ Or, if you use the static release, try following
 </head>
 
 <script>
-    const clientService = await new Scalar.ClientService(clientProperties);
+    const clientService = new Scalar.ClientService(clientProperties);
 </script>
 ```
 
@@ -157,11 +156,23 @@ StatusCode = {
 ```
 
 ## IndexedDB support
-This library provides a support of storing private keys in the browsers' [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API).
-The feature can be enabled by setting `scalar.dl.client.private_key_indexeddb_enabled` to `true` in the client properties.
+This library provides a decorator class `ClientServiceWithIndexedDb` to support storing private keys in the browsers' [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API).
+We can decorate `ClientService` like
 
-Once the indexedDB function is enabled, depending on whether or not a private key is specified in the properties,
-the construction stores the private key in the indexedDB or reads the private key from the indexedDB.
+```
+const clientService = new ClientServiceWithIndexedDb(new ClientService(properties));
+```
+
+with two functions to operate indexedDB.
+
+|Name|Use|
+|----|---|
+|getIndexedDb|Read the private key from the indexedDB or store the private key in the indexedDB|
+|deleteIndexedDb|Delete the stored key from the indexedDB|
+
+### getIndexedDb
+Once getIndexedDb is executed, depending on whether or not a private key is specified in the properties,
+the function stores the private key in the indexedDB or reads the private key from the indexedDB.
 
 For example, with this client properties
 ```
@@ -175,7 +186,7 @@ For example, with this client properties
 }
 ```
 
-The private key will be stored in the indexedDB.
+The private key (`scalar.dl.client.private_key_pem`) will be stored in the indexedDB.
 
 With this client properties
 ```
@@ -189,8 +200,9 @@ With this client properties
 }
 ```
 
-the private key will be loaded from indexedDB.
-The library throws an error if the private key is not found in indexedDB.
+the private key will be loaded from the indexedDB.
+getIndexedDb will throw an error if the private key is not found in indexedDB.
+
 Notice that the private keys are stored with the index that composited by `scalar.dl.client.cert_holder_id` and `scalar.dl.client.cert_version`.
 Therefore, this client properties
 ```
@@ -217,8 +229,9 @@ stores the private keys in difference index from this client properties
 }
 ```
 
-We can use `clientService.removeCachedPrivateKey()` to remove stored private keys.
-This function only removes the private keys that are stored with indexes comprising the `scalar.dl.client.cert_holder_id` and `scalar.dl.client.cert_version` in the client properties.
+### deleteIndexedDb
+deleteIndexedDb will remove the stored private key according to the `scalar.dl.client.cert_holder_id` and `scalar.dl.client.cert_version` in the client properties.
+
 
 ## Envoy configuration
 Scalar DLT server (grpc) uses a custom header called `rpc.status-bin` to share error metadata with the client. This means envoy needs to be
