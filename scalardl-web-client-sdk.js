@@ -1,3 +1,4 @@
+/* eslint-disable no-invalid-this */
 const {
   ClientServiceBase,
   StatusCode,
@@ -52,68 +53,80 @@ class ClientService extends ClientServiceBase {
     };
 
     super(services, protobuf, properties);
-
-    if (properties['scalar.dl.client.private_key_indexeddb_enabled'] === true) {
-      return (async () => {
-        await this._useIndexedDB();
-        return this;
-      })();
-    }
   }
+}
 
+/**
+ * @description
+ *  This class delegates two functions related indexedDB to for ClientService
+ */
+class ClientServiceWithIndexedDb {
   /**
-   * @description use indexedDB
-   *  and check if it is necessary to load keys for the users
+   * @param {ClientService} clientService
+   * @return {ClientService}
    */
-  async _useIndexedDB() {
-    const keystore = new Keystore(KEYSTORE_DATABASE_NAME);
-    const clientProperties = new ClientProperties(
-        this.properties,
-        [
-          ClientPropertiesField.CERT_HOLDER_ID,
-          ClientPropertiesField.CERT_VERSION,
-        ], // cert_holder_id cert_version are required
-    );
-    const cryptoKey = clientProperties.getPrivateKeyCryptoKey();
-    const pem = clientProperties.getPrivateKeyPem();
-    const keyId = `${clientProperties.getCertHolderId()}_` +
-      `${clientProperties.getCertVersion()}`;
+  constructor(clientService) {
+    /**
+     * @description use indexedDB
+     *  and check if it is necessary to load keys for the users
+     */
+    const getIndexedDb = async function() {
+      const keystore = new Keystore(KEYSTORE_DATABASE_NAME);
+      const clientProperties = new ClientProperties(
+          this.properties,
+          [
+            ClientPropertiesField.CERT_HOLDER_ID,
+            ClientPropertiesField.CERT_VERSION,
+          ], // cert_holder_id cert_version are required
+      );
+      const cryptoKey = clientProperties.getPrivateKeyCryptoKey();
+      const pem = clientProperties.getPrivateKeyPem();
+      const keyId = `${clientProperties.getCertHolderId()}_` +
+        `${clientProperties.getCertVersion()}`;
 
-    let key;
-    if (cryptoKey || pem) {
-      key = cryptoKey || await toCryptoKeyFrom(toPkcs8From(pem));
-      await keystore.put(keyId, key);
-    } else {
-      key = await keystore.get(keyId);
-      if (!key) {
-        throw new Error('Key is not found in keystore');
+      let key;
+      if (cryptoKey || pem) {
+        key = cryptoKey || await toCryptoKeyFrom(toPkcs8From(pem));
+        await keystore.put(keyId, key);
+      } else {
+        key = await keystore.get(keyId);
+        if (!key) {
+          throw new Error('Key is not found in keystore');
+        }
       }
-    }
 
-    this.properties['scalar.dl.client.private_key_cryptokey'] = key;
-  }
+      this.properties['scalar.dl.client.private_key_cryptokey'] = key;
+    }.bind(clientService);
 
-  /**
-   * @description
-   *  Remove the private key stored in indexedDB for `cert_holder_id`
-   */
-  async removeCachedPrivateKey() {
-    const keystore = new Keystore(KEYSTORE_DATABASE_NAME);
-    const clientProperties = new ClientProperties(
-        this.properties,
-        [
-          ClientPropertiesField.CERT_HOLDER_ID,
-          ClientPropertiesField.CERT_VERSION,
-        ], // cert_holder_id and cert_version are required
-    );
-    const keyId = `${clientProperties.getCertHolderId()}_` +
-      `${clientProperties.getCertVersion()}`;
 
-    await keystore.delete(keyId);
+    /**
+     * @description
+     *  Remove the private key stored in indexedDB for `cert_holder_id`
+     */
+    const deleteIndexedDb = async function() {
+      const keystore = new Keystore(KEYSTORE_DATABASE_NAME);
+      const clientProperties = new ClientProperties(
+          this.properties,
+          [
+            ClientPropertiesField.CERT_HOLDER_ID,
+            ClientPropertiesField.CERT_VERSION,
+          ], // cert_holder_id and cert_version are required
+      );
+      const keyId = `${clientProperties.getCertHolderId()}_` +
+        `${clientProperties.getCertVersion()}`;
+
+      await keystore.delete(keyId);
+    }.bind(clientService);
+
+    clientService.getIndexedDb = getIndexedDb;
+    clientService.deleteIndexedDb = deleteIndexedDb;
+
+    return clientService;
   }
 }
 
 module.exports = {
   ClientService,
+  ClientServiceWithIndexedDb,
   StatusCode,
 };

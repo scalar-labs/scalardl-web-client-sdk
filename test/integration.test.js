@@ -1,5 +1,9 @@
 describe('ClientService', () => {
-  const {ClientService, StatusCode} = require('../scalardl-web-client-sdk.js');
+  const {
+    ClientService,
+    ClientServiceWithIndexedDb,
+    StatusCode,
+  } = require('../scalardl-web-client-sdk.js');
   const properties = {
     'scalar.dl.client.server.host': '127.0.0.1',
     'scalar.dl.client.server.port': 80,
@@ -158,7 +162,7 @@ describe('ClientService', () => {
     });
   });
 
-  describe('Integration test with indexedDB enabled', function() {
+  describe('Integration test with ClientServiceWithIndexedDb', function() {
     it('should be able to use prestored private key', async function() {
       const {Keystore} = require('../lib/keystore');
       const holderId = `foo${Date.now()}`;
@@ -197,8 +201,11 @@ describe('ClientService', () => {
           'Gc/v+yh4dHIDhCrimajTQAYOG9n0kajULI70Gg7TNw==\n' +
           '-----END CERTIFICATE-----\n',
       };
-      const clientService = await new ClientService(properties);
 
+      const clientService = new ClientServiceWithIndexedDb(
+          new ClientService(properties)
+      );
+      await clientService.getIndexedDb();
       await clientService.registerCertificate();
       const response = await clientService.validateLedger('non_existing_asset');
 
