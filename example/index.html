@@ -138,7 +138,7 @@
     });
 
   document.querySelector('#registerCertificate')
-    .addEventListener('click', async (event) => {
+    .addEventListener('click', event => {
       const address = document.querySelector('#address').value;
       const port = document.querySelector('#port').value;
       const port2 = document.querySelector('#port2').value;
@@ -159,7 +159,7 @@
         'scalar.dl.client.cert_version': 1,
         'scalar.dl.client.tls.enabled': tls,
       };
-      clientService = await new Scalar.ClientService(clientProperties);
+      clientService = new Scalar.ClientService(clientProperties);
       clientService.registerCertificate()
         .then(response => {
           document.querySelector(
