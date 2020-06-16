@@ -202,10 +202,9 @@ describe('ClientService', () => {
           '-----END CERTIFICATE-----\n',
       };
 
-      const clientService = new ClientServiceWithIndexedDb(
+      const clientService = await new ClientServiceWithIndexedDb(
           new ClientService(properties)
       );
-      await clientService.getIndexedDb();
       await clientService.registerCertificate();
       const response = await clientService.validateLedger('non_existing_asset');
 

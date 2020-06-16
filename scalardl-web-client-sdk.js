@@ -62,19 +62,40 @@ class ClientService extends ClientServiceBase {
  */
 class ClientServiceWithIndexedDb {
   /**
+   * @description use indexedDB
+   *  and check if it is necessary to load keys for the users
    * @param {ClientService} clientService
    * @return {ClientService}
+   * @throws {Error} if the private key is not found
    */
   constructor(clientService) {
     /**
-     * @description use indexedDB
-     *  and check if it is necessary to load keys for the users
-     * @throws {Error} if the private key is not found
+     * @description
+     *  Remove the private key stored in indexedDB for `cert_holder_id`
      */
-    const getIndexedDb = async function() {
+    const deleteIndexedDb = async function() {
       const keystore = new Keystore(KEYSTORE_DATABASE_NAME);
       const clientProperties = new ClientProperties(
           this.properties,
+          [
+            ClientPropertiesField.CERT_HOLDER_ID,
+            ClientPropertiesField.CERT_VERSION,
+          ], // cert_holder_id and cert_version are required
+      );
+      const keyId = `${clientProperties.getCertHolderId()}_` +
+        `${clientProperties.getCertVersion()}`;
+
+      await keystore.delete(keyId);
+    }.bind(clientService);
+
+    // clientService.getIndexedDb = getIndexedDb;
+    clientService.deleteIndexedDb = deleteIndexedDb;
+
+
+    return (async () => {
+      const keystore = new Keystore(KEYSTORE_DATABASE_NAME);
+      const clientProperties = new ClientProperties(
+          clientService.properties,
           [
             ClientPropertiesField.CERT_HOLDER_ID,
             ClientPropertiesField.CERT_VERSION,
@@ -96,33 +117,9 @@ class ClientServiceWithIndexedDb {
         }
       }
 
-      this.properties['scalar.dl.client.private_key_cryptokey'] = key;
-    }.bind(clientService);
-
-
-    /**
-     * @description
-     *  Remove the private key stored in indexedDB for `cert_holder_id`
-     */
-    const deleteIndexedDb = async function() {
-      const keystore = new Keystore(KEYSTORE_DATABASE_NAME);
-      const clientProperties = new ClientProperties(
-          this.properties,
-          [
-            ClientPropertiesField.CERT_HOLDER_ID,
-            ClientPropertiesField.CERT_VERSION,
-          ], // cert_holder_id and cert_version are required
-      );
-      const keyId = `${clientProperties.getCertHolderId()}_` +
-        `${clientProperties.getCertVersion()}`;
-
-      await keystore.delete(keyId);
-    }.bind(clientService);
-
-    clientService.getIndexedDb = getIndexedDb;
-    clientService.deleteIndexedDb = deleteIndexedDb;
-
-    return clientService;
+      clientService.properties['scalar.dl.client.private_key_cryptokey'] = key;
+      return clientService;
+    })();
   }
 }
 
