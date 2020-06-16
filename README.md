@@ -160,19 +160,11 @@ This library provides a decorator class `ClientServiceWithIndexedDb` to support 
 We can decorate `ClientService` like
 
 ```
-const clientService = new ClientServiceWithIndexedDb(new ClientService(properties));
+const clientService = await new ClientServiceWithIndexedDb(new ClientService(properties));
 ```
 
-with two functions to operate indexedDB.
-
-|Name|Use|
-|----|---|
-|getIndexedDb|Read the private key from the indexedDB or store the private key in the indexedDB|
-|deleteIndexedDb|Delete the stored key from the indexedDB|
-
-### getIndexedDb
-Once getIndexedDb is executed, depending on whether or not a private key is specified in the properties,
-the function stores the private key in the indexedDB or reads the private key from the indexedDB.
+Once ClientServiceWithIndexedDb is used,
+it tries to store the private key in the indexedDB or read the private key from the indexedDB depending on whether or not a private key is specified in the properties.
 
 In the following example, tHe application tries to read ther user's private key from the indexedDB.
 If the private key is not found, the application tries to get private key from an external service.
@@ -184,17 +176,16 @@ let properties = {
     'scalar.dl.client.private_key_pem: null,
     ...
 };
-let clientService = new ClientServiceWithIndexedDb(new ClientService(properties));
 
+let clientService;
 try {
-    await clientService.getIndexedDb(); // try to read private key from indexedDB
+    // try to read private key from indexedDB
+    clientService = await new ClientServiceWithIndexedDb(new ClientService(properties));
 } catch (err) {
-    // The private key is not found. Get it from an external service.
     properties['scalar.dl.client.private_key_pem'] = /* from some place */
-    clientService = new ClientServiceWithIndexedDb(new ClientService(properties))
 
     // getIndexedDb will store the private key this time.
-    await clientService.getIndexedDb();
+    clientService = await new ClientServiceWithIndexedDb(new ClientService(properties))
 }
 ```
 
