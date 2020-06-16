@@ -177,7 +177,7 @@ the function stores the private key in the indexedDB or reads the private key fr
 In the following example, tHe application tries to read ther user's private key from the indexedDB.
 If the private key is not found, the application tries to get private key from an external service.
 
-```
+```javascript
 let properties = {
     'scalar.dl.client.cert_holder_id': 'foo@example.com',
     'scalar.dl.client.cert_version': 1,
