@@ -2,7 +2,6 @@ const {
   ClientServiceBase,
   StatusCode,
   ClientProperties,
-  ClientPropertiesField,
 } = require('@scalar-labs/scalardl-javascript-sdk-base');
 
 const protobuf = require('./scalar_pb');
@@ -23,14 +22,7 @@ class ClientService extends ClientServiceBase {
    * @param {Object} properties JSON Object used for setting client properties
    */
   constructor(properties) {
-    const clientProperties = new ClientProperties(
-        properties,
-        [
-          ClientPropertiesField.SERVER_HOST,
-          ClientPropertiesField.SERVER_PORT,
-          ClientPropertiesField.SERVER_PRIVILEGED_PORT,
-        ],
-    );
+    const clientProperties = new ClientProperties(properties);
 
     const host = clientProperties.getServerHost();
     const tlsEnabled = clientProperties.getTlsEnabled();
@@ -41,9 +33,7 @@ class ClientService extends ClientServiceBase {
 
     const services = {
       ledgerClient: new LedgerClient(ledgerClientServiceURL),
-      ledgerPrivileged: new LedgerPrivilegedClient(
-          ledgerPriviledgedClientServiceURL,
-      ),
+      ledgerPrivileged: new LedgerPrivilegedClient(ledgerPriviledgedClientServiceURL),
       signerFactory: new SignerFactory(),
     };
 
