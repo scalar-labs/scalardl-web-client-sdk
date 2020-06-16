@@ -189,7 +189,7 @@ try {
 ```
 
 ### deleteIndexedDb
-deleteIndexedDb will remove the stored private key according to the `scalar.dl.client.cert_holder_id` and `scalar.dl.client.cert_version` in the client properties.
+deleteIndexedDb removes a private key in IndexedDB according to `scalar.dl.client.cert_holder_id` and `scalar.dl.client.cert_version` in client properties.
 
 ## Envoy configuration
 Scalar DLT server (grpc) uses a custom header called `rpc.status-bin` to share error metadata with the client. This means envoy needs to be
