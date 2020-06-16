@@ -178,7 +178,7 @@ let properties = {
 
 let clientService;
 try {
-    // try to read private key from indexedDB
+    // It tries to read a private key from IndexedDB
     clientService = await new ClientServiceWithIndexedDb(new ClientService(properties));
 } catch (err) {
     properties['scalar.dl.client.private_key_pem'] = /* from some place */
