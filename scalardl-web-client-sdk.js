@@ -69,6 +69,7 @@ class ClientServiceWithIndexedDb {
     /**
      * @description use indexedDB
      *  and check if it is necessary to load keys for the users
+     * @throws {Error} if the private key is not found
      */
     const getIndexedDb = async function() {
       const keystore = new Keystore(KEYSTORE_DATABASE_NAME);
