@@ -173,9 +173,8 @@ If the private key is not found, the application tries to get private key from a
 let properties = {
     'scalar.dl.client.cert_holder_id': 'foo@example.com',
     'scalar.dl.client.cert_version': 1,
-    'scalar.dl.client.private_key_pem: null,
     ...
-};
+}; // Not specify 'scalar.dl.client.private_key_pem' or 'scalar.dl.client.private_key_cryptokey'
 
 let clientService;
 try {
