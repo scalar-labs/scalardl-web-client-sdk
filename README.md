@@ -185,7 +185,7 @@ try {
     properties['scalar.dl.client.private_key_pem'] = /* from some place */
 
     // getIndexedDb will store the private key this time.
-    clientService = await new ClientServiceWithIndexedDb(new ClientService(properties))
+    clientService = await new ClientServiceWithIndexedDb(new ClientService(properties));
 }
 ```
 
