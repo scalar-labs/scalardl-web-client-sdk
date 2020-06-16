@@ -183,7 +183,6 @@ describe('ClientService', () => {
         'scalar.dl.client.server.privileged_port': 8080,
         'scalar.dl.client.cert_holder_id': holderId,
         'scalar.dl.client.cert_version': certVersion,
-        'scalar.dl.client.private_key_indexeddb_enabled': true,
         'scalar.dl.client.cert_pem': '-----BEGIN CERTIFICATE-----\n' +
           'MIICizCCAjKgAwIBAgIUMEUDTdWsQpftFkqs6bCd6U++4nEwCgYIKoZIzj0EAwIw\n' +
           'bzELMAkGA1UEBhMCSlAxDjAMBgNVBAgTBVRva3lvMQ4wDAYDVQQHEwVUb2t5bzEf\n' +

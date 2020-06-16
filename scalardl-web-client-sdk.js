@@ -88,9 +88,7 @@ class ClientServiceWithIndexedDb {
       await keystore.delete(keyId);
     }.bind(clientService);
 
-    // clientService.getIndexedDb = getIndexedDb;
     clientService.deleteIndexedDb = deleteIndexedDb;
-
 
     return (async () => {
       const keystore = new Keystore(KEYSTORE_DATABASE_NAME);
@@ -118,6 +116,7 @@ class ClientServiceWithIndexedDb {
       }
 
       clientService.properties['scalar.dl.client.private_key_cryptokey'] = key;
+      delete clientService.properties['scalar.dl.client.private_key_pem'];
       return clientService;
     })();
   }
