@@ -174,64 +174,32 @@ with two functions to operate indexedDB.
 Once getIndexedDb is executed, depending on whether or not a private key is specified in the properties,
 the function stores the private key in the indexedDB or reads the private key from the indexedDB.
 
-For example, with this client properties
+In the following example, tHe application tries to read ther user's private key from the indexedDB.
+If the private key is not found, the application tries to get private key from an external service.
+
 ```
-{
-    ...
+let properties = {
     'scalar.dl.client.cert_holder_id': 'foo@example.com',
     'scalar.dl.client.cert_version': 1,
-    'scalar.dl.client.private_key_pem': '-----BEGIN EC PRIVATE KEY-----\nMHc...',
-    'scalar.dl.client.private_key_indexeddb_enabled': true,
+    'scalar.dl.client.private_key_pem: null,
     ...
-}
-```
+};
+let clientService = new ClientServiceWithIndexedDb(new ClientService(properties));
 
-The private key (`scalar.dl.client.private_key_pem`) will be stored in the indexedDB.
+try {
+    await clientService.getIndexedDb(); // try to read private key from indexedDB
+} catch (err) {
+    // The private key is not found. Get it from an external service.
+    properties['scalar.dl.client.private_key_pem'] = /* from some place */
+    clientService = new ClientServiceWithIndexedDb(new ClientService(properties))
 
-With this client properties
-```
-{
-    ...
-    'scalar.dl.client.cert_holder_id': 'foo@example.com',
-    'scalar.dl.client.cert_version': 1,
-    'scalar.dl.client.private_key_pem': null,
-    'scalar.dl.client.private_key_indexeddb_enabled': true,
-    ...
-}
-```
-
-the private key will be loaded from the indexedDB.
-getIndexedDb will throw an error if the private key is not found in indexedDB.
-
-Notice that the private keys are stored with the index that composited by `scalar.dl.client.cert_holder_id` and `scalar.dl.client.cert_version`.
-Therefore, this client properties
-```
-{
-    ...
-    'scalar.dl.client.cert_holder_id': 'foo@example.com',
-    'scalar.dl.client.cert_version': 1,
-    'scalar.dl.client.private_key_pem': '-----BEGIN EC PRIVATE KEY-----\nMHc...',
-    'scalar.dl.client.private_key_indexeddb_enabled': true,
-    ...
-}
-```
-
-stores the private keys in difference index from this client properties
-
-```
-{
-    ...
-    'scalar.dl.client.cert_holder_id': 'foo@example.com',
-    'scalar.dl.client.cert_version': 2,
-    'scalar.dl.client.private_key_pem': '-----BEGIN EC PRIVATE KEY-----\nMHc...',
-    'scalar.dl.client.private_key_indexeddb_enabled': true,
-    ...
+    // getIndexedDb will store the private key this time.
+    await clientService.getIndexedDb();
 }
 ```
 
 ### deleteIndexedDb
 deleteIndexedDb will remove the stored private key according to the `scalar.dl.client.cert_holder_id` and `scalar.dl.client.cert_version` in the client properties.
-
 
 ## Envoy configuration
 Scalar DLT server (grpc) uses a custom header called `rpc.status-bin` to share error metadata with the client. This means envoy needs to be
