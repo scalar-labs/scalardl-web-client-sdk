@@ -166,7 +166,7 @@ const clientService = await new ClientServiceWithIndexedDb(new ClientService(pro
 Once ClientServiceWithIndexedDb is used,
 it tries to store the private key in the indexedDB or read the private key from the indexedDB depending on whether or not a private key is specified in the properties.
 
-In the following example, tHe application tries to read ther user's private key from the indexedDB.
+Based on the behavior, it is recommended to use it as follows.
 If the private key is not found, the application tries to get private key from an external service.
 
 ```javascript
