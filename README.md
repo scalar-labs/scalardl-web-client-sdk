@@ -157,7 +157,7 @@ StatusCode = {
 
 ## IndexedDB support
 This library supports storing private keys in the browsers' [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API).
-We can decorate `ClientService` like
+To use the feature, please decorate `ClientService` object with `ClientServiceWithIndexedDb` as follows.
 
 ```
 const clientService = await new ClientServiceWithIndexedDb(new ClientService(properties));
