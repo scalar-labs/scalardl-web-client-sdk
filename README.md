@@ -156,7 +156,7 @@ StatusCode = {
 ```
 
 ## IndexedDB support
-This library provides a decorator class `ClientServiceWithIndexedDb` to support storing private keys in the browsers' [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API).
+This library supports storing private keys in the browsers' [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API).
 We can decorate `ClientService` like
 
 ```
