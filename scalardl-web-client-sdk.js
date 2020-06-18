@@ -62,38 +62,19 @@ class ClientService extends ClientServiceBase {
  */
 class ClientServiceWithIndexedDb {
   /**
-   * @description use indexedDB
-   *  and check if it is necessary to load keys for the users
    * @param {ClientService} clientService
    * @return {ClientService}
-   * @throws {Error} if the private key is not found
    */
   constructor(clientService) {
     /**
      * @description
-     *  Remove the private key stored in indexedDB for `cert_holder_id`
+     *  Use indexedDB and check if it is necessary to load keys for the users
+     * @throws {Error}
      */
-    const deleteIndexedDb = async function() {
+    const getIndexedDb = async function() {
       const keystore = new Keystore(KEYSTORE_DATABASE_NAME);
       const clientProperties = new ClientProperties(
           this.properties,
-          [
-            ClientPropertiesField.CERT_HOLDER_ID,
-            ClientPropertiesField.CERT_VERSION,
-          ], // cert_holder_id and cert_version are required
-      );
-      const keyId = `${clientProperties.getCertHolderId()}_` +
-        `${clientProperties.getCertVersion()}`;
-
-      await keystore.delete(keyId);
-    }.bind(clientService);
-
-    clientService.deleteIndexedDb = deleteIndexedDb;
-
-    return (async () => {
-      const keystore = new Keystore(KEYSTORE_DATABASE_NAME);
-      const clientProperties = new ClientProperties(
-          clientService.properties,
           [
             ClientPropertiesField.CERT_HOLDER_ID,
             ClientPropertiesField.CERT_VERSION,
@@ -115,8 +96,34 @@ class ClientServiceWithIndexedDb {
         }
       }
 
-      clientService.properties['scalar.dl.client.private_key_cryptokey'] = key;
-      delete clientService.properties['scalar.dl.client.private_key_pem'];
+      this.properties['scalar.dl.client.private_key_cryptokey'] = key;
+      delete this.properties['scalar.dl.client.private_key_pem'];
+    }.bind(clientService);
+
+    /**
+     * @description
+     *  Remove the private key stored in indexedDB for `cert_holder_id`
+     */
+    const deleteIndexedDb = async function() {
+      const keystore = new Keystore(KEYSTORE_DATABASE_NAME);
+      const clientProperties = new ClientProperties(
+          this.properties,
+          [
+            ClientPropertiesField.CERT_HOLDER_ID,
+            ClientPropertiesField.CERT_VERSION,
+          ], // cert_holder_id and cert_version are required
+      );
+      const keyId = `${clientProperties.getCertHolderId()}_` +
+        `${clientProperties.getCertVersion()}`;
+
+      await keystore.delete(keyId);
+    }.bind(clientService);
+
+    clientService.deleteIndexedDb = deleteIndexedDb;
+    clientService.getIndexedDb = getIndexedDb;
+
+    return (async () => {
+      await getIndexedDb();
       return clientService;
     })();
   }
