@@ -10,9 +10,9 @@ const protobuf = require('./scalar_pb');
 const {LedgerClient, LedgerPrivilegedClient} = require('./scalar_grpc_web_pb');
 
 const {SignerFactory} = require('./signer');
-const {Keystore} = require('./lib/keystore');
 const {toCryptoKeyFrom, toPkcs8From} = require('./lib/keyutil');
 
+const Dexie = require('dexie').default;
 const KEYSTORE_DATABASE_NAME = 'scalar';
 
 /**
@@ -72,7 +72,8 @@ class ClientServiceWithIndexedDb {
      * @throws {Error}
      */
     const getIndexedDb = async function() {
-      const keystore = new Keystore(KEYSTORE_DATABASE_NAME);
+      const db = new Dexie(KEYSTORE_DATABASE_NAME);
+      db.version(1).stores({keystore: 'id'});
       const clientProperties = new ClientProperties(
           this.properties,
           [
@@ -86,14 +87,24 @@ class ClientServiceWithIndexedDb {
         `${clientProperties.getCertVersion()}`;
 
       let key;
-      if (cryptoKey || pem) {
-        key = cryptoKey || await toCryptoKeyFrom(toPkcs8From(pem));
-        await keystore.put(keyId, key);
-      } else {
-        key = await keystore.get(keyId);
-        if (!key) {
-          throw new Error('Key is not found in keystore');
+      try {
+        if (cryptoKey || pem) {
+          key = cryptoKey || await toCryptoKeyFrom(toPkcs8From(pem));
+          await db.keystore.put({id: keyId, key: key});
+        } else {
+          const item = await db.keystore.get(keyId);
+          key = item && item.key;
         }
+      } catch (e) {
+        if (e instanceof Dexie.DexieError) {
+          throw new Error(`The indexedDB operation is failed: ${e.message}`);
+        } else {
+          throw e;
+        }
+      }
+
+      if (!(key instanceof CryptoKey)) {
+        throw new Error('Key is not found in the indexedDB');
       }
 
       this.properties['scalar.dl.client.private_key_cryptokey'] = key;
@@ -105,7 +116,8 @@ class ClientServiceWithIndexedDb {
      *  Remove the private key stored in indexedDB for `cert_holder_id`
      */
     const deleteIndexedDb = async function() {
-      const keystore = new Keystore(KEYSTORE_DATABASE_NAME);
+      const db = new Dexie(KEYSTORE_DATABASE_NAME);
+      db.version(1).stores({keystore: 'id'});
       const clientProperties = new ClientProperties(
           this.properties,
           [
@@ -116,7 +128,11 @@ class ClientServiceWithIndexedDb {
       const keyId = `${clientProperties.getCertHolderId()}_` +
         `${clientProperties.getCertVersion()}`;
 
-      await keystore.delete(keyId);
+      try {
+        await db.keystore.delete(keyId);
+      } catch (e) {
+        throw new Error(`The indexedDB operation is failed: ${e.message}`);
+      }
     }.bind(clientService);
 
     clientService.deleteIndexedDb = deleteIndexedDb;

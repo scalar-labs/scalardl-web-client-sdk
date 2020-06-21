@@ -4,7 +4,6 @@ module.exports = function(config) {
     files: [
       'test/integration.test.js',
       'test/signature_validator.test.js',
-      'test/keystore.test.js',
       'test/client_service_with_indexeddb.test.js',
     ],
     reporters: ['progress'],

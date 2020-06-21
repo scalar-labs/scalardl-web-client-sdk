@@ -2,17 +2,19 @@ const {
   ClientService,
   ClientServiceWithIndexedDb,
 } = require('../scalardl-web-client-sdk');
-const {Keystore} = require('../lib/keystore');
 
 const chai = require('chai');
 chai.use(require('chai-as-promised'));
 
-let keystore;
+const Dexie = require('dexie').default;
+
 let generatedKeyPair;
+let db;
 
 describe('ClientServiceWithIndexedDb', function() {
   beforeEach(async function() {
-    keystore = new Keystore('scalar');
+    db = new Dexie('scalar');
+    db.version(1).stores({keystore: 'id'});
     generatedKeyPair = await window.crypto.subtle.generateKey(
         {name: 'ECDSA', namedCurve: 'P-256'},
         false, // cannot extractable
@@ -26,7 +28,8 @@ describe('ClientServiceWithIndexedDb', function() {
       const certHolderId = `${new Date().getTime()}`;
       const certVersion = 1;
       const keyId = `${certHolderId}_${certVersion}`;
-      await keystore.put(keyId, privateKey);
+      db.keystore.put({id: keyId, key: privateKey});
+
       const properties = {
         'scalar.dl.client.server.host': '127.0.0.1',
         'scalar.dl.client.server.port': 50051,
@@ -89,14 +92,14 @@ describe('ClientServiceWithIndexedDb', function() {
       };
       const keyId = `${certHolderId}_${certVersion}`;
 
-      const before = await keystore.get(keyId);
+      const before = await db.keystore.get(keyId); ;
       const clientService = await new ClientServiceWithIndexedDb(
           new ClientService(properties)
       );
-      const after = await keystore.get(keyId);
+      const after = await db.keystore.get(keyId); ;
 
-      chai.assert.equal(null, before);
-      chai.assert.notEqual(null, after);
+      chai.assert.equal(undefined, before);
+      chai.assert.notEqual(undefined, after);
       await chai.expect(clientService.registerCertificate()).to.not.be.rejected;
       await chai.expect(clientService.validateLedger('foo')).to.not.be.rejected;
     });
@@ -115,14 +118,14 @@ describe('ClientServiceWithIndexedDb', function() {
       };
       const keyId = `${certHolderId}_${certVersion}`;
 
-      const before = await keystore.get(keyId);
+      const before = await db.keystore.get(keyId); ;
       await new ClientServiceWithIndexedDb(
           new ClientService(properties)
       );
-      const after = await keystore.get(keyId);
+      const after = await db.keystore.get(keyId); ;
 
-      chai.assert.equal(null, before);
-      chai.assert.notEqual(null, after);
+      chai.assert.equal(undefined, before);
+      chai.assert.notEqual(undefined, after);
     }
     );
   });
@@ -133,7 +136,7 @@ describe('ClientServiceWithIndexedDb', function() {
       const certHolderId = `${new Date().getTime()}`;
       const certVersion = 1;
       const keyId = `${certHolderId}_${certVersion}`;
-      await keystore.put(keyId, privateKey);
+      db.keystore.put({id: keyId, key: privateKey});
       const properties = {
         'scalar.dl.client.server.host': '127.0.0.1',
         'scalar.dl.client.server.port': 50051,
@@ -145,12 +148,12 @@ describe('ClientServiceWithIndexedDb', function() {
       const clientService = await new ClientServiceWithIndexedDb(
           new ClientService(properties)
       );
-      const before = await keystore.get(keyId);
+      const before = await db.keystore.get(keyId);
       await clientService.deleteIndexedDb();
-      const after = await keystore.get(keyId);
+      const after = await db.keystore.get(keyId);
 
-      chai.assert.notEqual(null, before);
-      chai.assert.equal(null, after);
+      chai.assert.notEqual(undefined, before);
+      chai.assert.equal(undefined, after);
     });
   });
 });

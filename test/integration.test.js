@@ -164,11 +164,13 @@ describe('ClientService', () => {
 
   describe('Integration test with ClientServiceWithIndexedDb', function() {
     it('should be able to use prestored private key', async function() {
-      const {Keystore} = require('../lib/keystore');
+      const Dexie = require('dexie').default;
+      const db = new Dexie('scalar');
+      db.version(1).stores({keystore: 'id'});
+
       const holderId = `foo${Date.now()}`;
       const certVersion = 1;
       const keyId = `${holderId}_${certVersion}`;
-      const keystore = new Keystore('scalar');
       const {toCryptoKeyFrom, toPkcs8From} = require('../lib/keyutil');
       const pem = '-----BEGIN EC PRIVATE KEY-----\n' +
         'MHcCAQEEICcJGMEw3dyXUGFu/5a36HqY0ynZi9gLUfKgYWMYgr/IoAoGCCqGSM49\n' +
@@ -176,7 +178,7 @@ describe('ClientService', () => {
         'XYWdrgo0Y3eXEhvK0lsURO9N0nrPiQWT4A==\n' +
         '-----END EC PRIVATE KEY-----\n';
       const key = await toCryptoKeyFrom(toPkcs8From(pem));
-      await keystore.put(keyId, key);
+      await db.keystore.put({id: keyId, key: key});
       const properties = {
         'scalar.dl.client.server.host': '127.0.0.1',
         'scalar.dl.client.server.port': 80,
