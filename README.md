@@ -167,7 +167,7 @@ Once ClientServiceWithIndexedDb is used,
 `ClientServiceWithIndexedDb` stores a private key in IndexedDB if the key is specified in client properties and reads a private key from the IndexedDB if the key is not specified in client properties.
 
 Based on the behavior, it is recommended to use it as follows.
-If the private key is not found, the application tries to get private key from an external service.
+If the private key is not found (got IndexedDbKeyNotFoundError), the application tries to get private key from an external service.
 
 ```javascript
 let properties = {
@@ -181,10 +181,17 @@ try {
     // It tries to read a private key from IndexedDB
     clientService = await new ClientServiceWithIndexedDb(new ClientService(properties));
 } catch (err) {
-    properties['scalar.dl.client.private_key_pem'] = /* from some place */
-
-    // It stores the specified private key in IndexedDB
-    clientService = await new ClientServiceWithIndexedDb(new ClientService(properties));
+    if (err instanceof IndexedDbKeyNotFoundError) {
+        properties['scalar.dl.client.private_key_pem'] = /* from some place */
+        // This time, it stores the specified private key in IndexedDB
+        clientService = await new ClientServiceWithIndexedDb(new ClientService(properties));
+    } else if (err instanceof IndexedDbOperation)  {
+        // IndexedDb operation fails. Consider skpping to use it
+        properties['scalar.dl.client.private_key_pem'] = /* from some place */
+        clientService = new ClientService(properties);
+    } else {
+        // some other errors
+    }
 }
 ```
 
