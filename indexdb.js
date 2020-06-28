@@ -12,15 +12,15 @@ const {
  */
 class ClientServiceWithIndexedDb {
   /**
-     * @param {ClientService} clientService
-     * @return {ClientService}
-     */
+   * @param {ClientService} clientService
+   * @return {ClientService}
+   */
   constructor(clientService) {
     /**
-       * @description
-       *  Use indexedDB and check if it is necessary to load keys for the users
-       * @throws {Error}
-       */
+     * @description
+     *  Use indexedDB and check if it is necessary to load keys for the users
+     * @throws {Error}
+     */
     const getIndexedDb = async function() {
       const db = new Dexie(KEYSTORE_DATABASE_NAME);
       db.version(1).stores({keystore: 'id'});
@@ -34,7 +34,7 @@ class ClientServiceWithIndexedDb {
       const cryptoKey = clientProperties.getPrivateKeyCryptoKey();
       const pem = clientProperties.getPrivateKeyPem();
       const keyId = `${clientProperties.getCertHolderId()}_` +
-          `${clientProperties.getCertVersion()}`;
+                `${clientProperties.getCertVersion()}`;
 
       let key;
       try {
@@ -47,14 +47,14 @@ class ClientServiceWithIndexedDb {
         }
       } catch (e) {
         if (e instanceof Dexie.DexieError) {
-          throw new Error(`The indexedDB operation is failed: ${e.message}`);
+          throw new IndexedDbOperationError(e.message);
         } else {
           throw e;
         }
       }
 
       if (!(key instanceof CryptoKey)) {
-        throw new Error('Key is not found in the indexedDB');
+        throw new IndexedDbKeyNotFoundError();
       }
 
       this.properties['scalar.dl.client.private_key_cryptokey'] = key;
@@ -62,9 +62,9 @@ class ClientServiceWithIndexedDb {
     }.bind(clientService);
 
     /**
-       * @description
-       *  Remove the private key stored in indexedDB for `cert_holder_id`
-       */
+     * @description
+     *  Remove the private key stored in indexedDB for `cert_holder_id`
+     */
     const deleteIndexedDb = async function() {
       const db = new Dexie(KEYSTORE_DATABASE_NAME);
       db.version(1).stores({keystore: 'id'});
@@ -76,12 +76,12 @@ class ClientServiceWithIndexedDb {
           ], // cert_holder_id and cert_version are required
       );
       const keyId = `${clientProperties.getCertHolderId()}_` +
-          `${clientProperties.getCertVersion()}`;
+                `${clientProperties.getCertVersion()}`;
 
       try {
         await db.keystore.delete(keyId);
       } catch (e) {
-        throw new Error(`The indexedDB operation is failed: ${e.message}`);
+        throw new IndexedDbOperationError(e.message);
       }
     }.bind(clientService);
 
@@ -95,6 +95,14 @@ class ClientServiceWithIndexedDb {
   }
 }
 
+/** @description Indicates the private key is not found in indexedDB */
+class IndexedDbKeyNotFoundError extends Error { }
+
+/** @description Indicates fail indexedDB operation */
+class IndexedDbOperationError extends Error { }
+
 module.exports = {
   ClientServiceWithIndexedDb,
+  IndexedDbKeyNotFoundError,
+  IndexedDbOperationError,
 };

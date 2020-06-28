@@ -10,7 +10,11 @@ const protobuf = require('./scalar_pb');
 const {LedgerClient, LedgerPrivilegedClient} = require('./scalar_grpc_web_pb');
 
 const {SignerFactory} = require('./signer');
-const {ClientServiceWithIndexedDb} = require('./indexdb');
+const {
+  ClientServiceWithIndexedDb,
+  IndexedDbKeyNotFoundError,
+  IndexedDbOperationError,
+} = require('./indexdb');
 
 /**
  * This class inherits ClientServiceBase.
@@ -56,7 +60,7 @@ class ClientService extends ClientServiceBase {
 module.exports = {
   ClientService,
   ClientServiceWithIndexedDb,
-  // IndexedDbKeyNotFoundError,
-  // IndexedDbOperationError,
+  IndexedDbKeyNotFoundError,
+  IndexedDbOperationError,
   StatusCode,
 };
