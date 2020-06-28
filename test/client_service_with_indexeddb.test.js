@@ -1,6 +1,7 @@
 const {
   ClientService,
   ClientServiceWithIndexedDb,
+  IndexedDbKeyNotFoundError,
 } = require('../scalardl-web-client-sdk');
 
 const chai = require('chai');
@@ -126,8 +127,23 @@ describe('ClientServiceWithIndexedDb', function() {
 
       chai.assert.equal(undefined, before);
       chai.assert.notEqual(undefined, after);
-    }
-    );
+    });
+
+    it('should be able to throw IndexedDbKeyNotFoundError', async function() {
+      const certHolderId = `${new Date().getTime()}`;
+      const certVersion = 1;
+      const properties = {
+        'scalar.dl.client.server.host': '127.0.0.1',
+        'scalar.dl.client.server.port': 50051,
+        'scalar.dl.client.server.privileged_port': 50052,
+        'scalar.dl.client.cert_holder_id': certHolderId,
+        'scalar.dl.client.cert_version': certVersion,
+      };
+
+      await chai.expect(new ClientServiceWithIndexedDb(
+          new ClientService(properties)
+      )).to.be.rejectedWith(IndexedDbKeyNotFoundError);
+    });
   });
 
   describe('#deleteIndexedDb', function() {
