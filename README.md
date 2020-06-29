@@ -163,7 +163,6 @@ To use the feature, please decorate `ClientService` object with `ClientServiceWi
 const clientService = await new ClientServiceWithIndexedDb(new ClientService(properties));
 ```
 
-Once ClientServiceWithIndexedDb is used,
 `ClientServiceWithIndexedDb` stores a private key in IndexedDB if the key is specified in client properties and reads a private key from the IndexedDB if the key is not specified in client properties.
 
 Based on the behavior, it is recommended to use it as follows.
