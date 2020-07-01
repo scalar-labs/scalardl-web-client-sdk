@@ -184,18 +184,19 @@ try {
         properties['scalar.dl.client.private_key_pem'] = /* from some place */
         // This time, it stores the specified private key in IndexedDB
         clientService = await new ClientServiceWithIndexedDb(new ClientService(properties));
-    } else if (err instanceof IndexedDbOperation)  {
-        // IndexedDb operation fails. Consider skpping to use it
-        properties['scalar.dl.client.private_key_pem'] = /* from some place */
-        clientService = new ClientService(properties);
     } else {
-        // some other errors
+        throw err; // throw the other errors
     }
 }
 ```
 
 ### deleteIndexedDb
 deleteIndexedDb removes a private key in IndexedDB according to `scalar.dl.client.cert_holder_id` and `scalar.dl.client.cert_version` in client properties.
+
+```javascript
+clientService = await new ClientServiceWithIndexedDb(new ClientService(properties));
+clientService.deleteIndexedDb(); // Remove stored key in indexedDb
+```
 
 ## Envoy configuration
 Scalar DLT server (grpc) uses a custom header called `rpc.status-bin` to share error metadata with the client. This means envoy needs to be
