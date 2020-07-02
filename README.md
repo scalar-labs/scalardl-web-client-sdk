@@ -185,7 +185,7 @@ try {
         // This time, it stores the specified private key in IndexedDB
         clientService = await new ClientServiceWithIndexedDb(new ClientService(properties));
     } else {
-        throw err; // throw the other errors
+        throw err; // How to handle the error should be decided by application side
     }
 }
 ```
