@@ -1,5 +1,9 @@
 describe('ClientService', () => {
-  const {ClientService} = require('../scalardl-web-client-sdk.js');
+  const {
+    ClientService,
+    ClientServiceWithIndexedDb,
+    StatusCode,
+  } = require('../scalardl-web-client-sdk.js');
   const properties = {
     'scalar.dl.client.server.host': '127.0.0.1',
     'scalar.dl.client.server.port': 80,
@@ -107,11 +111,14 @@ describe('ClientService', () => {
       });
     });
     describe('listContracts', () => {
-      it( 'should return contract metadata when the correct contract id is specified',
+      it(
+          'should return contract metadata ' +
+          'when the correct contract id is specified',
           async () => {
             const response = await clientService.listContracts();
             assert.ok(response.hasOwnProperty(mockedContractId));
-          });
+          },
+      );
     });
     describe('executeContract', () => {
       it('should work as expected when executing a registered contract',
@@ -125,7 +132,9 @@ describe('ClientService', () => {
             assert.equal(contractResult.properties,
                 contractProperty.properties);
           });
-      it('should work as expected when executing a registered contract and function',
+      it(
+          'should work as expected ' +
+          'when executing a registered contract and function',
           async () => {
             const functionArgument = {
               asset_id: mockedAssetId,
@@ -137,7 +146,10 @@ describe('ClientService', () => {
               _functions_: [mockedFunctionId],
             };
             const response = await clientService.executeContract(
-                mockedContractId, contractArgumentWithFunction, functionArgument);
+                mockedContractId,
+                contractArgumentWithFunction,
+                functionArgument,
+            );
             assert.equal(response.getResult().state,
                 contractArgumentWithFunction.state);
           });
@@ -147,6 +159,57 @@ describe('ClientService', () => {
         const response = await clientService.validateLedger(mockedAssetId);
         assert.equal(response.getCode(), 200);
       });
+    });
+  });
+
+  describe('Integration test with ClientServiceWithIndexedDb', function() {
+    it('should be able to use prestored private key', async function() {
+      const Dexie = require('dexie').default;
+      const db = new Dexie('scalar');
+      db.version(1).stores({keystore: 'id'});
+
+      const holderId = `foo${Date.now()}`;
+      const certVersion = 1;
+      const keyId = `${holderId}_${certVersion}`;
+      const {toCryptoKeyFrom, toPkcs8From} = require('../lib/keyutil');
+      const pem = '-----BEGIN EC PRIVATE KEY-----\n' +
+        'MHcCAQEEICcJGMEw3dyXUGFu/5a36HqY0ynZi9gLUfKgYWMYgr/IoAoGCCqGSM49\n' +
+        'AwEHoUQDQgAEBGuhqumyh7BVNqcNKAQQipDGooUpURve2dO66pQCgjtSfu7lJV20\n' +
+        'XYWdrgo0Y3eXEhvK0lsURO9N0nrPiQWT4A==\n' +
+        '-----END EC PRIVATE KEY-----\n';
+      const key = await toCryptoKeyFrom(toPkcs8From(pem));
+      await db.keystore.put({id: keyId, key: key});
+      const properties = {
+        'scalar.dl.client.server.host': '127.0.0.1',
+        'scalar.dl.client.server.port': 80,
+        'scalar.dl.client.server.privileged_port': 8080,
+        'scalar.dl.client.cert_holder_id': holderId,
+        'scalar.dl.client.cert_version': certVersion,
+        'scalar.dl.client.cert_pem': '-----BEGIN CERTIFICATE-----\n' +
+          'MIICizCCAjKgAwIBAgIUMEUDTdWsQpftFkqs6bCd6U++4nEwCgYIKoZIzj0EAwIw\n' +
+          'bzELMAkGA1UEBhMCSlAxDjAMBgNVBAgTBVRva3lvMQ4wDAYDVQQHEwVUb2t5bzEf\n' +
+          'MB0GA1UEChMWU2FtcGxlIEludGVybWVkaWF0ZSBDQTEfMB0GA1UEAxMWU2FtcGxl\n' +
+          'IEludGVybWVkaWF0ZSBDQTAeFw0xODA5MTAwODA3MDBaFw0yMTA5MDkwODA3MDBa\n' +
+          'MEUxCzAJBgNVBAYTAkFVMRMwEQYDVQQIEwpTb21lLVN0YXRlMSEwHwYDVQQKExhJ\n' +
+          'bnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNC\n' +
+          'AAQEa6Gq6bKHsFU2pw0oBBCKkMaihSlRG97Z07rqlAKCO1J+7uUlXbRdhZ2uCjRj\n' +
+          'd5cSG8rSWxRE703Ses+JBZPgo4HVMIHSMA4GA1UdDwEB/wQEAwIFoDATBgNVHSUE\n' +
+          'DDAKBggrBgEFBQcDAjAMBgNVHRMBAf8EAjAAMB0GA1UdDgQWBBRDd2MS9Ndo68PJ\n' +
+          'y9K/RNY6syZW0zAfBgNVHSMEGDAWgBR+Y+v8yByDNp39G7trYrTfZ0UjJzAxBggr\n' +
+          'BgEFBQcBAQQlMCMwIQYIKwYBBQUHMAGGFWh0dHA6Ly9sb2NhbGhvc3Q6ODg4OTAq\n' +
+          'BgNVHR8EIzAhMB+gHaAbhhlodHRwOi8vbG9jYWxob3N0Ojg4ODgvY3JsMAoGCCqG\n' +
+          'SM49BAMCA0cAMEQCIC/Bo4oNU6yHFLJeme5ApxoNdyu3rWyiqWPxJmJAr9L0AiBl\n' +
+          'Gc/v+yh4dHIDhCrimajTQAYOG9n0kajULI70Gg7TNw==\n' +
+          '-----END CERTIFICATE-----\n',
+      };
+
+      const clientService = await new ClientServiceWithIndexedDb(
+          new ClientService(properties)
+      );
+      await clientService.registerCertificate();
+      const response = await clientService.validateLedger('non_existing_asset');
+
+      assert.equal(StatusCode.ASSET_NOT_FOUND, response.getCode());
     });
   });
 });

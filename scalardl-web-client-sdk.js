@@ -1,3 +1,4 @@
+/* eslint-disable no-invalid-this */
 const {
   ClientServiceBase,
   StatusCode,
@@ -9,6 +10,11 @@ const protobuf = require('./scalar_pb');
 const {LedgerClient, LedgerPrivilegedClient} = require('./scalar_grpc_web_pb');
 
 const {SignerFactory} = require('./signer');
+const {
+  ClientServiceWithIndexedDb,
+  IndexedDbKeyNotFoundError,
+  IndexedDbOperationError,
+} = require('./indexdb');
 
 /**
  * This class inherits ClientServiceBase.
@@ -53,5 +59,8 @@ class ClientService extends ClientServiceBase {
 
 module.exports = {
   ClientService,
+  ClientServiceWithIndexedDb,
+  IndexedDbKeyNotFoundError,
+  IndexedDbOperationError,
   StatusCode,
 };

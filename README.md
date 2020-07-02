@@ -20,7 +20,7 @@ You can also find a bundle `scalardl-web-client-sdk.bundle.js` which can be impo
 `ClientService` class is the main class of this package.
 It provides following functions to request Scalar DL network.
 
-|Name|use|
+|Name|Use|
 |----|---|
 |registerCertificate|To register a client's certificate to a Scalar DL network|
 |registerContract|To register the contracts to the registered client of the Scalar DL network|
@@ -153,6 +153,49 @@ StatusCode = {
   CLIENT_DATABASE_ERROR: 601,
   CLIENT_RUNTIME_ERROR: 602,
 };
+```
+
+## IndexedDB support
+This library supports storing private keys in the browsers' [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API).
+To use the feature, please decorate `ClientService` object with `ClientServiceWithIndexedDb` as follows.
+
+```
+const clientService = await new ClientServiceWithIndexedDb(new ClientService(properties));
+```
+
+`ClientServiceWithIndexedDb` stores a private key in IndexedDB if the key is specified in client properties and reads a private key from the IndexedDB if the key is not specified in client properties.
+
+Based on the behavior, it is recommended to use it as follows.
+If a private key is not found, `IndexedDbKeyNotFoundError` will be thrown and the application needs to get a private key from an external service.
+
+```javascript
+let properties = {
+    'scalar.dl.client.cert_holder_id': 'foo@example.com',
+    'scalar.dl.client.cert_version': 1,
+    ...
+}; // Not specify 'scalar.dl.client.private_key_pem' or 'scalar.dl.client.private_key_cryptokey'
+
+let clientService;
+try {
+    // It tries to read a private key from IndexedDB
+    clientService = await new ClientServiceWithIndexedDb(new ClientService(properties));
+} catch (err) {
+    if (err instanceof IndexedDbKeyNotFoundError) {
+        properties['scalar.dl.client.private_key_pem'] = /* from some place */
+        // This time, it stores the specified private key in IndexedDB
+        clientService = await new ClientServiceWithIndexedDb(new ClientService(properties));
+    } else {
+        throw err; // How to handle the error should be decided by application side
+    }
+}
+```
+
+### deleteIndexedDb
+deleteIndexedDb removes a private key in IndexedDB according to `scalar.dl.client.cert_holder_id` and `scalar.dl.client.cert_version` in client properties.
+
+```javascript
+clientService = await new ClientServiceWithIndexedDb(new ClientService(properties));
+clientService.deleteIndexedDb(); // Remove stored key in indexedDb
 ```
 
 ## Envoy configuration
