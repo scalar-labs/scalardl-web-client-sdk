@@ -4,7 +4,7 @@
     "dexie": "^3.0.1",
     "google-protobuf": "^3.12.2",
     "grpc-web": "^1.1.0",
-    "jsrsasign": "^8.0.16"
+    "jsrsasign": "^8.0.20"
   },
   "name": "@scalar-labs/scalardl-web-client-sdk",
   "version": "2.3.0",
