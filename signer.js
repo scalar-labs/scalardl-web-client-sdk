@@ -1,4 +1,4 @@
-const jsrsasign = require('jsrsasign');
+const {toCryptoKeyFrom, toPkcs8From} = require('./lib/keyutil');
 
 /** @description The signer based on Web Crypto API */
 class WebCryptoSigner {
@@ -27,10 +27,10 @@ class WebCryptoSigner {
       key = this.key;
     } else {
       if (!this.pkcs8) {
-        this.pkcs8 = await this._toPkcs8From(this.pkcs1);
+        this.pkcs8 = await toPkcs8From(this.pkcs1);
       }
       try {
-        key = await this._toCryptoKeyFrom(this.pkcs8);
+        key = await toCryptoKeyFrom(this.pkcs8);
       } catch (_) {
         throw new Error('Failed load the PEM file');
       }
@@ -48,20 +48,6 @@ class WebCryptoSigner {
     } catch (_) {
       throw new Error(`Failed to sign the request`);
     }
-  }
-
-  /**
-   * @param {String} pkcs1
-   * @return {String}
-   */
-  _toPkcs8From(pkcs1) {
-    pkcs1 = pkcs1.replace('-----BEGIN EC PRIVATE KEY-----', '')
-        .replace('-----END EC PRIVATE KEY-----', '')
-        .replace(/\n/g, '');
-    const k = jsrsasign.KEYUTIL.getKey(
-        jsrsasign.b64utohex(pkcs1), null, 'pkcs5prv',
-    );
-    return jsrsasign.KEYUTIL.getPEM(k, 'PKCS8PRV');
   }
 
   /**
@@ -111,29 +97,6 @@ class WebCryptoSigner {
         .toString(16).padStart(2, '0')}${rString}${sString}`;
     return new Uint8Array( derSig.match(/[\da-f]{2}/gi).map(
         (h) => parseInt(h, 16)),
-    );
-  }
-
-  /**
-   * @param {String} pkcs8
-   * @return {Object}
-   */
-  _toCryptoKeyFrom(pkcs8) {
-    pkcs8 = pkcs8.replace('-----BEGIN PRIVATE KEY-----', '')
-        .replace('-----END PRIVATE KEY-----', '')
-        .replace(/\n/g, '');
-    const keyInArrayBuffer = jsrsasign.hextoArrayBuffer(
-        jsrsasign.b64utohex(pkcs8),
-    );
-    return window.crypto.subtle.importKey(
-        'pkcs8',
-        keyInArrayBuffer,
-        {
-          name: 'ECDSA',
-          namedCurve: 'P-256',
-        },
-        true,
-        ['sign'],
     );
   }
 }

@@ -1,9 +1,10 @@
 {
   "dependencies": {
     "@scalar-labs/scalardl-javascript-sdk-base": "^3.0.0",
-    "google-protobuf": "^3.11.2",
-    "grpc-web": "^1.0.4",
-    "jsrsasign": "^8.0.15"
+    "dexie": "^3.0.1",
+    "google-protobuf": "^3.12.2",
+    "grpc-web": "^1.1.0",
+    "jsrsasign": "^8.0.16"
   },
   "name": "@scalar-labs/scalardl-web-client-sdk",
   "version": "2.3.0",
@@ -18,15 +19,16 @@
   "devDependencies": {
     "arraybuffer-loader": "^1.0.8",
     "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
     "eslint": "^5.16.0",
     "eslint-config-google": "^0.12.0",
-    "karma": "^5.0.9",
+    "karma": "^5.1.0",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^3.1.0",
     "karma-htmlfile-reporter": "^0.3.8",
     "karma-mocha": "^2.0.1",
     "karma-webpack": "^4.0.2",
-    "mocha": "^7.1.2",
+    "mocha": "^7.2.0",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.6"
   },
