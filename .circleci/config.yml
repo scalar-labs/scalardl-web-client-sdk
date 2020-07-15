@@ -88,6 +88,7 @@ workflows:
       - build:
           context: "scalar"
       - deploy:
+          context: "scalar"
           requires:
             - build
           filters:
