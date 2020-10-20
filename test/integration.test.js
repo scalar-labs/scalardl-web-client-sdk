@@ -171,13 +171,13 @@ describe('ClientService', () => {
       const holderId = `foo${Date.now()}`;
       const certVersion = 1;
       const keyId = `${holderId}_${certVersion}`;
-      const {toCryptoKeyFrom, toPkcs8From} = require('../lib/keyutil');
+      const {toCryptoKeyFromJwk, toJwkFromPkcs1} = require('../lib/keyutil');
       const pem = '-----BEGIN EC PRIVATE KEY-----\n' +
         'MHcCAQEEICcJGMEw3dyXUGFu/5a36HqY0ynZi9gLUfKgYWMYgr/IoAoGCCqGSM49\n' +
         'AwEHoUQDQgAEBGuhqumyh7BVNqcNKAQQipDGooUpURve2dO66pQCgjtSfu7lJV20\n' +
         'XYWdrgo0Y3eXEhvK0lsURO9N0nrPiQWT4A==\n' +
         '-----END EC PRIVATE KEY-----\n';
-      const key = await toCryptoKeyFrom(toPkcs8From(pem));
+      const key = await toCryptoKeyFromJwk(toJwkFromPkcs1(pem));
       await db.keystore.put({id: keyId, key: key});
       const properties = {
         'scalar.dl.client.server.host': '127.0.0.1',
