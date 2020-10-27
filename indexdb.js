@@ -1,4 +1,4 @@
-const {toCryptoKeyFrom, toPkcs8From} = require('./lib/keyutil');
+const {toCryptoKeyFromJwk, toJwkFromPkcs1} = require('./lib/keyutil');
 const Dexie = require('dexie').default;
 const KEYSTORE_DATABASE_NAME = 'scalar';
 const {
@@ -39,7 +39,7 @@ class ClientServiceWithIndexedDb {
       let key;
       try {
         if (cryptoKey || pem) {
-          key = cryptoKey || await toCryptoKeyFrom(toPkcs8From(pem));
+          key = cryptoKey || await toCryptoKeyFromJwk(toJwkFromPkcs1(pem));
           await db.keystore.put({id: keyId, key: key});
         } else {
           const item = await db.keystore.get(keyId);

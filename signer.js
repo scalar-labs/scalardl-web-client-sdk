@@ -1,4 +1,7 @@
-const {toCryptoKeyFrom, toPkcs8From} = require('./lib/keyutil');
+const {
+  toCryptoKeyFromJwk,
+  toJwkFromPkcs1,
+} = require('./lib/keyutil');
 
 /** @description The signer based on Web Crypto API */
 class WebCryptoSigner {
@@ -26,11 +29,11 @@ class WebCryptoSigner {
     if (this.key) {
       key = this.key;
     } else {
-      if (!this.pkcs8) {
-        this.pkcs8 = await toPkcs8From(this.pkcs1);
+      if (!this.jwk) {
+        this.jwk = await toJwkFromPkcs1(this.pkcs1);
       }
       try {
-        key = await toCryptoKeyFrom(this.pkcs8);
+        key = await toCryptoKeyFromJwk(this.jwk);
       } catch (_) {
         throw new Error('Failed load the PEM file');
       }
