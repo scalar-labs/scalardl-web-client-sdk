@@ -30,7 +30,7 @@ jobs:
 
       - run:
           name: Docker login
-          command: echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USER} --password-stdin ghcr.io
+          command: echo ${DOCKER_REGISTRY_PASSWORD} | docker login -u ${DOCKER_REGISTRY_USERNAME} --password-stdin ghcr.io
 
       - run:
           name: Spin container via docker compose
