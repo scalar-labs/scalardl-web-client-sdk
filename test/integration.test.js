@@ -90,6 +90,7 @@ describe('ClientService', () => {
     describe('registerCertificate', () => {
       it('should be successful', async () => {
         const response = await clientService.registerCertificate();
+        assert.deepEqual(response);
         assert.deepEqual(response, undefined);
       });
     });
@@ -156,7 +157,7 @@ describe('ClientService', () => {
     });
     describe('validateLedger', () => {
       it('should return 200 when correct asset id is specified', async () => {
-        const response = await clientService.validateLedger(mockedAssetId);
+        const response = await clientService.validateLedger(mockedAssetId, 0, 1);
         assert.equal(response.getCode(), 200);
       });
     });
@@ -204,10 +205,10 @@ describe('ClientService', () => {
       };
 
       const clientService = await new ClientServiceWithIndexedDb(
-          new ClientService(properties)
+          new ClientService(properties),
       );
       await clientService.registerCertificate();
-      const response = await clientService.validateLedger('non_existing_asset');
+      const response = await clientService.validateLedger('non_existing_asset', 0, 1);
 
       assert.equal(StatusCode.ASSET_NOT_FOUND, response.getCode());
     });
