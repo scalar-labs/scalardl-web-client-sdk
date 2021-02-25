@@ -6,8 +6,8 @@ describe('ClientService', () => {
   } = require('../scalardl-web-client-sdk.js');
   const properties = {
     'scalar.dl.client.server.host': '127.0.0.1',
-    'scalar.dl.client.server.port': 80,
-    'scalar.dl.client.server.privileged_port': 8080,
+    'scalar.dl.client.server.port': 50051,
+    'scalar.dl.client.server.privileged_port': 50052,
 
     // Make the test idempotent.
     'scalar.dl.client.cert_holder_id': `foo@${Date.now()}`,
@@ -182,8 +182,8 @@ describe('ClientService', () => {
       await db.keystore.put({id: keyId, key: key});
       const properties = {
         'scalar.dl.client.server.host': '127.0.0.1',
-        'scalar.dl.client.server.port': 80,
-        'scalar.dl.client.server.privileged_port': 8080,
+        'scalar.dl.client.server.port': 50051,
+        'scalar.dl.client.server.privileged_port': 50052,
         'scalar.dl.client.cert_holder_id': holderId,
         'scalar.dl.client.cert_version': certVersion,
         'scalar.dl.client.cert_pem': '-----BEGIN CERTIFICATE-----\n' +

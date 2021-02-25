@@ -65,8 +65,8 @@ describe('ClientServiceWithIndexedDb', function() {
       const certVersion = 1;
       const properties = {
         'scalar.dl.client.server.host': '127.0.0.1',
-        'scalar.dl.client.server.port': 80,
-        'scalar.dl.client.server.privileged_port': 8080,
+        'scalar.dl.client.server.port': 50051,
+        'scalar.dl.client.server.privileged_port': 50052,
         'scalar.dl.client.cert_holder_id': certHolderId,
         'scalar.dl.client.cert_version': certVersion,
         'scalar.dl.client.private_key_pem': '-----BEGIN EC PRIVATE KEY-----\n' +

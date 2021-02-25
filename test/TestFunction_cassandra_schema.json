@@ -1,0 +1,11 @@
+{
+  "foo.bar": {
+    "transaction": true,
+    "partition-key": [
+      "column_a"
+    ],
+    "columns": {
+      "column_a": "TEXT"
+    }
+  }
+}
