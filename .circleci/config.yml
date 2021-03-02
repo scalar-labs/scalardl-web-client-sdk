@@ -71,7 +71,8 @@ jobs:
           path: ~/scalardl-web-client-sdk/test/test-reports
   deploy:
     docker:
-      - image: circleci/node
+      #Node LTS 14.16 "fermium"
+      - image: circleci/node:14.16
     steps:
       - checkout
       - run:

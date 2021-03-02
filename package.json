@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@scalar-labs/scalardl-javascript-sdk-base": "file:../javascript-sdk-base",
+    "@scalar-labs/scalardl-javascript-sdk-base": "file:../scalardl-javascript-sdk-base",
     "dexie": "^3.0.3",
     "google-protobuf": "^3.15.2",
     "grpc-web": "^1.2.1",
@@ -12,6 +12,10 @@
   "main": "scalardl-web-client-sdk.js",
   "author": "Scalar, Inc.",
   "license": "AGPL-3.0-or-later",
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "git@github.com:scalar-labs/scalardl-web-client-sdk.git"
