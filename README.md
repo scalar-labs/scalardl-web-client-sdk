@@ -2,6 +2,10 @@
 
 This is a library for web applications by which the applications can interact with a [Scalar DL](https://github.com/scalar-labs/scalardl) network.
 
+## Node version used for development and testing
+This package has been developed and tested using Node LTS v14.16.0. named "fermium".
+This means we cannot guarantee the package nominal behaviour when using other Node versions.
+
 ## Install
 
 We can use package manager to install this library. For example, to install with NPM:
