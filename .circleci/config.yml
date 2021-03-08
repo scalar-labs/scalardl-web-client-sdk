@@ -6,7 +6,7 @@ version: 2
 jobs:
   build:
     machine: true
-    image: ubuntu-1604:201903-01
+    image: ubuntu-2004:202101-01
 
     working_directory: ~/scalardl-web-client-sdk
 
@@ -16,6 +16,11 @@ jobs:
       - restore_cache:
           keys:
             - dependency-cache-{{ checksum "package-lock.json" }}
+
+      - run:
+          name: Docker login
+          command: |
+            echo ${GHCR_PAT} | docker login https://ghcr.io -u ${GHCR_USERNAME} --password-stdin
 
       - run: # Update chrome to stable version for karma
           name: Install Chromedriver latest version
@@ -29,8 +34,13 @@ jobs:
             rm google-chrome.deb
 
       - run:
-          name: Docker login
-          command: docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+          name: Update docker and docker compose
+          command: |
+            sudo apt-get purge docker-ce containerd.io
+            curl -fsSL https://get.docker.com -o get-docker.sh
+            sudo sh get-docker.sh
+            sudo curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            sudo chmod +x /usr/local/bin/docker-compose
 
       - run:
           name: Spin container via docker compose
@@ -38,22 +48,36 @@ jobs:
           working_directory: .circleci/
 
       - run:
-          name: Install Dependencies
-          command: npm install
-
-      - run:
-          name: Install node@10.15.3 # Update node for karma to work
+          name: Install node@14.15.1 # Update node for karma to work
           command: |
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            nvm install v10.15.3
-            nvm alias default v10.15.3
+            nvm install v14.15.1
+            nvm alias default v14.15.1
             echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
             echo "[ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"" >> $BASH_ENV
 
       - run:
-          name: Install schema on Cassandra
-          command: docker exec cassandra cqlsh --execute "$SCHEMA_CONTENT"
+          name: Install npm
+          command: npm install
+
+      - run:
+          name: Wait for cassandra to spin up
+          command: |
+            echo -n "Wait for C* "
+              until docker exec circleci_scalardl-cassandra-1 cqlsh 2> /dev/null ; do
+                  sleep 0.5
+                  echo -n "#"
+              done
+
+      - run:
+          name: Insert function table and wait
+          command: |
+            docker cp function_schema.cql \
+            circleci_scalardl-cassandra-1:function_schema.cql
+            docker exec circleci_scalardl-cassandra-1 cqlsh -f function_schema.cql
+            sleep 10
+          working_directory: .circleci/
 
       - save_cache:
           key: v1-dependencies-{{ checksum "package-lock.json" }}
