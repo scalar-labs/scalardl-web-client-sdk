@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@scalar-labs/scalardl-javascript-sdk-base": "file:../scalardl-javascript-sdk-base",
+    "@scalar-labs/scalardl-javascript-sdk-base": "3.1.0",
     "dexie": "^3.0.3",
     "google-protobuf": "^3.15.2",
     "grpc-web": "^1.2.1",
