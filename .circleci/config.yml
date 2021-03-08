@@ -48,12 +48,12 @@ jobs:
           working_directory: .circleci/
 
       - run:
-          name: Install node@14.15.1 # Update node for karma to work
+          name: Install node@14.16 # Update node for karma to work
           command: |
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            nvm install v14.15.1
-            nvm alias default v14.15.1
+            nvm install v14.16
+            nvm alias default v14.16
             echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
             echo "[ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"" >> $BASH_ENV
 
