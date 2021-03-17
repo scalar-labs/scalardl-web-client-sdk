@@ -69,10 +69,10 @@ jobs:
           command: npm install
 
       - run:
-          name: Wait for cassandra to spin up
+          name: Wait for Cassandra to spin up to be able to update the Cassandra schema in the next step
           command: |
             echo -n "Wait for C* "
-              until docker exec circleci_scalardl-cassandra-1 cqlsh 2> /dev/null ; do
+              until docker exec scalar-samples-cassandra-1 cqlsh 2> /dev/null ; do
                   sleep 0.5
                   echo -n "#"
               done
@@ -81,8 +81,8 @@ jobs:
           name: Insert function table and wait
           command: |
             docker cp function_schema.cql \
-            circleci_scalardl-cassandra-1:function_schema.cql
-            docker exec circleci_scalardl-cassandra-1 cqlsh -f function_schema.cql
+            scalar-samples-cassandra-1:function_schema.cql
+            docker exec scalar-samples-cassandra-1 cqlsh -f function_schema.cql
             sleep 10
           working_directory: .circleci/
 
