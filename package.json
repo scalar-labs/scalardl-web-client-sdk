@@ -7,7 +7,7 @@
     "jsrsasign": "^10.1.11"
   },
   "name": "@scalar-labs/scalardl-web-client-sdk",
-  "version": "2.5.1",
+  "version": "2.6.0",
   "description": "The web client SDK for Scalar DL",
   "main": "scalardl-web-client-sdk.js",
   "author": "Scalar, Inc.",

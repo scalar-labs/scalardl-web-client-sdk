@@ -23,4 +23,4 @@ version: 2.9.0
 /*! Mike Samuel (c) 2009 | code.google.com/p/json-sans-eval
  */
 
-/** @license URI.js v4.4.0 (c) 2011 Gary Court. License: http://github.com/garycourt/uri-js */
+/** @license URI.js v4.4.1 (c) 2011 Gary Court. License: http://github.com/garycourt/uri-js */
