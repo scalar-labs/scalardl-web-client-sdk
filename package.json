@@ -1,13 +1,13 @@
 {
   "dependencies": {
-    "@scalar-labs/scalardl-javascript-sdk-base": "^3.0.2",
-    "dexie": "^3.0.2",
-    "google-protobuf": "^3.13.0",
+    "@scalar-labs/scalardl-javascript-sdk-base": "3.1.0",
+    "dexie": "^3.0.3",
+    "google-protobuf": "^3.15.2",
     "grpc-web": "^1.2.1",
-    "jsrsasign": "^10.0.5"
+    "jsrsasign": "^10.1.11"
   },
   "name": "@scalar-labs/scalardl-web-client-sdk",
-  "version": "2.5.1",
+  "version": "2.6.0",
   "description": "The web client SDK for Scalar DL",
   "main": "scalardl-web-client-sdk.js",
   "author": "Scalar, Inc.",
@@ -18,19 +18,19 @@
   },
   "devDependencies": {
     "arraybuffer-loader": "^1.0.8",
-    "chai": "^4.2.0",
+    "chai": "^4.3.0",
     "chai-as-promised": "^7.1.1",
-    "eslint": "^7.12.1",
+    "eslint": "^7.20.0",
     "eslint-config-google": "^0.14.0",
-    "karma": "^5.2.3",
+    "karma": "6.1.1",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^3.1.0",
     "karma-htmlfile-reporter": "^0.3.8",
     "karma-mocha": "^2.0.1",
-    "karma-webpack": "^4.0.2",
-    "mocha": "^8.2.1",
-    "webpack": "^4.44.2",
-    "webpack-cli": "^3.3.12"
+    "karma-webpack": "^5.0.0",
+    "mocha": "^8.3.0",
+    "webpack": "^5.24.1",
+    "webpack-cli": "^4.5.0"
   },
   "scripts": {
     "test": "karma start"

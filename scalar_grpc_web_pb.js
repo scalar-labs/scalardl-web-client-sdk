@@ -7,6 +7,10 @@
 // GENERATED CODE -- DO NOT EDIT!
 
 
+/* eslint-disable */
+// @ts-nocheck
+
+
 
 const grpc = {};
 grpc.web = require('grpc-web');
@@ -136,7 +140,7 @@ proto.rpc.LedgerClient.prototype.registerContract =
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
  * @return {!Promise<!proto.google.protobuf.Empty>}
- *     A native promise that resolves to the response
+ *     Promise that resolves to the response
  */
 proto.rpc.LedgerPromiseClient.prototype.registerContract =
     function(request, metadata) {
@@ -216,7 +220,7 @@ proto.rpc.LedgerClient.prototype.listContracts =
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
  * @return {!Promise<!proto.rpc.ContractsListingResponse>}
- *     A native promise that resolves to the response
+ *     Promise that resolves to the response
  */
 proto.rpc.LedgerPromiseClient.prototype.listContracts =
     function(request, metadata) {
@@ -296,7 +300,7 @@ proto.rpc.LedgerClient.prototype.executeContract =
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
  * @return {!Promise<!proto.rpc.ContractExecutionResponse>}
- *     A native promise that resolves to the response
+ *     Promise that resolves to the response
  */
 proto.rpc.LedgerPromiseClient.prototype.executeContract =
     function(request, metadata) {
@@ -376,7 +380,7 @@ proto.rpc.LedgerClient.prototype.validateLedger =
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
  * @return {!Promise<!proto.rpc.LedgerValidationResponse>}
- *     A native promise that resolves to the response
+ *     Promise that resolves to the response
  */
 proto.rpc.LedgerPromiseClient.prototype.validateLedger =
     function(request, metadata) {
@@ -385,6 +389,86 @@ proto.rpc.LedgerPromiseClient.prototype.validateLedger =
       request,
       metadata || {},
       methodDescriptor_Ledger_ValidateLedger);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.rpc.AssetProofRetrievalRequest,
+ *   !proto.rpc.AssetProofRetrievalResponse>}
+ */
+const methodDescriptor_Ledger_RetrieveAssetProof = new grpc.web.MethodDescriptor(
+  '/rpc.Ledger/RetrieveAssetProof',
+  grpc.web.MethodType.UNARY,
+  proto.rpc.AssetProofRetrievalRequest,
+  proto.rpc.AssetProofRetrievalResponse,
+  /**
+   * @param {!proto.rpc.AssetProofRetrievalRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.rpc.AssetProofRetrievalResponse.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.rpc.AssetProofRetrievalRequest,
+ *   !proto.rpc.AssetProofRetrievalResponse>}
+ */
+const methodInfo_Ledger_RetrieveAssetProof = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.rpc.AssetProofRetrievalResponse,
+  /**
+   * @param {!proto.rpc.AssetProofRetrievalRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.rpc.AssetProofRetrievalResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.rpc.AssetProofRetrievalRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.rpc.AssetProofRetrievalResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.rpc.AssetProofRetrievalResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.rpc.LedgerClient.prototype.retrieveAssetProof =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/rpc.Ledger/RetrieveAssetProof',
+      request,
+      metadata || {},
+      methodDescriptor_Ledger_RetrieveAssetProof,
+      callback);
+};
+
+
+/**
+ * @param {!proto.rpc.AssetProofRetrievalRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.rpc.AssetProofRetrievalResponse>}
+ *     Promise that resolves to the response
+ */
+proto.rpc.LedgerPromiseClient.prototype.retrieveAssetProof =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/rpc.Ledger/RetrieveAssetProof',
+      request,
+      metadata || {},
+      methodDescriptor_Ledger_RetrieveAssetProof);
 };
 
 
@@ -508,7 +592,7 @@ proto.rpc.LedgerPrivilegedClient.prototype.registerCert =
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
  * @return {!Promise<!proto.google.protobuf.Empty>}
- *     A native promise that resolves to the response
+ *     Promise that resolves to the response
  */
 proto.rpc.LedgerPrivilegedPromiseClient.prototype.registerCert =
     function(request, metadata) {
@@ -588,7 +672,7 @@ proto.rpc.LedgerPrivilegedClient.prototype.registerFunction =
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
  * @return {!Promise<!proto.google.protobuf.Empty>}
- *     A native promise that resolves to the response
+ *     Promise that resolves to the response
  */
 proto.rpc.LedgerPrivilegedPromiseClient.prototype.registerFunction =
     function(request, metadata) {
@@ -668,7 +752,7 @@ proto.rpc.LedgerPrivilegedClient.prototype.retrieveState =
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
  * @return {!Promise<!proto.rpc.StateRetrievalResponse>}
- *     A native promise that resolves to the response
+ *     Promise that resolves to the response
  */
 proto.rpc.LedgerPrivilegedPromiseClient.prototype.retrieveState =
     function(request, metadata) {
@@ -677,298 +761,6 @@ proto.rpc.LedgerPrivilegedPromiseClient.prototype.retrieveState =
       request,
       metadata || {},
       methodDescriptor_LedgerPrivileged_RetrieveState);
-};
-
-
-/**
- * @param {string} hostname
- * @param {?Object} credentials
- * @param {?Object} options
- * @constructor
- * @struct
- * @final
- */
-proto.rpc.AdminClient =
-    function(hostname, credentials, options) {
-  if (!options) options = {};
-  options['format'] = 'text';
-
-  /**
-   * @private @const {!grpc.web.GrpcWebClientBase} The client
-   */
-  this.client_ = new grpc.web.GrpcWebClientBase(options);
-
-  /**
-   * @private @const {string} The hostname
-   */
-  this.hostname_ = hostname;
-
-};
-
-
-/**
- * @param {string} hostname
- * @param {?Object} credentials
- * @param {?Object} options
- * @constructor
- * @struct
- * @final
- */
-proto.rpc.AdminPromiseClient =
-    function(hostname, credentials, options) {
-  if (!options) options = {};
-  options['format'] = 'text';
-
-  /**
-   * @private @const {!grpc.web.GrpcWebClientBase} The client
-   */
-  this.client_ = new grpc.web.GrpcWebClientBase(options);
-
-  /**
-   * @private @const {string} The hostname
-   */
-  this.hostname_ = hostname;
-
-};
-
-
-/**
- * @const
- * @type {!grpc.web.MethodDescriptor<
- *   !proto.rpc.PauseRequest,
- *   !proto.google.protobuf.Empty>}
- */
-const methodDescriptor_Admin_Pause = new grpc.web.MethodDescriptor(
-  '/rpc.Admin/Pause',
-  grpc.web.MethodType.UNARY,
-  proto.rpc.PauseRequest,
-  google_protobuf_empty_pb.Empty,
-  /**
-   * @param {!proto.rpc.PauseRequest} request
-   * @return {!Uint8Array}
-   */
-  function(request) {
-    return request.serializeBinary();
-  },
-  google_protobuf_empty_pb.Empty.deserializeBinary
-);
-
-
-/**
- * @const
- * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.rpc.PauseRequest,
- *   !proto.google.protobuf.Empty>}
- */
-const methodInfo_Admin_Pause = new grpc.web.AbstractClientBase.MethodInfo(
-  google_protobuf_empty_pb.Empty,
-  /**
-   * @param {!proto.rpc.PauseRequest} request
-   * @return {!Uint8Array}
-   */
-  function(request) {
-    return request.serializeBinary();
-  },
-  google_protobuf_empty_pb.Empty.deserializeBinary
-);
-
-
-/**
- * @param {!proto.rpc.PauseRequest} request The
- *     request proto
- * @param {?Object<string, string>} metadata User defined
- *     call metadata
- * @param {function(?grpc.web.Error, ?proto.google.protobuf.Empty)}
- *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.google.protobuf.Empty>|undefined}
- *     The XHR Node Readable Stream
- */
-proto.rpc.AdminClient.prototype.pause =
-    function(request, metadata, callback) {
-  return this.client_.rpcCall(this.hostname_ +
-      '/rpc.Admin/Pause',
-      request,
-      metadata || {},
-      methodDescriptor_Admin_Pause,
-      callback);
-};
-
-
-/**
- * @param {!proto.rpc.PauseRequest} request The
- *     request proto
- * @param {?Object<string, string>} metadata User defined
- *     call metadata
- * @return {!Promise<!proto.google.protobuf.Empty>}
- *     A native promise that resolves to the response
- */
-proto.rpc.AdminPromiseClient.prototype.pause =
-    function(request, metadata) {
-  return this.client_.unaryCall(this.hostname_ +
-      '/rpc.Admin/Pause',
-      request,
-      metadata || {},
-      methodDescriptor_Admin_Pause);
-};
-
-
-/**
- * @const
- * @type {!grpc.web.MethodDescriptor<
- *   !proto.google.protobuf.Empty,
- *   !proto.google.protobuf.Empty>}
- */
-const methodDescriptor_Admin_Unpause = new grpc.web.MethodDescriptor(
-  '/rpc.Admin/Unpause',
-  grpc.web.MethodType.UNARY,
-  google_protobuf_empty_pb.Empty,
-  google_protobuf_empty_pb.Empty,
-  /**
-   * @param {!proto.google.protobuf.Empty} request
-   * @return {!Uint8Array}
-   */
-  function(request) {
-    return request.serializeBinary();
-  },
-  google_protobuf_empty_pb.Empty.deserializeBinary
-);
-
-
-/**
- * @const
- * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.google.protobuf.Empty,
- *   !proto.google.protobuf.Empty>}
- */
-const methodInfo_Admin_Unpause = new grpc.web.AbstractClientBase.MethodInfo(
-  google_protobuf_empty_pb.Empty,
-  /**
-   * @param {!proto.google.protobuf.Empty} request
-   * @return {!Uint8Array}
-   */
-  function(request) {
-    return request.serializeBinary();
-  },
-  google_protobuf_empty_pb.Empty.deserializeBinary
-);
-
-
-/**
- * @param {!proto.google.protobuf.Empty} request The
- *     request proto
- * @param {?Object<string, string>} metadata User defined
- *     call metadata
- * @param {function(?grpc.web.Error, ?proto.google.protobuf.Empty)}
- *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.google.protobuf.Empty>|undefined}
- *     The XHR Node Readable Stream
- */
-proto.rpc.AdminClient.prototype.unpause =
-    function(request, metadata, callback) {
-  return this.client_.rpcCall(this.hostname_ +
-      '/rpc.Admin/Unpause',
-      request,
-      metadata || {},
-      methodDescriptor_Admin_Unpause,
-      callback);
-};
-
-
-/**
- * @param {!proto.google.protobuf.Empty} request The
- *     request proto
- * @param {?Object<string, string>} metadata User defined
- *     call metadata
- * @return {!Promise<!proto.google.protobuf.Empty>}
- *     A native promise that resolves to the response
- */
-proto.rpc.AdminPromiseClient.prototype.unpause =
-    function(request, metadata) {
-  return this.client_.unaryCall(this.hostname_ +
-      '/rpc.Admin/Unpause',
-      request,
-      metadata || {},
-      methodDescriptor_Admin_Unpause);
-};
-
-
-/**
- * @const
- * @type {!grpc.web.MethodDescriptor<
- *   !proto.google.protobuf.Empty,
- *   !proto.rpc.StatsResponse>}
- */
-const methodDescriptor_Admin_Stats = new grpc.web.MethodDescriptor(
-  '/rpc.Admin/Stats',
-  grpc.web.MethodType.UNARY,
-  google_protobuf_empty_pb.Empty,
-  proto.rpc.StatsResponse,
-  /**
-   * @param {!proto.google.protobuf.Empty} request
-   * @return {!Uint8Array}
-   */
-  function(request) {
-    return request.serializeBinary();
-  },
-  proto.rpc.StatsResponse.deserializeBinary
-);
-
-
-/**
- * @const
- * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.google.protobuf.Empty,
- *   !proto.rpc.StatsResponse>}
- */
-const methodInfo_Admin_Stats = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.rpc.StatsResponse,
-  /**
-   * @param {!proto.google.protobuf.Empty} request
-   * @return {!Uint8Array}
-   */
-  function(request) {
-    return request.serializeBinary();
-  },
-  proto.rpc.StatsResponse.deserializeBinary
-);
-
-
-/**
- * @param {!proto.google.protobuf.Empty} request The
- *     request proto
- * @param {?Object<string, string>} metadata User defined
- *     call metadata
- * @param {function(?grpc.web.Error, ?proto.rpc.StatsResponse)}
- *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.rpc.StatsResponse>|undefined}
- *     The XHR Node Readable Stream
- */
-proto.rpc.AdminClient.prototype.stats =
-    function(request, metadata, callback) {
-  return this.client_.rpcCall(this.hostname_ +
-      '/rpc.Admin/Stats',
-      request,
-      metadata || {},
-      methodDescriptor_Admin_Stats,
-      callback);
-};
-
-
-/**
- * @param {!proto.google.protobuf.Empty} request The
- *     request proto
- * @param {?Object<string, string>} metadata User defined
- *     call metadata
- * @return {!Promise<!proto.rpc.StatsResponse>}
- *     A native promise that resolves to the response
- */
-proto.rpc.AdminPromiseClient.prototype.stats =
-    function(request, metadata) {
-  return this.client_.unaryCall(this.hostname_ +
-      '/rpc.Admin/Stats',
-      request,
-      metadata || {},
-      methodDescriptor_Admin_Stats);
 };
 
 
@@ -1092,7 +884,7 @@ proto.rpc.ProofRegistryClient.prototype.registerProofs =
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
  * @return {!Promise<!proto.google.protobuf.Empty>}
- *     A native promise that resolves to the response
+ *     Promise that resolves to the response
  */
 proto.rpc.ProofRegistryPromiseClient.prototype.registerProofs =
     function(request, metadata) {
@@ -1172,7 +964,7 @@ proto.rpc.ProofRegistryClient.prototype.retrieveProof =
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
  * @return {!Promise<!proto.rpc.ProofRetrievalResponse>}
- *     A native promise that resolves to the response
+ *     Promise that resolves to the response
  */
 proto.rpc.ProofRegistryPromiseClient.prototype.retrieveProof =
     function(request, metadata) {
@@ -1181,138 +973,6 @@ proto.rpc.ProofRegistryPromiseClient.prototype.retrieveProof =
       request,
       metadata || {},
       methodDescriptor_ProofRegistry_RetrieveProof);
-};
-
-
-/**
- * @param {string} hostname
- * @param {?Object} credentials
- * @param {?Object} options
- * @constructor
- * @struct
- * @final
- */
-proto.rpc.ResultRetrieverClient =
-    function(hostname, credentials, options) {
-  if (!options) options = {};
-  options['format'] = 'text';
-
-  /**
-   * @private @const {!grpc.web.GrpcWebClientBase} The client
-   */
-  this.client_ = new grpc.web.GrpcWebClientBase(options);
-
-  /**
-   * @private @const {string} The hostname
-   */
-  this.hostname_ = hostname;
-
-};
-
-
-/**
- * @param {string} hostname
- * @param {?Object} credentials
- * @param {?Object} options
- * @constructor
- * @struct
- * @final
- */
-proto.rpc.ResultRetrieverPromiseClient =
-    function(hostname, credentials, options) {
-  if (!options) options = {};
-  options['format'] = 'text';
-
-  /**
-   * @private @const {!grpc.web.GrpcWebClientBase} The client
-   */
-  this.client_ = new grpc.web.GrpcWebClientBase(options);
-
-  /**
-   * @private @const {string} The hostname
-   */
-  this.hostname_ = hostname;
-
-};
-
-
-/**
- * @const
- * @type {!grpc.web.MethodDescriptor<
- *   !proto.rpc.ResultRetrievalRequest,
- *   !proto.rpc.ContractExecutionResponse>}
- */
-const methodDescriptor_ResultRetriever_RetrieveExecutionResponse = new grpc.web.MethodDescriptor(
-  '/rpc.ResultRetriever/RetrieveExecutionResponse',
-  grpc.web.MethodType.UNARY,
-  proto.rpc.ResultRetrievalRequest,
-  proto.rpc.ContractExecutionResponse,
-  /**
-   * @param {!proto.rpc.ResultRetrievalRequest} request
-   * @return {!Uint8Array}
-   */
-  function(request) {
-    return request.serializeBinary();
-  },
-  proto.rpc.ContractExecutionResponse.deserializeBinary
-);
-
-
-/**
- * @const
- * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.rpc.ResultRetrievalRequest,
- *   !proto.rpc.ContractExecutionResponse>}
- */
-const methodInfo_ResultRetriever_RetrieveExecutionResponse = new grpc.web.AbstractClientBase.MethodInfo(
-  proto.rpc.ContractExecutionResponse,
-  /**
-   * @param {!proto.rpc.ResultRetrievalRequest} request
-   * @return {!Uint8Array}
-   */
-  function(request) {
-    return request.serializeBinary();
-  },
-  proto.rpc.ContractExecutionResponse.deserializeBinary
-);
-
-
-/**
- * @param {!proto.rpc.ResultRetrievalRequest} request The
- *     request proto
- * @param {?Object<string, string>} metadata User defined
- *     call metadata
- * @param {function(?grpc.web.Error, ?proto.rpc.ContractExecutionResponse)}
- *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.rpc.ContractExecutionResponse>|undefined}
- *     The XHR Node Readable Stream
- */
-proto.rpc.ResultRetrieverClient.prototype.retrieveExecutionResponse =
-    function(request, metadata, callback) {
-  return this.client_.rpcCall(this.hostname_ +
-      '/rpc.ResultRetriever/RetrieveExecutionResponse',
-      request,
-      metadata || {},
-      methodDescriptor_ResultRetriever_RetrieveExecutionResponse,
-      callback);
-};
-
-
-/**
- * @param {!proto.rpc.ResultRetrievalRequest} request The
- *     request proto
- * @param {?Object<string, string>} metadata User defined
- *     call metadata
- * @return {!Promise<!proto.rpc.ContractExecutionResponse>}
- *     A native promise that resolves to the response
- */
-proto.rpc.ResultRetrieverPromiseClient.prototype.retrieveExecutionResponse =
-    function(request, metadata) {
-  return this.client_.unaryCall(this.hostname_ +
-      '/rpc.ResultRetriever/RetrieveExecutionResponse',
-      request,
-      metadata || {},
-      methodDescriptor_ResultRetriever_RetrieveExecutionResponse);
 };
 
 
@@ -1365,6 +1025,246 @@ proto.rpc.ProxyPromiseClient =
    */
   this.hostname_ = hostname;
 
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.rpc.CertificateRegistrationRequest,
+ *   !proto.google.protobuf.Empty>}
+ */
+const methodDescriptor_Proxy_RegisterCert = new grpc.web.MethodDescriptor(
+  '/rpc.Proxy/RegisterCert',
+  grpc.web.MethodType.UNARY,
+  proto.rpc.CertificateRegistrationRequest,
+  google_protobuf_empty_pb.Empty,
+  /**
+   * @param {!proto.rpc.CertificateRegistrationRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  google_protobuf_empty_pb.Empty.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.rpc.CertificateRegistrationRequest,
+ *   !proto.google.protobuf.Empty>}
+ */
+const methodInfo_Proxy_RegisterCert = new grpc.web.AbstractClientBase.MethodInfo(
+  google_protobuf_empty_pb.Empty,
+  /**
+   * @param {!proto.rpc.CertificateRegistrationRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  google_protobuf_empty_pb.Empty.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.rpc.CertificateRegistrationRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.google.protobuf.Empty)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.google.protobuf.Empty>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.rpc.ProxyClient.prototype.registerCert =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/rpc.Proxy/RegisterCert',
+      request,
+      metadata || {},
+      methodDescriptor_Proxy_RegisterCert,
+      callback);
+};
+
+
+/**
+ * @param {!proto.rpc.CertificateRegistrationRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.google.protobuf.Empty>}
+ *     Promise that resolves to the response
+ */
+proto.rpc.ProxyPromiseClient.prototype.registerCert =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/rpc.Proxy/RegisterCert',
+      request,
+      metadata || {},
+      methodDescriptor_Proxy_RegisterCert);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.rpc.ContractRegistrationRequest,
+ *   !proto.google.protobuf.Empty>}
+ */
+const methodDescriptor_Proxy_RegisterContract = new grpc.web.MethodDescriptor(
+  '/rpc.Proxy/RegisterContract',
+  grpc.web.MethodType.UNARY,
+  proto.rpc.ContractRegistrationRequest,
+  google_protobuf_empty_pb.Empty,
+  /**
+   * @param {!proto.rpc.ContractRegistrationRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  google_protobuf_empty_pb.Empty.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.rpc.ContractRegistrationRequest,
+ *   !proto.google.protobuf.Empty>}
+ */
+const methodInfo_Proxy_RegisterContract = new grpc.web.AbstractClientBase.MethodInfo(
+  google_protobuf_empty_pb.Empty,
+  /**
+   * @param {!proto.rpc.ContractRegistrationRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  google_protobuf_empty_pb.Empty.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.rpc.ContractRegistrationRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.google.protobuf.Empty)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.google.protobuf.Empty>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.rpc.ProxyClient.prototype.registerContract =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/rpc.Proxy/RegisterContract',
+      request,
+      metadata || {},
+      methodDescriptor_Proxy_RegisterContract,
+      callback);
+};
+
+
+/**
+ * @param {!proto.rpc.ContractRegistrationRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.google.protobuf.Empty>}
+ *     Promise that resolves to the response
+ */
+proto.rpc.ProxyPromiseClient.prototype.registerContract =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/rpc.Proxy/RegisterContract',
+      request,
+      metadata || {},
+      methodDescriptor_Proxy_RegisterContract);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.rpc.FunctionRegistrationRequest,
+ *   !proto.google.protobuf.Empty>}
+ */
+const methodDescriptor_Proxy_RegisterFunction = new grpc.web.MethodDescriptor(
+  '/rpc.Proxy/RegisterFunction',
+  grpc.web.MethodType.UNARY,
+  proto.rpc.FunctionRegistrationRequest,
+  google_protobuf_empty_pb.Empty,
+  /**
+   * @param {!proto.rpc.FunctionRegistrationRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  google_protobuf_empty_pb.Empty.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.rpc.FunctionRegistrationRequest,
+ *   !proto.google.protobuf.Empty>}
+ */
+const methodInfo_Proxy_RegisterFunction = new grpc.web.AbstractClientBase.MethodInfo(
+  google_protobuf_empty_pb.Empty,
+  /**
+   * @param {!proto.rpc.FunctionRegistrationRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  google_protobuf_empty_pb.Empty.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.rpc.FunctionRegistrationRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.google.protobuf.Empty)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.google.protobuf.Empty>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.rpc.ProxyClient.prototype.registerFunction =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/rpc.Proxy/RegisterFunction',
+      request,
+      metadata || {},
+      methodDescriptor_Proxy_RegisterFunction,
+      callback);
+};
+
+
+/**
+ * @param {!proto.rpc.FunctionRegistrationRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.google.protobuf.Empty>}
+ *     Promise that resolves to the response
+ */
+proto.rpc.ProxyPromiseClient.prototype.registerFunction =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/rpc.Proxy/RegisterFunction',
+      request,
+      metadata || {},
+      methodDescriptor_Proxy_RegisterFunction);
 };
 
 
@@ -1436,7 +1336,7 @@ proto.rpc.ProxyClient.prototype.executeContract =
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
  * @return {!Promise<!proto.rpc.ContractExecutionResponse>}
- *     A native promise that resolves to the response
+ *     Promise that resolves to the response
  */
 proto.rpc.ProxyPromiseClient.prototype.executeContract =
     function(request, metadata) {
@@ -1451,16 +1351,96 @@ proto.rpc.ProxyPromiseClient.prototype.executeContract =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.rpc.IdentifiableContractExecutionResponse,
+ *   !proto.rpc.LedgersValidationRequest,
+ *   !proto.rpc.LedgersValidationResponse>}
+ */
+const methodDescriptor_Proxy_ValidateLedgers = new grpc.web.MethodDescriptor(
+  '/rpc.Proxy/ValidateLedgers',
+  grpc.web.MethodType.UNARY,
+  proto.rpc.LedgersValidationRequest,
+  proto.rpc.LedgersValidationResponse,
+  /**
+   * @param {!proto.rpc.LedgersValidationRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.rpc.LedgersValidationResponse.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.rpc.LedgersValidationRequest,
+ *   !proto.rpc.LedgersValidationResponse>}
+ */
+const methodInfo_Proxy_ValidateLedgers = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.rpc.LedgersValidationResponse,
+  /**
+   * @param {!proto.rpc.LedgersValidationRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  proto.rpc.LedgersValidationResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.rpc.LedgersValidationRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.rpc.LedgersValidationResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.rpc.LedgersValidationResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.rpc.ProxyClient.prototype.validateLedgers =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/rpc.Proxy/ValidateLedgers',
+      request,
+      metadata || {},
+      methodDescriptor_Proxy_ValidateLedgers,
+      callback);
+};
+
+
+/**
+ * @param {!proto.rpc.LedgersValidationRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.rpc.LedgersValidationResponse>}
+ *     Promise that resolves to the response
+ */
+proto.rpc.ProxyPromiseClient.prototype.validateLedgers =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/rpc.Proxy/ValidateLedgers',
+      request,
+      metadata || {},
+      methodDescriptor_Proxy_ValidateLedgers);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.rpc.IdentifiableResponse,
  *   !proto.google.protobuf.Empty>}
  */
 const methodDescriptor_Proxy_ProxyResponse = new grpc.web.MethodDescriptor(
   '/rpc.Proxy/ProxyResponse',
   grpc.web.MethodType.UNARY,
-  proto.rpc.IdentifiableContractExecutionResponse,
+  proto.rpc.IdentifiableResponse,
   google_protobuf_empty_pb.Empty,
   /**
-   * @param {!proto.rpc.IdentifiableContractExecutionResponse} request
+   * @param {!proto.rpc.IdentifiableResponse} request
    * @return {!Uint8Array}
    */
   function(request) {
@@ -1473,13 +1453,13 @@ const methodDescriptor_Proxy_ProxyResponse = new grpc.web.MethodDescriptor(
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.rpc.IdentifiableContractExecutionResponse,
+ *   !proto.rpc.IdentifiableResponse,
  *   !proto.google.protobuf.Empty>}
  */
 const methodInfo_Proxy_ProxyResponse = new grpc.web.AbstractClientBase.MethodInfo(
   google_protobuf_empty_pb.Empty,
   /**
-   * @param {!proto.rpc.IdentifiableContractExecutionResponse} request
+   * @param {!proto.rpc.IdentifiableResponse} request
    * @return {!Uint8Array}
    */
   function(request) {
@@ -1490,7 +1470,7 @@ const methodInfo_Proxy_ProxyResponse = new grpc.web.AbstractClientBase.MethodInf
 
 
 /**
- * @param {!proto.rpc.IdentifiableContractExecutionResponse} request The
+ * @param {!proto.rpc.IdentifiableResponse} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
@@ -1511,12 +1491,12 @@ proto.rpc.ProxyClient.prototype.proxyResponse =
 
 
 /**
- * @param {!proto.rpc.IdentifiableContractExecutionResponse} request The
+ * @param {!proto.rpc.IdentifiableResponse} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
  * @return {!Promise<!proto.google.protobuf.Empty>}
- *     A native promise that resolves to the response
+ *     Promise that resolves to the response
  */
 proto.rpc.ProxyPromiseClient.prototype.proxyResponse =
     function(request, metadata) {

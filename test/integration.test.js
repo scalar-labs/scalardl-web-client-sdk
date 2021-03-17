@@ -6,8 +6,8 @@ describe('ClientService', () => {
   } = require('../scalardl-web-client-sdk.js');
   const properties = {
     'scalar.dl.client.server.host': '127.0.0.1',
-    'scalar.dl.client.server.port': 80,
-    'scalar.dl.client.server.privileged_port': 8080,
+    'scalar.dl.client.server.port': 50051,
+    'scalar.dl.client.server.privileged_port': 50052,
 
     // Make the test idempotent.
     'scalar.dl.client.cert_holder_id': `foo@${Date.now()}`,
@@ -90,6 +90,7 @@ describe('ClientService', () => {
     describe('registerCertificate', () => {
       it('should be successful', async () => {
         const response = await clientService.registerCertificate();
+        assert.deepEqual(response);
         assert.deepEqual(response, undefined);
       });
     });
@@ -155,9 +156,17 @@ describe('ClientService', () => {
           });
     });
     describe('validateLedger', () => {
-      it('should return 200 when correct asset id is specified', async () => {
+      it('should return 200 when correct asset id and age are specified', async () => {
+        const response = await clientService.validateLedger(mockedAssetId, 0, 1);
+        assert.equal(response.getCode(), 200);
+      });
+      it('should return 200 even only correct asset id is specified', async () => {
         const response = await clientService.validateLedger(mockedAssetId);
         assert.equal(response.getCode(), 200);
+      });
+      it('should return 409 when incorrect asset id is specified', async () => {
+        const response = await clientService.validateLedger('incorrect_asset_id');
+        assert.equal(response.getCode(), 409);
       });
     });
   });
@@ -181,8 +190,8 @@ describe('ClientService', () => {
       await db.keystore.put({id: keyId, key: key});
       const properties = {
         'scalar.dl.client.server.host': '127.0.0.1',
-        'scalar.dl.client.server.port': 80,
-        'scalar.dl.client.server.privileged_port': 8080,
+        'scalar.dl.client.server.port': 50051,
+        'scalar.dl.client.server.privileged_port': 50052,
         'scalar.dl.client.cert_holder_id': holderId,
         'scalar.dl.client.cert_version': certVersion,
         'scalar.dl.client.cert_pem': '-----BEGIN CERTIFICATE-----\n' +
@@ -204,10 +213,10 @@ describe('ClientService', () => {
       };
 
       const clientService = await new ClientServiceWithIndexedDb(
-          new ClientService(properties)
+          new ClientService(properties),
       );
       await clientService.registerCertificate();
-      const response = await clientService.validateLedger('non_existing_asset');
+      const response = await clientService.validateLedger('non_existing_asset', 0, 1);
 
       assert.equal(StatusCode.ASSET_NOT_FOUND, response.getCode());
     });

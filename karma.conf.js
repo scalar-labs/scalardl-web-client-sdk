@@ -11,9 +11,6 @@ module.exports = function(config) {
       'test/*.test.js': ['webpack'],
     },
     webpack: {},
-    webpackMiddleware: {
-      stats: 'errors-only',
-    },
     htmlReporter: {
       outputFile: 'test/test-reports/integration-test.html',
     },
