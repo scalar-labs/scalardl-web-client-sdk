@@ -43,8 +43,15 @@ jobs:
             sudo chmod +x /usr/local/bin/docker-compose
 
       - run:
+          name: checkout scalar-samples repository as it contains the script to spin up scalardl environment and easier for us to maintain the CI
+          command: |
+            git init
+            git pull https://${GHCR_USERNAME}:${GHCR_PAT}@github.com/scalar-labs/scalar-samples.git
+          working_directory: .circleci/
+
+      - run:
           name: Spin container via docker compose
-          command: docker-compose up -d
+          command: docker-compose -f docker-compose.yml -f docker-compose-open-cassandra-port.yml up -d
           working_directory: .circleci/
 
       - run:
