@@ -103,6 +103,7 @@ describe('ClientServiceWithIndexedDb', function() {
       chai.assert.notEqual(undefined, after);
       await chai.expect(clientService.registerCertificate()).to.not.be.rejected;
       await chai.expect(clientService.validateLedger('foo', 0, 1)).to.not.be.rejected;
+      await chai.expect(clientService.validateLedger('foo')).to.not.be.rejected;
     });
 
     it('should work to store CryptoKey', async function() {

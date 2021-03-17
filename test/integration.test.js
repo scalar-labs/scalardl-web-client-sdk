@@ -156,9 +156,17 @@ describe('ClientService', () => {
           });
     });
     describe('validateLedger', () => {
-      it('should return 200 when correct asset id is specified', async () => {
+      it('should return 200 when correct asset id and age are specified', async () => {
         const response = await clientService.validateLedger(mockedAssetId, 0, 1);
         assert.equal(response.getCode(), 200);
+      });
+      it('should return 200 even only correct asset id is specified', async () => {
+        const response = await clientService.validateLedger(mockedAssetId);
+        assert.equal(response.getCode(), 200);
+      });
+      it('should return 409 when incorrect asset id is specified', async () => {
+        const response = await clientService.validateLedger('incorrect_asset_id');
+        assert.equal(response.getCode(), 409);
       });
     });
   });
