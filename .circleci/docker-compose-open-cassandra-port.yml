@@ -1,68 +1,6 @@
 version: "3.5"
 services:
   cassandra:
-    image: cassandra:3.11
-    container_name: "circleci_scalardl-cassandra-1"
-    volumes:
-      - cassandra-data:/var/lib/cassandra
-    environment:
-      - CASSANDRA_DC=dc1
-      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
-    networks:
-      - scalar-ledger
-
-  scalardl-schema-loader-cassandra:
-    image: ghcr.io/scalar-labs/scalardl-schema-loader:1.3.0
-    container_name: "circleci_scalardl-schema-loader-cassandra_1"
-    command:
-      - "--cassandra"
-      - "-h"
-      - "cassandra"
-      - "-R"
-      - "1"
-    networks:
-      - scalar-ledger
-    restart: on-failure
-
-  scalar-ledger:
-    image: ghcr.io/scalar-labs/scalar-ledger:2.1.0
-    container_name: "circleci_scalardl-scalar-ledger-1"
-    volumes:
-      - ./fixture/bar-key.pem:/scalar/bar-key.pem
-    depends_on:
-      - cassandra
-    environment:
-      - SCALAR_DB_CONTACT_POINTS=cassandra
-      - SCALAR_DB_STORAGE=cassandra
-      - SCALAR_DL_LEDGER_PROOF_ENABLED=true
-      - SCALAR_DL_LEDGER_PROOF_PRIVATE_KEY_PATH=/scalar/bar-key.pem
-    networks:
-      - scalar-ledger
-    # Overriding the CMD instruction in the scalar-ledger Dockerfile to add the -wait option.
-    command: |
-      dockerize -template ledger.properties.tmpl:ledger.properties
-      -template log4j.properties.tmpl:log4j.properties
-      -wait tcp://cassandra:9042 -timeout 60s
-      ./bin/scalar-ledger --config ledger.properties
-
-  envoy:
-    image: envoyproxy/envoy:v1.12.2
-    container_name: "circleci_scalardl-envoy-1"
     ports:
-      - "9901:9901"
-      - "50051:50051"
-      - "50052:50052"
-    volumes:
-      - ./envoy.yaml:/etc/envoy/envoy.yaml
-    depends_on:
-      - scalar-ledger
-    command: /usr/local/bin/envoy -c /etc/envoy/envoy.yaml
-    networks:
-      - scalar-ledger
+      - "9042:9042"
 
-volumes:
-  cassandra-data:
-
-networks:
-  scalar-ledger:
-    name: scalar-ledger
