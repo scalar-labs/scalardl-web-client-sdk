@@ -6,7 +6,12 @@ const {
 } = require('@scalar-labs/scalardl-javascript-sdk-base');
 
 const protobuf = require('./scalar_pb');
-const {LedgerClient, LedgerPrivilegedClient} = require('./scalar_grpc_web_pb');
+const {
+  LedgerClient,
+  LedgerPrivilegedClient,
+  AuditorClient,
+  AuditorPrivilegedClient,
+} = require('./scalar_grpc_web_pb');
 
 const {SignerFactory} = require('./signer');
 const {
@@ -31,15 +36,22 @@ class ClientService extends ClientServiceBase {
     const clientProperties = new ClientProperties(properties);
 
     const host = clientProperties.getServerHost();
+    const auditorHost = clientProperties.getAuditorHost();
     const tlsEnabled = clientProperties.getTlsEnabled();
     const ledgerClientServiceURL =
       `${tlsEnabled ? 'https' : 'http'}://${host}:${clientProperties.getServerPort()}`;
     const ledgerPriviledgedClientServiceURL =
       `${tlsEnabled ? 'https' : 'http'}://${host}:${clientProperties.getServerPrivilegedPort()}`;
+    const auditorClientServiceURL =
+      `${tlsEnabled ? 'https' : 'http'}://${auditorHost}:${clientProperties.getAuditorPort()}`;
+    const auditorPriviledgedClientServiceURL =
+      `${tlsEnabled ? 'https' : 'http'}://${auditorHost}:${clientProperties.getAuditorPrivilegedPort()}`;
 
     const services = {
       ledgerClient: new LedgerClient(ledgerClientServiceURL),
       ledgerPrivileged: new LedgerPrivilegedClient(ledgerPriviledgedClientServiceURL),
+      auditorClient: new AuditorClient(auditorClientServiceURL),
+      auditorPrivileged: new AuditorPrivilegedClient(auditorPriviledgedClientServiceURL),
       signerFactory: new SignerFactory(),
     };
 

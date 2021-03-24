@@ -3,6 +3,7 @@ module.exports = function(config) {
     frameworks: ['mocha', 'chai'],
     files: [
       'test/integration.test.js',
+      'test/integration_auditor.test.js',
       'test/signature_validator.test.js',
       'test/client_service_with_indexeddb.test.js',
     ],
