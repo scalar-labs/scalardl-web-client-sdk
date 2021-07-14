@@ -1,13 +1,13 @@
 {
   "dependencies": {
-    "@scalar-labs/scalardl-javascript-sdk-base": "3.2.0",
+    "@scalar-labs/scalardl-javascript-sdk-base": "3.2.2",
     "dexie": "^3.0.3",
     "google-protobuf": "^3.15.2",
     "grpc-web": "^1.2.1",
     "jsrsasign": "^10.1.11"
   },
   "name": "@scalar-labs/scalardl-web-client-sdk",
-  "version": "2.6.0",
+  "version": "3.0.0",
   "description": "The web client SDK for Scalar DL",
   "main": "scalardl-web-client-sdk.js",
   "author": "Scalar, Inc.",
@@ -33,6 +33,7 @@
     "webpack-cli": "^4.5.0"
   },
   "scripts": {
-    "test": "karma start"
+    "test": "karma start",
+    "test-auditor": "karma start karma.auditor.conf.js"
   }
 }

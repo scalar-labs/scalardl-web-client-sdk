@@ -979,160 +979,160 @@ proto.rpc.AuditorPromiseClient.prototype.listContracts =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.rpc.RequestProofRegistrationRequest,
- *   !proto.google.protobuf.Empty>}
+ *   !proto.rpc.ContractExecutionRequest,
+ *   !proto.rpc.ExecutionOrderingResponse>}
  */
-const methodDescriptor_Auditor_RegisterRequestProof = new grpc.web.MethodDescriptor(
-  '/rpc.Auditor/RegisterRequestProof',
+const methodDescriptor_Auditor_OrderExecution = new grpc.web.MethodDescriptor(
+  '/rpc.Auditor/OrderExecution',
   grpc.web.MethodType.UNARY,
-  proto.rpc.RequestProofRegistrationRequest,
-  google_protobuf_empty_pb.Empty,
+  proto.rpc.ContractExecutionRequest,
+  proto.rpc.ExecutionOrderingResponse,
   /**
-   * @param {!proto.rpc.RequestProofRegistrationRequest} request
+   * @param {!proto.rpc.ContractExecutionRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
     return request.serializeBinary();
   },
-  google_protobuf_empty_pb.Empty.deserializeBinary
+  proto.rpc.ExecutionOrderingResponse.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.rpc.RequestProofRegistrationRequest,
- *   !proto.google.protobuf.Empty>}
+ *   !proto.rpc.ContractExecutionRequest,
+ *   !proto.rpc.ExecutionOrderingResponse>}
  */
-const methodInfo_Auditor_RegisterRequestProof = new grpc.web.AbstractClientBase.MethodInfo(
-  google_protobuf_empty_pb.Empty,
+const methodInfo_Auditor_OrderExecution = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.rpc.ExecutionOrderingResponse,
   /**
-   * @param {!proto.rpc.RequestProofRegistrationRequest} request
+   * @param {!proto.rpc.ContractExecutionRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
     return request.serializeBinary();
   },
-  google_protobuf_empty_pb.Empty.deserializeBinary
+  proto.rpc.ExecutionOrderingResponse.deserializeBinary
 );
 
 
 /**
- * @param {!proto.rpc.RequestProofRegistrationRequest} request The
+ * @param {!proto.rpc.ContractExecutionRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.google.protobuf.Empty)}
+ * @param {function(?grpc.web.Error, ?proto.rpc.ExecutionOrderingResponse)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.google.protobuf.Empty>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.rpc.ExecutionOrderingResponse>|undefined}
  *     The XHR Node Readable Stream
  */
-proto.rpc.AuditorClient.prototype.registerRequestProof =
+proto.rpc.AuditorClient.prototype.orderExecution =
     function(request, metadata, callback) {
   return this.client_.rpcCall(this.hostname_ +
-      '/rpc.Auditor/RegisterRequestProof',
+      '/rpc.Auditor/OrderExecution',
       request,
       metadata || {},
-      methodDescriptor_Auditor_RegisterRequestProof,
+      methodDescriptor_Auditor_OrderExecution,
       callback);
 };
 
 
 /**
- * @param {!proto.rpc.RequestProofRegistrationRequest} request The
+ * @param {!proto.rpc.ContractExecutionRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.google.protobuf.Empty>}
+ * @return {!Promise<!proto.rpc.ExecutionOrderingResponse>}
  *     Promise that resolves to the response
  */
-proto.rpc.AuditorPromiseClient.prototype.registerRequestProof =
+proto.rpc.AuditorPromiseClient.prototype.orderExecution =
     function(request, metadata) {
   return this.client_.unaryCall(this.hostname_ +
-      '/rpc.Auditor/RegisterRequestProof',
+      '/rpc.Auditor/OrderExecution',
       request,
       metadata || {},
-      methodDescriptor_Auditor_RegisterRequestProof);
+      methodDescriptor_Auditor_OrderExecution);
 };
 
 
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.rpc.AssetProofsRegistrationRequest,
- *   !proto.google.protobuf.Empty>}
+ *   !proto.rpc.ExecutionValidationRequest,
+ *   !proto.rpc.ContractExecutionResponse>}
  */
-const methodDescriptor_Auditor_RegisterAssetProofs = new grpc.web.MethodDescriptor(
-  '/rpc.Auditor/RegisterAssetProofs',
+const methodDescriptor_Auditor_ValidateExecution = new grpc.web.MethodDescriptor(
+  '/rpc.Auditor/ValidateExecution',
   grpc.web.MethodType.UNARY,
-  proto.rpc.AssetProofsRegistrationRequest,
-  google_protobuf_empty_pb.Empty,
+  proto.rpc.ExecutionValidationRequest,
+  proto.rpc.ContractExecutionResponse,
   /**
-   * @param {!proto.rpc.AssetProofsRegistrationRequest} request
+   * @param {!proto.rpc.ExecutionValidationRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
     return request.serializeBinary();
   },
-  google_protobuf_empty_pb.Empty.deserializeBinary
+  proto.rpc.ContractExecutionResponse.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.rpc.AssetProofsRegistrationRequest,
- *   !proto.google.protobuf.Empty>}
+ *   !proto.rpc.ExecutionValidationRequest,
+ *   !proto.rpc.ContractExecutionResponse>}
  */
-const methodInfo_Auditor_RegisterAssetProofs = new grpc.web.AbstractClientBase.MethodInfo(
-  google_protobuf_empty_pb.Empty,
+const methodInfo_Auditor_ValidateExecution = new grpc.web.AbstractClientBase.MethodInfo(
+  proto.rpc.ContractExecutionResponse,
   /**
-   * @param {!proto.rpc.AssetProofsRegistrationRequest} request
+   * @param {!proto.rpc.ExecutionValidationRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
     return request.serializeBinary();
   },
-  google_protobuf_empty_pb.Empty.deserializeBinary
+  proto.rpc.ContractExecutionResponse.deserializeBinary
 );
 
 
 /**
- * @param {!proto.rpc.AssetProofsRegistrationRequest} request The
+ * @param {!proto.rpc.ExecutionValidationRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.google.protobuf.Empty)}
+ * @param {function(?grpc.web.Error, ?proto.rpc.ContractExecutionResponse)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.google.protobuf.Empty>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.rpc.ContractExecutionResponse>|undefined}
  *     The XHR Node Readable Stream
  */
-proto.rpc.AuditorClient.prototype.registerAssetProofs =
+proto.rpc.AuditorClient.prototype.validateExecution =
     function(request, metadata, callback) {
   return this.client_.rpcCall(this.hostname_ +
-      '/rpc.Auditor/RegisterAssetProofs',
+      '/rpc.Auditor/ValidateExecution',
       request,
       metadata || {},
-      methodDescriptor_Auditor_RegisterAssetProofs,
+      methodDescriptor_Auditor_ValidateExecution,
       callback);
 };
 
 
 /**
- * @param {!proto.rpc.AssetProofsRegistrationRequest} request The
+ * @param {!proto.rpc.ExecutionValidationRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.google.protobuf.Empty>}
+ * @return {!Promise<!proto.rpc.ContractExecutionResponse>}
  *     Promise that resolves to the response
  */
-proto.rpc.AuditorPromiseClient.prototype.registerAssetProofs =
+proto.rpc.AuditorPromiseClient.prototype.validateExecution =
     function(request, metadata) {
   return this.client_.unaryCall(this.hostname_ +
-      '/rpc.Auditor/RegisterAssetProofs',
+      '/rpc.Auditor/ValidateExecution',
       request,
       metadata || {},
-      methodDescriptor_Auditor_RegisterAssetProofs);
+      methodDescriptor_Auditor_ValidateExecution);
 };
 
 

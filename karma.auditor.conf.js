@@ -2,9 +2,7 @@ module.exports = function(config) {
   config.set({
     frameworks: ['mocha', 'chai'],
     files: [
-      'test/integration.test.js',
-      'test/signature_validator.test.js',
-      'test/client_service_with_indexeddb.test.js',
+      'test/integration_auditor.test.js',
     ],
     reporters: ['progress'],
     preprocessors: {
@@ -12,7 +10,7 @@ module.exports = function(config) {
     },
     webpack: {},
     htmlReporter: {
-      outputFile: 'test/test-reports/integration-test.html',
+      outputFile: 'test/test-reports/integration-test-auditor.html',
     },
     listenAddress: '127.0.0.1',
     hostname: 'localhost',

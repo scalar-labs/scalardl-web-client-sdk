@@ -126,20 +126,5 @@ describe('ClientService', () => {
             }
           });
     });
-    describe('validateLedger', () => {
-      it('should return 200 when correct asset id is specified', async () => {
-        try {
-          const response = await clientService.validateLedger(mockedAssetId);
-          assert.equal(response.getCode(), 200);
-          const proof = response.getProof();
-          const auditorProof = response.getAuditorProof();
-          assert.equal(proof.getId(), mockedAssetId);
-          assert.equal(auditorProof.getId(), mockedAssetId);
-          assert.equal(proof.hashEquals(auditorProof.getHash()), true);  
-        } catch (clientError) {
-          assert.fail();
-        }
-      });
-    });
   });
 });

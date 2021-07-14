@@ -95,6 +95,18 @@ jobs:
       - run:
           command: npm test
 
+      - run:
+          name: Restart Scalar DL environment with auditor
+          command: |
+            docker-compose -f docker-compose.yml -f docker-compose-open-cassandra-port.yml down
+            docker volume rm scalar-samples_cassandra-data
+            docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up -d
+          working_directory: .circleci/
+
+      # run tests with auditor
+      - run:
+          command: npm run test-auditor
+
       - store_test_results:
           path: ~/scalardl-web-client-sdk/test/test-reports
 
