@@ -2,11 +2,11 @@
 #
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 #
-version: 2
+version: 2.1
 jobs:
   build:
-    machine: true
-    image: ubuntu-2004:202101-01
+    machine:
+      image: ubuntu-2004:202101-01
 
     working_directory: ~/scalardl-web-client-sdk
 
@@ -25,28 +25,16 @@ jobs:
       - run: # Update chrome to stable version for karma
           name: Install Chromedriver latest version
           command: |
-            wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+            wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+            sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
             sudo apt-get update
-            sudo apt-get install -y lsb-release libappindicator3-1 dpkg libgbm1
-            curl -L -o google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-            sudo dpkg -i google-chrome.deb
-            sudo sed -i 's|HERE/chrome"|HERE/chrome" --no-sandbox|g' /opt/google/chrome/google-chrome
-            rm google-chrome.deb
-
-      - run:
-          name: Update docker and docker compose
-          command: |
-            sudo apt-get purge docker-ce containerd.io
-            curl -fsSL https://get.docker.com -o get-docker.sh
-            sudo sh get-docker.sh
-            sudo curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-            sudo chmod +x /usr/local/bin/docker-compose
+            sudo apt-get install -y google-chrome-stable
 
       - run:
           name: checkout scalar-samples repository as it contains the script to spin up scalardl environment and easier for us to maintain the CI
           command: |
             git init
-            git pull https://${GHCR_USERNAME}:${GHCR_PAT}@github.com/scalar-labs/scalar-samples.git
+            git pull https://${GHCR_USERNAME}:${GHCR_PAT}@github.com/scalar-labs/scalardl-samples.git
           working_directory: .circleci/
 
       - run:
@@ -72,7 +60,7 @@ jobs:
           name: Wait for Cassandra to spin up to be able to update the Cassandra schema in the next step
           command: |
             echo -n "Wait for C* "
-              until docker exec scalar-samples-cassandra-1 cqlsh 2> /dev/null ; do
+              until docker exec scalardl-samples-cassandra-1 cqlsh 2> /dev/null ; do
                   sleep 0.5
                   echo -n "#"
               done
@@ -81,8 +69,8 @@ jobs:
           name: Insert function table and wait
           command: |
             docker cp function_schema.cql \
-            scalar-samples-cassandra-1:function_schema.cql
-            docker exec scalar-samples-cassandra-1 cqlsh -f function_schema.cql
+            scalardl-samples-cassandra-1:function_schema.cql
+            docker exec scalardl-samples-cassandra-1 cqlsh -f function_schema.cql
             sleep 10
           working_directory: .circleci/
 
