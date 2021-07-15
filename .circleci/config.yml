@@ -115,7 +115,14 @@ jobs:
 
 workflows:
   version: 2
-  build:
+  build-deploy:
     jobs:
       - build:
           context: "scalar"
+      - deploy:
+          context: "scalar"
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
