@@ -31,7 +31,7 @@ jobs:
             sudo apt-get install -y google-chrome-stable
 
       - run:
-          name: checkout scalar-samples repository as it contains the script to spin up scalardl environment and easier for us to maintain the CI
+          name: checkout scalardl-samples repository as it contains the script to spin up scalardl environment and easier for us to maintain the CI
           command: |
             git init
             git pull https://${GHCR_USERNAME}:${GHCR_PAT}@github.com/scalar-labs/scalardl-samples.git
@@ -87,7 +87,7 @@ jobs:
           name: Restart Scalar DL environment with auditor
           command: |
             docker-compose -f docker-compose.yml -f docker-compose-open-cassandra-port.yml down
-            docker volume rm scalar-samples_cassandra-data
+            docker volume rm scalardl-samples_cassandra-data
             docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up -d
           working_directory: .circleci/
 
