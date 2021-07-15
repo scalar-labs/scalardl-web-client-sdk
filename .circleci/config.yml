@@ -86,8 +86,7 @@ jobs:
       - run:
           name: Restart Scalar DL environment with auditor
           command: |
-            docker-compose -f docker-compose.yml -f docker-compose-open-cassandra-port.yml down
-            docker volume rm cassandra-data
+            docker-compose -f docker-compose.yml -f docker-compose-open-cassandra-port.yml down -v
             docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up -d
           working_directory: .circleci/
 
