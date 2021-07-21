@@ -68,6 +68,17 @@ This is a properties example that a user `foo@example.com` would use to try to c
 }
 ```
 
+If the auditor capability is enabled on the Scalar DL network, specify additional properties like the following example. In this example, the client interacts with the auditor `scalardl-auditor.example.com` and detects Byzantine faults including data tampering when executing contracts.
+
+```javascript
+{
+    'scalar.dl.client.auditor.enabled': true,
+    'scalar.dl.client.auditor.host': 'scalardl-auditor.example.com',
+    'scalar.dl.client.auditor.port': 40051,
+    'scalar.dl.client.auditor.privileged_port': 40052,
+}
+```
+
 In what follows assume that we have a clientService instance.
 
 ### Register the certificate
