@@ -118,6 +118,9 @@ workflows:
     jobs:
       - build:
           context: "scalar"
+          filters: # required since `deploy` has tag filters AND requires `build`
+            tags:
+              only: /.*/
       - deploy:
           context: "scalar"
           requires:
