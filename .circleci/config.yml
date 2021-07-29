@@ -31,7 +31,7 @@ jobs:
             sudo apt-get install -y google-chrome-stable
 
       - run:
-          name: checkout scalar-samples repository as it contains the script to spin up scalardl environment and easier for us to maintain the CI
+          name: checkout scalardl-samples repository as it contains the script to spin up scalardl environment and easier for us to maintain the CI
           command: |
             git init
             git pull https://${GHCR_USERNAME}:${GHCR_PAT}@github.com/scalar-labs/scalardl-samples.git
@@ -83,6 +83,35 @@ jobs:
       - run:
           command: npm test
 
+      - run:
+          name: Restart Scalar DL environment with auditor
+          command: |
+            docker-compose -f docker-compose.yml -f docker-compose-open-cassandra-port.yml down -v
+            docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up -d cassandra
+            echo -n "Wait for C* "
+            until docker exec scalardl-samples-cassandra-1 cqlsh 2> /dev/null ; do
+              sleep 0.5
+              echo -n "#"
+            done
+            echo ""
+            docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up scalardl-ledger-schema-loader-cassandra
+            docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up scalardl-auditor-schema-loader-cassandra
+            docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up -d scalar-ledger
+            docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up -d scalar-auditor
+            docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up -d ledger-envoy
+            docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up -d auditor-envoy
+            docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up -d scalar-ledger-as-client
+            docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up -d scalar-audior-as-client
+            sleep 5
+            docker restart scalardl-samples-scalar-ledger-1 # just in case
+            docker restart scalardl-samples-scalar-auditor-1 # just in case
+            sleep 5
+          working_directory: .circleci/
+
+      # run tests with auditor
+      - run:
+          command: npm run test-auditor
+
       - store_test_results:
           path: ~/scalardl-web-client-sdk/test/test-reports
 
@@ -107,10 +136,15 @@ workflows:
     jobs:
       - build:
           context: "scalar"
+          filters: # required since `deploy` has tag filters AND requires `build`
+            tags:
+              only: /.*/
       - deploy:
           context: "scalar"
           requires:
             - build
           filters:
+            tags:
+              only: /v[0-9]+\.[0-9]+\.[0-9]+/
             branches:
-              only: master
+              ignore: /.*/
