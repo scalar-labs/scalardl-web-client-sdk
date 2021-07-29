@@ -87,7 +87,25 @@ jobs:
           name: Restart Scalar DL environment with auditor
           command: |
             docker-compose -f docker-compose.yml -f docker-compose-open-cassandra-port.yml down -v
-            docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up -d
+            docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up -d cassandra
+            echo -n "Wait for C* "
+            until docker exec scalardl-samples-cassandra-1 cqlsh 2> /dev/null ; do
+              sleep 0.5
+              echo -n "#"
+            done
+            echo ""
+            docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up scalardl-ledger-schema-loader-cassandra
+            docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up scalardl-auditor-schema-loader-cassandra
+            docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up -d scalar-ledger
+            docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up -d scalar-auditor
+            docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up -d ledger-envoy
+            docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up -d auditor-envoy
+            docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up -d scalar-ledger-as-client
+            docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up -d scalar-audior-as-client
+            sleep 5
+            docker restart scalardl-samples-scalar-ledger-1 # 念のために
+            docker restart scalardl-samples-scalar-auditor-1 # 念のために
+            sleep 5
           working_directory: .circleci/
 
       # run tests with auditor
