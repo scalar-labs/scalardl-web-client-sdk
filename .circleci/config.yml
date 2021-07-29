@@ -103,8 +103,8 @@ jobs:
             docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up -d scalar-ledger-as-client
             docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up -d scalar-audior-as-client
             sleep 5
-            docker restart scalardl-samples-scalar-ledger-1 # 念のために
-            docker restart scalardl-samples-scalar-auditor-1 # 念のために
+            docker restart scalardl-samples-scalar-ledger-1 # just in case
+            docker restart scalardl-samples-scalar-auditor-1 # just in case
             sleep 5
           working_directory: .circleci/
 
