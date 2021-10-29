@@ -2,6 +2,7 @@ describe('ClientService', () => {
   const {
     ClientService,
   } = require('../scalardl-web-client-sdk.js');
+  const validateLedgerContractId = `validate-ledger${Date.now()}`;
   const properties = {
     'scalar.dl.client.server.host': '127.0.0.1',
     'scalar.dl.client.server.port': 50051,
@@ -11,6 +12,9 @@ describe('ClientService', () => {
     'scalar.dl.client.auditor.host': '127.0.0.1',
     'scalar.dl.client.auditor.port': 40051,
     'scalar.dl.client.auditor.privileged_port': 40052,
+    'scalar.dl.client.auditor.linearizable_validation.enabled': true,
+    'scalar.dl.client.auditor.linearizable_validation.contract_id':
+      validateLedgerContractId,
 
     // Make the test idempotent.
     'scalar.dl.client.cert_holder_id': `foo@${Date.now()}`,
@@ -125,6 +129,23 @@ describe('ClientService', () => {
               assert.fail();
             }
           });
+    });
+    describe('validateLedger linearizably', () => {
+      it('should return successfully and the proofs are the same',
+          async () => {
+            await clientService.registerContract(
+                validateLedgerContractId,
+                'com.scalar.dl.client.contract.ValidateLedger',
+                new Uint8Array(
+                    require('arraybuffer-loader!./ValidateLedger.class'),
+                ),
+                {},
+            );
+
+            const response = await clientService.validateLedger(mockedAssetId);
+            assert.equal(response.getProof(), response.getAuditorProof());
+          },
+      );
     });
   });
 });
