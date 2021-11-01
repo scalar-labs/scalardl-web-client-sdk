@@ -1,7 +1,4 @@
-const {
-  toCryptoKeyFromJwk,
-  toJwkFromPkcs1,
-} = require('./lib/keyutil');
+const {toCryptoKeyFromJwk, toJwkFromPkcs1} = require('./lib/keyutil');
 
 /** @description The signer based on Web Crypto API */
 class WebCryptoSigner {
@@ -15,7 +12,7 @@ class WebCryptoSigner {
       this.key = key;
     } else {
       throw new Error(
-          'key type should be either String (PEM) or Object (CryptoKey)'
+          'key type should be either String (PEM) or Object (CryptoKey)',
       );
     }
   }
@@ -39,7 +36,8 @@ class WebCryptoSigner {
       }
     }
 
-    const algorithm = { // EcdsaParams
+    const algorithm = {
+      // EcdsaParams
       name: 'ECDSA',
       hash: 'SHA-256',
     };
@@ -85,9 +83,9 @@ class WebCryptoSigner {
    * ]
    */
   _P1363ToDer(sig) {
-    const signature = Array
-        .from(sig, (x) => ('00' + x.toString(16)).slice(-2))
-        .join('');
+    const signature = Array.from(sig, (x) =>
+      ('00' + x.toString(16)).slice(-2),
+    ).join('');
     let r = signature.substr(0, signature.length / 2);
     let s = signature.substr(signature.length / 2);
     r = r.replace(/^(00)+/, '');
@@ -97,9 +95,10 @@ class WebCryptoSigner {
     const rString = `02${(r.length / 2).toString(16).padStart(2, '0')}${r}`;
     const sString = `02${(s.length / 2).toString(16).padStart(2, '0')}${s}`;
     const derSig = `30${((rString.length + sString.length) / 2)
-        .toString(16).padStart(2, '0')}${rString}${sString}`;
-    return new Uint8Array( derSig.match(/[\da-f]{2}/gi).map(
-        (h) => parseInt(h, 16)),
+        .toString(16)
+        .padStart(2, '0')}${rString}${sString}`;
+    return new Uint8Array(
+        derSig.match(/[\da-f]{2}/gi).map((h) => parseInt(h, 16)),
     );
   }
 }

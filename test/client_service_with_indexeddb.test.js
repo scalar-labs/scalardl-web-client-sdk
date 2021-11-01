@@ -40,13 +40,11 @@ describe('ClientServiceWithIndexedDb', function() {
       };
 
       const clientService = await new ClientServiceWithIndexedDb(
-          new ClientService(properties)
+          new ClientService(properties),
       );
       const signature = await window.crypto.subtle.sign(
           {name: 'ECDSA', hash: 'SHA-256'},
-          clientService.properties[
-              'scalar.dl.client.private_key_cryptokey'
-          ],
+          clientService.properties['scalar.dl.client.private_key_cryptokey'],
           new ArrayBuffer([1, 2, 3]),
       );
       const verified = await window.crypto.subtle.verify(
@@ -57,8 +55,7 @@ describe('ClientServiceWithIndexedDb', function() {
       );
 
       chai.assert.equal(true, verified);
-    }
-    );
+    });
 
     it('should work to store pem', async function() {
       const certHolderId = `${new Date().getTime()}`;
@@ -69,12 +66,14 @@ describe('ClientServiceWithIndexedDb', function() {
         'scalar.dl.client.server.privileged_port': 50052,
         'scalar.dl.client.cert_holder_id': certHolderId,
         'scalar.dl.client.cert_version': certVersion,
-        'scalar.dl.client.private_key_pem': '-----BEGIN EC PRIVATE KEY-----\n' +
+        'scalar.dl.client.private_key_pem':
+          '-----BEGIN EC PRIVATE KEY-----\n' +
           'MHcCAQEEICcJGMEw3dyXUGFu/5a36HqY0ynZi9gLUfKgYWMYgr/IoAoGCCqGSM49\n' +
           'AwEHoUQDQgAEBGuhqumyh7BVNqcNKAQQipDGooUpURve2dO66pQCgjtSfu7lJV20\n' +
           'XYWdrgo0Y3eXEhvK0lsURO9N0nrPiQWT4A==\n' +
           '-----END EC PRIVATE KEY-----\n',
-        'scalar.dl.client.cert_pem': '-----BEGIN CERTIFICATE-----\n' +
+        'scalar.dl.client.cert_pem':
+          '-----BEGIN CERTIFICATE-----\n' +
           'MIICizCCAjKgAwIBAgIUMEUDTdWsQpftFkqs6bCd6U++4nEwCgYIKoZIzj0EAwIw\n' +
           'bzELMAkGA1UEBhMCSlAxDjAMBgNVBAgTBVRva3lvMQ4wDAYDVQQHEwVUb2t5bzEf\n' +
           'MB0GA1UEChMWU2FtcGxlIEludGVybWVkaWF0ZSBDQTEfMB0GA1UEAxMWU2FtcGxl\n' +
@@ -93,16 +92,17 @@ describe('ClientServiceWithIndexedDb', function() {
       };
       const keyId = `${certHolderId}_${certVersion}`;
 
-      const before = await db.keystore.get(keyId); ;
+      const before = await db.keystore.get(keyId);
       const clientService = await new ClientServiceWithIndexedDb(
-          new ClientService(properties)
+          new ClientService(properties),
       );
-      const after = await db.keystore.get(keyId); ;
+      const after = await db.keystore.get(keyId);
 
       chai.assert.equal(undefined, before);
       chai.assert.notEqual(undefined, after);
       await chai.expect(clientService.registerCertificate()).to.not.be.rejected;
-      await chai.expect(clientService.validateLedger('foo', 0, 1)).to.not.be.rejected;
+      await chai.expect(clientService.validateLedger('foo', 0, 1)).to.not.be
+          .rejected;
       await chai.expect(clientService.validateLedger('foo')).to.not.be.rejected;
     });
 
@@ -120,11 +120,9 @@ describe('ClientServiceWithIndexedDb', function() {
       };
       const keyId = `${certHolderId}_${certVersion}`;
 
-      const before = await db.keystore.get(keyId); ;
-      await new ClientServiceWithIndexedDb(
-          new ClientService(properties)
-      );
-      const after = await db.keystore.get(keyId); ;
+      const before = await db.keystore.get(keyId);
+      await new ClientServiceWithIndexedDb(new ClientService(properties));
+      const after = await db.keystore.get(keyId);
 
       chai.assert.equal(undefined, before);
       chai.assert.notEqual(undefined, after);
@@ -141,9 +139,9 @@ describe('ClientServiceWithIndexedDb', function() {
         'scalar.dl.client.cert_version': certVersion,
       };
 
-      await chai.expect(new ClientServiceWithIndexedDb(
-          new ClientService(properties)
-      )).to.be.rejectedWith(IndexedDbKeyNotFoundError);
+      await chai
+          .expect(new ClientServiceWithIndexedDb(new ClientService(properties)))
+          .to.be.rejectedWith(IndexedDbKeyNotFoundError);
     });
   });
 
@@ -163,7 +161,7 @@ describe('ClientServiceWithIndexedDb', function() {
       };
 
       const clientService = await new ClientServiceWithIndexedDb(
-          new ClientService(properties)
+          new ClientService(properties),
       );
       const before = await db.keystore.get(keyId);
       await clientService.deleteIndexedDb();
