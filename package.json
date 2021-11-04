@@ -34,6 +34,7 @@
   },
   "scripts": {
     "test": "karma start",
-    "test-auditor": "karma start karma.auditor.conf.js"
+    "test-auditor": "karma start karma.auditor.conf.js",
+    "bundle": "webpack"
   }
 }
