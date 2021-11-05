@@ -38,27 +38,34 @@ class ClientService extends ClientServiceBase {
     const host = clientProperties.getServerHost();
     const auditorHost = clientProperties.getAuditorHost();
     const tlsEnabled = clientProperties.getTlsEnabled();
-    const ledgerClientServiceURL =
-      `${tlsEnabled ? 'https' : 'http'}://${host}:${clientProperties.getServerPort()}`;
-    const ledgerPriviledgedClientServiceURL =
-      `${tlsEnabled ? 'https' : 'http'}://${host}:${clientProperties.getServerPrivilegedPort()}`;
-    const auditorClientServiceURL =
-      `${tlsEnabled ? 'https' : 'http'}://${auditorHost}:${clientProperties.getAuditorPort()}`;
-    const auditorPriviledgedClientServiceURL =
-      `${tlsEnabled ? 'https' : 'http'}://${auditorHost}:${clientProperties.getAuditorPrivilegedPort()}`;
+    const ledgerClientServiceURL = `${
+      tlsEnabled ? 'https' : 'http'
+    }://${host}:${clientProperties.getServerPort()}`;
+    const ledgerPriviledgedClientServiceURL = `${
+      tlsEnabled ? 'https' : 'http'
+    }://${host}:${clientProperties.getServerPrivilegedPort()}`;
+    const auditorClientServiceURL = `${
+      tlsEnabled ? 'https' : 'http'
+    }://${auditorHost}:${clientProperties.getAuditorPort()}`;
+    const auditorPriviledgedClientServiceURL = `${
+      tlsEnabled ? 'https' : 'http'
+    }://${auditorHost}:${clientProperties.getAuditorPrivilegedPort()}`;
 
     const services = {
       ledgerClient: new LedgerClient(ledgerClientServiceURL),
-      ledgerPrivileged: new LedgerPrivilegedClient(ledgerPriviledgedClientServiceURL),
+      ledgerPrivileged: new LedgerPrivilegedClient(
+          ledgerPriviledgedClientServiceURL,
+      ),
       auditorClient: new AuditorClient(auditorClientServiceURL),
-      auditorPrivileged: new AuditorPrivilegedClient(auditorPriviledgedClientServiceURL),
+      auditorPrivileged: new AuditorPrivilegedClient(
+          auditorPriviledgedClientServiceURL,
+      ),
       signerFactory: new SignerFactory(),
     };
 
     const metadata = {};
     if (clientProperties.getAuthorizationCredential()) {
-      metadata.Authorization =
-          clientProperties.getAuthorizationCredential();
+      metadata.Authorization = clientProperties.getAuthorizationCredential();
     }
     super(services, protobuf, properties, metadata);
   }

@@ -33,13 +33,14 @@ class ClientServiceWithIndexedDb {
       );
       const cryptoKey = clientProperties.getPrivateKeyCryptoKey();
       const pem = clientProperties.getPrivateKeyPem();
-      const keyId = `${clientProperties.getCertHolderId()}_` +
-                `${clientProperties.getCertVersion()}`;
+      const keyId =
+        `${clientProperties.getCertHolderId()}_` +
+        `${clientProperties.getCertVersion()}`;
 
       let key;
       try {
         if (cryptoKey || pem) {
-          key = cryptoKey || await toCryptoKeyFromJwk(toJwkFromPkcs1(pem));
+          key = cryptoKey || (await toCryptoKeyFromJwk(toJwkFromPkcs1(pem)));
           await db.keystore.put({id: keyId, key: key});
         } else {
           const item = await db.keystore.get(keyId);
@@ -75,8 +76,9 @@ class ClientServiceWithIndexedDb {
             ClientPropertiesField.CERT_VERSION,
           ], // cert_holder_id and cert_version are required
       );
-      const keyId = `${clientProperties.getCertHolderId()}_` +
-                `${clientProperties.getCertVersion()}`;
+      const keyId =
+        `${clientProperties.getCertHolderId()}_` +
+        `${clientProperties.getCertVersion()}`;
 
       try {
         await db.keystore.delete(keyId);
@@ -96,10 +98,10 @@ class ClientServiceWithIndexedDb {
 }
 
 /** @description Indicates the private key is not found in indexedDB */
-class IndexedDbKeyNotFoundError extends Error { }
+class IndexedDbKeyNotFoundError extends Error {}
 
 /** @description Indicates fail indexedDB operation */
-class IndexedDbOperationError extends Error { }
+class IndexedDbOperationError extends Error {}
 
 module.exports = {
   ClientServiceWithIndexedDb,

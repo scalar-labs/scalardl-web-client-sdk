@@ -1,9 +1,7 @@
 module.exports = function(config) {
   config.set({
     frameworks: ['mocha', 'chai'],
-    files: [
-      'test/integration_auditor.test.js',
-    ],
+    files: ['test/integration_auditor.test.js'],
     reporters: ['progress'],
     preprocessors: {
       'test/*.test.js': ['webpack'],

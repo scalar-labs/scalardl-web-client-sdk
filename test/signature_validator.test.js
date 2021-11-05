@@ -17,10 +17,11 @@ AKtP641f4dGZTV0R6uMYDrZjunwbG+kmt9+vSuE8rjO0
 -----END CERTIFICATE-----
 `;
 
-const privateKey = 'MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0waw' +
-'IBAQQghsSVj9WzmcShUawdnwb2JzFlyxGVPYNwch/EU' +
-'2RmucehRANCAAT9PMYRxgk1zB7l34GU+7G7CIiEyEqky' +
-'lMxkz3gv5tGEM8WficyKBwKKOV7LuqE5/CmVWtO2c0tM0wPza23CdHu';
+const privateKey =
+  'MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0waw' +
+  'IBAQQghsSVj9WzmcShUawdnwb2JzFlyxGVPYNwch/EU' +
+  '2RmucehRANCAAT9PMYRxgk1zB7l34GU+7G7CIiEyEqky' +
+  'lMxkz3gv5tGEM8WficyKBwKKOV7LuqE5/CmVWtO2c0tM0wPza23CdHu';
 
 const {SignatureValidator} = require('../signature_validator.js');
 const jsrsasign = require('jsrsasign');
