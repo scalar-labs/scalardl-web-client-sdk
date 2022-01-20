@@ -12,6 +12,9 @@
   "main": "scalardl-web-client-sdk.js",
   "author": "Scalar, Inc.",
   "license": "AGPL-3.0-or-later",
+  "engine": {
+      "node": ">=16.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "git@github.com:scalar-labs/scalardl-web-client-sdk.git"
