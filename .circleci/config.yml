@@ -4,9 +4,9 @@
 #
 version: 2.1
 jobs:
-  build:
+  e2e-without-auditor:
     machine:
-      image: ubuntu-2004:202101-01
+      image: ubuntu-2004:current
 
     working_directory: ~/scalardl-web-client-sdk
 
@@ -43,14 +43,12 @@ jobs:
           working_directory: .circleci/
 
       - run:
-          name: Install node@14.16 # Update node for karma to work
+          name: Install Node LTS # Update node for karma to work
           command: |
             export NVM_DIR="/opt/circleci/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            nvm install v14.16
-            nvm alias default v14.16
-            echo 'export NVM_DIR="/opt/circleci/.nvm"' >> $BASH_ENV
-            echo "[ -s \"$NVM_DIR/nvm.sh\" ] && . \"$NVM_DIR/nvm.sh\"" >> $BASH_ENV
+            nvm install --lts
+            nvm use --lts
 
       - run:
           name: Install npm
@@ -83,10 +81,65 @@ jobs:
       - run:
           command: npm test
 
+      - store_test_results:
+          path: ~/scalardl-web-client-sdk/test/test-reports
+
+      - store_artifacts:
+          path: ~/scalardl-web-client-sdk/test/test-reports
+
+  e2e-with-auditor:
+    machine:
+      image: ubuntu-2004:current
+
+    working_directory: ~/scalardl-web-client-sdk
+
+    steps:
+      - checkout
+      # Restore dependencies
+      - restore_cache:
+          keys:
+            - dependency-cache-{{ checksum "package-lock.json" }}
+
       - run:
-          name: Restart Scalar DL environment with auditor
+          name: Docker login
           command: |
-            docker-compose -f docker-compose.yml -f docker-compose-open-cassandra-port.yml down -v
+            echo ${GHCR_PAT} | docker login https://ghcr.io -u ${GHCR_USERNAME} --password-stdin
+
+      - run: # Update chrome to stable version for karma
+          name: Install Chromedriver latest version
+          command: |
+            wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+            sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
+            sudo apt-get update
+            sudo apt-get install -y google-chrome-stable
+
+      - run:
+          name: Install Node LTS # Update node for karma to work
+          command: |
+            export NVM_DIR="/opt/circleci/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm install --lts
+            nvm use --lts
+
+      - run:
+          name: Install npm
+          command: npm install
+
+      - save_cache:
+          key: v1-dependencies-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+
+      - run:
+          name: checkout scalardl-samples repository as it contains the script to spin up scalardl environment and easier for us to maintain the CI
+          command: |
+            git init
+            git pull https://${GHCR_USERNAME}:${GHCR_PAT}@github.com/scalar-labs/scalardl-samples.git 3.3
+          working_directory: .circleci/
+
+      - run:
+          name: Start Scalar DL environment with auditor
+          command: |
             docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up -d cassandra
             echo -n "Wait for C* "
             until docker exec scalardl-samples-cassandra-1 cqlsh 2> /dev/null ; do
@@ -100,12 +153,14 @@ jobs:
             docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up -d scalar-auditor
             docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up -d ledger-envoy
             docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up -d auditor-envoy
-            docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up -d scalar-ledger-as-client
-            docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up -d scalar-audior-as-client
             sleep 5
             docker restart scalardl-samples-scalar-ledger-1 # just in case
             docker restart scalardl-samples-scalar-auditor-1 # just in case
+            docker restart scalardl-samples-auditor-envoy-1 # just in case
+            docker restart scalardl-samples-ledger-envoy-1 # just in case
             sleep 5
+            docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up scalar-ledger-as-client
+            docker-compose -f docker-compose.yml -f docker-compose-auditor.yml up scalar-audior-as-client
           working_directory: .circleci/
 
       # run tests with auditor
@@ -117,10 +172,11 @@ jobs:
 
       - store_artifacts:
           path: ~/scalardl-web-client-sdk/test/test-reports
+
   deploy:
     docker:
-      #Node LTS 14.16 "fermium"
-      - image: circleci/node:14.16
+      #Node LTS
+      - image: cimg/node:lts
     steps:
       - checkout
       - run:
@@ -134,15 +190,21 @@ workflows:
   version: 2
   build-deploy:
     jobs:
-      - build:
+      - e2e-with-auditor:
           context: "scalar"
-          filters: # required since `deploy` has tag filters AND requires `build`
+          filters: # required since `deploy` has tag filters AND requires `e2e-with-auditor`
+            tags:
+              only: /.*/
+      - e2e-without-auditor:
+          context: "scalar"
+          filters: # required since `deploy` has tag filters AND requires `e2e-without-auditor`
             tags:
               only: /.*/
       - deploy:
           context: "scalar"
           requires:
-            - build
+            - e2e-without-auditor
+            - e2e-with-auditor
           filters:
             tags:
               only: /v[0-9]+\.[0-9]+\.[0-9]+/
